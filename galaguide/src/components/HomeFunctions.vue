@@ -25,7 +25,7 @@ const makeReservation = () => {
 <style scoped>
 .home-functions {
     position: absolute;
-    top: 20px;
+    top: 7%;
     right: 2%;
     width: 35%;
     height: 270px;

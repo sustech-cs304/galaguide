@@ -1,6 +1,6 @@
 <template>
     <div class="home-announcements">
-        <h1 style="text-align: center; margin-bottom: 20px;">Announcements</h1>
+        <h1 style="text-align: center; margin-bottom: 20px;">Recent</h1>
         <Vue3SeamlessScroll :list="announcements" :step="0.2" :hover="true" :wheel="true" class="scroll">
             <div class="announcement" v-for="(announcement, index) in announcements" :key="index">
                 <span class="title">
@@ -37,7 +37,7 @@ export default {
     },
     methods: {
         fetchAnnouncements() {
-            axios.get('/api/announcements')
+            axios.get('/api/showcase')
                 .then(response => {
                     this.announcements = response.data;
                 })
@@ -52,7 +52,7 @@ export default {
 <style>
 .home-announcements {
     position: absolute;
-    top: 20px;
+    top: 7%;
     left: 12%;
     width: 49%;
     height: 270px;
