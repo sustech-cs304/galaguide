@@ -52,11 +52,11 @@ export default {
 <style>
 .home-announcements {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 60%;
+    top: 20px;
+    left: 12%;
+    width: 49%;
     height: 270px;
-    background-color: #e5e1db;
+    background-color: white;
     border-radius: 10px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     overflow: hidden;

@@ -1,18 +1,27 @@
 <template>
   <!--<img alt="Vue logo" src="./assets/logo.png">
   <HelloWorld msg="Welcome to Your Vue.js App" />-->
+  <LeftSideBar />
   <HomeAnnouncements />
+  <HomeFunctions />
+  <HomeERHolder />
 </template>
 
 <script>
 // import HelloWorld from './components/HelloWorld.vue'
 import HomeAnnouncements from './components/HomeAnnouncements.vue'
+import HomeFunctions from './components/HomeFunctions.vue'
+import HomeERHolder from './components/HomeERHolder.vue'
+import LeftSideBar from './components/LeftSideBar.vue'
 
 export default {
   name: 'App',
   components: {
     // HelloWorld,
-    HomeAnnouncements
+    HomeAnnouncements,
+    HomeFunctions,
+    HomeERHolder,
+    LeftSideBar
   }
 }
 </script>
@@ -35,5 +44,8 @@ a {
 a:hover {
   color: rgb(115, 201, 230);
   /*text-decoration: underline;*/
+}
+body {
+  background-color: #e5e1db;
 }
 </style>
