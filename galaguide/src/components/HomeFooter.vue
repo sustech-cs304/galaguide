@@ -8,9 +8,12 @@ onMounted(() => {
         maxHeight.value = document.getElementById('home-er-holder').clientHeight +
             document.getElementById('home-announcements').clientHeight +
             document.getElementById('top-bar').clientHeight + 100
+        console.log(document.getElementById('home-er-holder').clientHeight)
+        console.log(document.getElementById('home-announcements').clientHeight)
+        console.log(document.getElementById('top-bar').clientHeight)
         // console.log(ele.clientHeight,ele.style.border,ele.clientTop)
         console.log('maxHeight:', maxHeight.value)
-        document.getElementById('footer').style.top = `calc( 4% + ${maxHeight.value}px )`
+        document.getElementById('footer').style.top = `${maxHeight.value}px`
     }, 500)
 })
 
