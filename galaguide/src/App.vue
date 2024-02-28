@@ -1,11 +1,84 @@
 <script setup>
-import {onMounted, ref} from 'vue'
+import {onMounted, ref, computed} from 'vue'
 import HomeAnnouncements from './components/HomeAnnouncements.vue'
 import HomeFunctions from './components/HomeFunctions.vue'
 import HomeERHolder from './components/HomeERHolder.vue'
 import LeftSideBar from './components/LeftSideBar.vue'
 
 const role = ref(0) // 0 for not logged in, 1 for user, 2 for admin
+
+const hoveredOnCalendar = ref(false)
+
+const delayFalse = (ref, delay) => {
+    setTimeout(() => {
+        ref = false
+    }, delay)
+}
+
+/* can be adjusted at https://vcalendar.io/calendar/attributes.html */
+
+const events = ref([
+    {
+        description: 'Take Noah to basketball practice.',
+        isComplete: false,
+        dates: { repeat: { weekdays: 5 } }, // Every Friday
+        color: 'red',
+    },
+]);
+
+const attributes = computed(() => [
+    // Attributes for events
+    ...events.value.map(event => ({
+        dates: event.dates,
+        dot: {
+            color: event.color,
+            ...(event.isComplete && { class: 'opacity-75' }),
+        },
+        popover: {
+            label: event.description,
+            visibility: 'hover',
+            /*hideIndicator: true,*/
+        },
+    })),
+]);
+
+
+/* // event style
+const date = new Date();
+const year = date.getFullYear();
+const month = date.getMonth();
+const attrs = ref([
+    {
+        key: 'today',
+        highlight: {
+            color: 'purple',
+            fillMode: 'solid',
+            contentClass: 'italic',
+        },
+        dates: new Date(year, month, 12),
+    },
+    {
+        highlight: {
+            color: 'purple',
+            fillMode: 'light',
+        },
+        dates: new Date(year, month, 13),
+    },
+    {
+        highlight: {
+            color: 'purple',
+            fillMode: 'outline',
+        },
+        dates: new Date(year, month, 14),
+    },
+    {
+        dot: {
+            color: 'green',
+            fillMode: 'solid',
+        },
+        dates: new Date(year, month, 15),
+    }
+]);*/
 
 function getRoleFromCookie() {
     const cookie = document.cookie.split(';').find(cookie => cookie.trim().startsWith('userRole='))
@@ -49,12 +122,18 @@ onMounted(() => {
             </a>
 
             <!--      Calendar      -->
-            <a href="#"
-               style="position: absolute; left: 50%; display: flex; justify-content: flex-start;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-calendar" viewBox="-4 -4 20 20">
-                    <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"/>
+            <a href="#" @mouseover="hoveredOnCalendar = true" @mouseleave="delayFalse(hoveredOnCalendar, 300)"
+               style="position: absolute; left: 45%; transform: translate(-50%, 0); display: flex; justify-content: flex-start;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                     class="bi bi-calendar" viewBox="-4 -4 20 20">
+                    <path
+                        d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"/>
                 </svg>
             </a>
+            <div v-if="hoveredOnCalendar" @mouseover="hoveredOnCalendar = true" @mouseleave="hoveredOnCalendar = false"
+                 style="position: absolute; top: 100%; left: 45%; transform: translate(-50%, 0); width: 20%; height: 20%;box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); z-index: 100;">
+                <VDatePicker v-model="date" :attributes='attributes'/>
+            </div>
 
             <!--      Profile      -->
             <a href="#"

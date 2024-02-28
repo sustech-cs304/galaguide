@@ -83,7 +83,7 @@ if (isDevelopment) {
 
 const {Menu, shell} = require('electron')
 const template = [
-/*    {
+    {
         label: 'Menu',
         submenu: [
             {
@@ -119,7 +119,7 @@ const template = [
                 }
             }
         ]
-    },*/
+    },
 ]
 
 const menu = Menu.buildFromTemplate(template)
