@@ -4,6 +4,7 @@ import HomeAnnouncements from './components/HomeAnnouncements.vue'
 import HomeFunctions from './components/HomeFunctions.vue'
 import HomeERHolder from './components/HomeERHolder.vue'
 import LeftSideBar from './components/LeftSideBar.vue'
+import HomeFooter from './components/HomeFooter.vue'
 import { DatePicker } from 'v-calendar';
 import 'v-calendar/style.css';
 
@@ -170,10 +171,12 @@ onMounted(() => {
 
         </div>
     </div>
+    
     <LeftSideBar/>
     <HomeAnnouncements/>
     <HomeFunctions/>
     <HomeERHolder :role="role"/>
+    <HomeFooter />
 </template>
 
 <style>
@@ -201,6 +204,8 @@ a:hover {
 
 body {
     background-color: #e5e1db;
+    display: flex;
+    flex-direction: column;
 }
 
 #top-bar {

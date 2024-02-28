@@ -1,5 +1,5 @@
 <template>
-    <div class="home-announcements">
+    <div class="home-announcements" id="home-announcements">
         <h1 style="text-align: center; margin-bottom: 20px;">Recent</h1>
         <Vue3Marquee :pauseOnHover="true" :vertical="true" :duration="10" class="scroll" style="width: 100%;">
             <div class="announcement" v-for="(announcement, index) in announcements" :key="index">
