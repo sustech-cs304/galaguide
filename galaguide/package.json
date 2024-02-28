@@ -14,10 +14,12 @@
   "main": "background.js",
   "dependencies": {
     "@electron/remote": "^2.1.2",
+    "axios": "^1.6.7",
     "core-js": "^3.8.3",
     "electron": "^29.0.1",
     "vue": "^3.2.13",
-    "vue3-seamless-scroll": "^2.0.1"
+    "vue-router": "^4.3.0",
+    "vue3-marquee": "^4.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",

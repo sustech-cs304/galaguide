@@ -1,7 +1,7 @@
 import { createApp } from 'vue'
 import App from './App.vue'
-import { Vue3SeamlessScroll } from 'vue3-seamless-scroll'
+import Vue3Marquee from 'vue3-marquee'
 
 const app = createApp(App)
-app.use(Vue3SeamlessScroll)
+app.use(Vue3Marquee)
 app.mount('#app')
