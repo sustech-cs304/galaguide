@@ -4,6 +4,8 @@ import HomeAnnouncements from './components/HomeAnnouncements.vue'
 import HomeFunctions from './components/HomeFunctions.vue'
 import HomeERHolder from './components/HomeERHolder.vue'
 import LeftSideBar from './components/LeftSideBar.vue'
+import { DatePicker } from 'v-calendar';
+import 'v-calendar/style.css';
 
 const role = ref(0) // 0 for not logged in, 1 for user, 2 for admin
 
@@ -132,7 +134,7 @@ onMounted(() => {
             </a>
             <div v-if="hoveredOnCalendar" @mouseover="hoveredOnCalendar = true" @mouseleave="hoveredOnCalendar = false"
                  style="position: absolute; top: 100%; left: 45%; transform: translate(-50%, 0); width: 20%; height: 20%;box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); z-index: 100;">
-                <VDatePicker v-model="date" :attributes='attributes'/>
+                <DatePicker :attributes='attributes'/>
             </div>
 
             <!--      Profile      -->
