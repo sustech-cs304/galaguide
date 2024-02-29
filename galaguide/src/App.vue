@@ -173,6 +173,7 @@ onMounted(() => {
     </div>
     
     <LeftSideBar/>
+    // TODO: add router control
     <HomeAnnouncements/>
     <HomeFunctions/>
     <HomeERHolder :role="role"/>
