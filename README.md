@@ -35,11 +35,28 @@ TODO
 
 ### Usage
 
+1. Run the backend
+
+```bash
 TODO
+```
+
+2. Run the frontend
+
+```bash
+cd team-project-24spring-23333/galaguide
+npm run electron:serve
+```
+
+After running the frontend, you should see the application window.
+
+## Contributing
+
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
 ## Acknowledgements
 
-This project is a team project for the course CS304 Software Engineering at Southern University of Science and Technology. The team members are (in ascending order of Pinyin):
+GalaGuide is a team project for the course CS304 Software Engineering at Southern University of Science and Technology. The team members are (in ascending order of Pinyin):
 
 - [Hanran Zhou](#)
 - [Haodong He](https://github.com/qwurd231)
