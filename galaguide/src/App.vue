@@ -5,6 +5,7 @@ import HomeFunctions from './components/HomeFunctions.vue'
 import HomeERHolder from './components/HomeERHolder.vue'
 import LeftSideBar from './components/LeftSideBar.vue'
 
+
 const role = ref(0) // 0 for not logged in, 1 for user, 2 for admin
 
 function getRoleFromCookie() {
@@ -42,6 +43,7 @@ function logout() {
             </div>
         </div>
         <LeftSideBar />
+        <router-view></router-view>
         <HomeAnnouncements />
         <HomeFunctions />
         <HomeERHolder :role="role" />
