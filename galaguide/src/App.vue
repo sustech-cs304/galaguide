@@ -1,12 +1,10 @@
 <script setup>
 import {onMounted, ref, computed} from 'vue'
-import HomeAnnouncements from './components/HomeAnnouncements.vue'
-import HomeFunctions from './components/HomeFunctions.vue'
-import HomeERHolder from './components/HomeERHolder.vue'
-import LeftSideBar from './components/LeftSideBar.vue'
-import HomeFooter from './components/HomeFooter.vue'
+import LeftSideBar from './components/globe/LeftSideBar.vue'
+import GlobeFooter from './components/globe/GlobeFooter.vue'
 import { DatePicker } from 'v-calendar';
 import 'v-calendar/style.css';
+// import HomePage from "./components/HomePage.vue";
 
 const role = ref(0) // 0 for not logged in, 1 for user, 2 for admin
 
@@ -90,7 +88,7 @@ function getRoleFromCookie() {
         const roleValue = cookie.split('=')[1]
         role.value = parseInt(roleValue)
     } else {
-        role.value = 1
+        role.value = 0
     }
 }
 
@@ -106,11 +104,14 @@ onMounted(() => {
 
 <template>
 
+    <router-view :role="role"/>
+
     <!--  Top Bar  -->
     <div id="top-bar">
         <div v-if="role === 0">
-            <a href="/login" class="login" style="color: aliceblue;">Login</a>
-            <a href="/register" class="register" style="color: aliceblue;">Register</a>
+            <router-link to="/login" class="login" style="color: aliceblue;">Login</router-link>
+            <router-link to="/register"
+                         class="register" style="color: aliceblue;">Register</router-link>
         </div>
         <div v-else-if="role === 1 || role === 2">
 
@@ -171,12 +172,10 @@ onMounted(() => {
 
         </div>
     </div>
-    
+
     <LeftSideBar/>
-    <HomeAnnouncements/>
-    <HomeFunctions/>
-    <HomeERHolder :role="role"/>
-    <HomeFooter />
+    <GlobeFooter/>
+
 </template>
 
 <style>
