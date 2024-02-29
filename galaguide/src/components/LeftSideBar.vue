@@ -8,19 +8,19 @@
             <h1>GalaGuide</h1>
         </div>
         <div class="bar-options" style="top: 120px;">
-            <img src="../assets/logo.png" alt="events.png" style="width: 30%; height: auto;" />
+            <img src="../assets/events.png" alt="events.png" style="width: 30%; height: auto;" />
             <h1>Events</h1>
         </div>
         <div class="bar-options" style="top: 240px;">
-            <img src="../assets/logo.png" alt="reservations.png" style="width: 30%; height: auto;" />
+            <img src="../assets/reservations.png" alt="reservations.png" style="width: 30%; height: auto;" />
             <h1>Reservations</h1>
         </div>
         <div class="bar-options" style="top: 360px;">
-            <img src="../assets/logo.png" alt="forum.png" style="width: 30%; height: auto;" />
+            <img src="../assets/forum.png" alt="forum.png" style="width: 30%; height: auto;" />
             <h1>Forum</h1>
         </div>
         <div class="bar-options" style="top: 480px;">
-            <img src="../assets/logo.png" alt="chat.png" style="width: 30%; height: auto;" />
+            <img src="../assets/chat.png" alt="chat.png" style="width: 30%; height: auto;" />
             <h1>Chat</h1>
         </div>
     </div>

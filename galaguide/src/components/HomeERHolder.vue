@@ -1,11 +1,11 @@
 <script setup>
-import { defineProps } from 'vue'
+import { ref, defineProps } from 'vue'
 
 const props = defineProps({
     role: Number
 })
 
-const ers = [
+const ers = ref([
     {
         title: 'Tennis Club Meeting',
         date: '2024-02-21',
@@ -54,16 +54,18 @@ const ers = [
         ed: '11:00',
         location: 'Room 301, Teaching Building C'
     }
-]
+])
 
-const recs = [
+const recs = ref([
     {
         title: 'Invitation to the English Corner on Feburary 24th (Saturday)',
         date: '2024-02-21',
         link: '#',
         st: '15:00',
         ed: '17:00',
-        location: 'Room 101, Teaching Building A'
+        location: 'Room 101, Teaching Building A',
+        tags: ['English', 'Speaking', 'Practice'],
+        host: 'International Student Union'
     },
     {
         title: 'GRE General Test - Please tell us about your experience',
@@ -71,7 +73,9 @@ const recs = [
         link: '#',
         st: '08:00',
         ed: '12:00',
-        location: 'Library, 3rd Floor, Group Study Area'
+        location: 'Library, 3rd Floor, Group Study Area',
+        tags: ['GRE', 'Test', 'Experience'],
+        host: 'SUSTech Graduate School'
     },
     { 
         title: 'Algorithm Design and Analysis SE2 Spring 2024: CS208 Course Info', 
@@ -79,9 +83,11 @@ const recs = [
         link: '#',
         st: '09:00',
         ed: '11:00',
-        location: 'Room 301, Teaching Building C'
+        location: 'Room 301, Teaching Building C',
+        tags: ['Algorithm', 'Design', 'Analysis'],
+        host: 'CS Department'
     }
-]
+])
 </script>
 
 <template>
@@ -108,15 +114,17 @@ const recs = [
             <div class="recommended-events">
                 <h2 style="text-align: center; margin-bottom: 20px;">Recommended For You</h2>
                 <div class="er" v-for="(er, index) in recs" :key="index">
-                    <span class="title">
+                    <span class="r-title">
                         <a :href="er.link">{{ er.title }}</a>
                     </span>
-                    <span class="date">{{ er.date }}</span>
-                    <span class="time">{{ er.st }} - {{ er.ed }}</span>
-                    <span class="location">{{ er.location }}</span>
-                    <span class="accept">
-                        Reserve
+                    <span class="r-date">{{ er.date }}</span>
+                    <span class="r-time">{{ er.st }} - {{ er.ed }}</span>
+                    <span class="r-location">{{ er.location }}</span>
+                    <span class="r-host">Hosted by <br> {{ er.host }}</span>
+                    <span class="r-tags">
+                        <span v-for="(tag, index) in er.tags" :key="index" class="r-tag">{{ tag }}</span>
                     </span>
+                    <span class="accept">Reserve</span>
                 </div>
             </div>
         </div>
@@ -153,6 +161,19 @@ const recs = [
     overflow: hidden;
 }
 
+.recommended-events {
+    position: relative;
+    top: 15%;
+    left: 1%;
+    width: 98%;
+    height: auto;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin-top: 20px;
+}
+
 .er {
     margin: 10px;
     border-bottom: 1px solid #f0f0f0;
@@ -160,14 +181,13 @@ const recs = [
     display: flex;
     justify-content: space-between;
     align-items: center;
-
 }
 
 .title {
     position: relative;
     top: 50%;
     left: 0;
-    width: 30%;
+    width: 20%;
     text-align: center;
 }
 
@@ -195,6 +215,14 @@ const recs = [
     text-align: center;
 }
 
+.host {
+    position: relative;
+    top: 50%;
+    left: 0;
+    width: 20%;
+    text-align: center;
+}
+
 .cancel {
     position: relative;
     top: 50%;
@@ -212,19 +240,6 @@ const recs = [
     background-color: #ff3333;
 }
 
-.recommended-events {
-    position: relative;
-    top: 15%;
-    left: 1%;
-    width: 98%;
-    height: auto;
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    margin-top: 20px;
-}
-
 .accept {
     position: relative;
     top: 50%;
@@ -240,6 +255,55 @@ const recs = [
 
 .accept:hover {
     background-color: #3366ff;
+}
+
+.r-title, .r-date, .r-time, .r-location, .r-host, .r-tags {
+    position: relative;
+    left: 0;
+    text-align: center;
+}
+
+.r-title {
+    width: 20%;
+}
+
+.r-date {
+    width: 10%;
+}
+
+.r-time {
+    width: 10%;
+}
+
+.r-location {
+    width: 15%;
+}
+
+.r-host {
+    width: 15%;
+}
+
+.r-tags {
+    width: 20%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.r-tag {
+    position: relative;
+    width: max-content;
+    margin: 5px;
+    padding: 5px;
+    border-radius: 5px;
+    background-color: #f0f0f0;
+    color: #2c3e50;
+    cursor: pointer;
+    display: block;
+}
+
+.r-tag:hover {
+    background-color: #e0e0e0;
 }
 
 </style>

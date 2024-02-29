@@ -13,6 +13,7 @@ onMounted(() => {
         console.log(document.getElementById('top-bar').clientHeight)
         // console.log(ele.clientHeight,ele.style.border,ele.clientTop)
         console.log('maxHeight:', maxHeight.value)
+        document.getElementById('footer').style.display = 'block'
         document.getElementById('footer').style.top = `${maxHeight.value}px`
     }, 500)
 })
@@ -23,20 +24,22 @@ onMounted(() => {
     <div class="footer" id="footer">
         <div class="footer-content">
             <div class="footer-section">
-                <h3>About Us</h3>
-                <p>Learn more about our mission and values.</p>
+                <h3>Contributing</h3>
+                <p>
+                    <a href="../../../CONTRIBUTING.md" target="_blank" style="text-decoration: underline;">Contributing Guidelines</a>
+                </p>
             </div>
-            <div class="footer-section">
+            <!-- <div class="footer-section">
                 <h3>Product</h3>
                 <ul>
                     <li>Features</li>
                     <li>Pricing</li>
                     <li>FAQs</li>
                 </ul>
-            </div>
+            </div> -->
             <div class="footer-section">
-                <h3>Contact Us</h3>
-                <p>Get in touch with our team.</p>
+                <h3>Contact</h3>
+                <p><a href="https://github.com/sustech-cs304/team-project-24spring-23333/tree/main" target="_blank" style="text-decoration: underline;">GitHub Repository</a></p>
             </div>
         </div>
         <div class="footer-bottom">
@@ -48,6 +51,7 @@ onMounted(() => {
 
 <style scoped>
 .footer {
+    display: none;
     position: absolute;
     top: 0;
     left: 10%;
@@ -83,6 +87,8 @@ onMounted(() => {
 
 .footer-bottom {
     margin-top: 20px;
+    padding: 20px 0;
+    margin-bottom: 20px;
     text-align: center;
 }
 
