@@ -273,4 +273,8 @@ body {
 .inbox:hover {
     color: LightSeaGreen;
 }
+
+::-webkit-scrollbar {
+    display: none;
+}
 </style>
