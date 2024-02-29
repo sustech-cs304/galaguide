@@ -8,8 +8,8 @@ plugins {
     id("io.ktor.plugin") version "2.3.8"
 }
 
-group = "org.example"
-version = "1.0-SNAPSHOT"
+group = "galaGuide"
+version = "0.1.0"
 
 repositories {
     mavenCentral()
@@ -32,6 +32,11 @@ dependencies {
     implementation("io.ktor:ktor-server-status-pages")
     implementation("io.ktor:ktor-server-call-logging")
 
+    //logging
+    val log4jVersion = "2.23.0"
+    implementation("org.apache.logging.log4j:log4j-core:$log4jVersion")
+    implementation("org.apache.logging.log4j:log4j-slf4j-impl:$log4jVersion")
+
     //database
     val exposedVersion = "0.41.1"
     val h2Version = "2.2.224"
@@ -51,7 +56,7 @@ kotlin {
 }
 
 application {
-    mainClass.set("org.example.MainKt")
+    mainClass.set("galaGuide.MainKt")
 }
 
 ktor {

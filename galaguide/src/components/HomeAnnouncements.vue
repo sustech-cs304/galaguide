@@ -1,24 +1,24 @@
 <template>
-    <div class="home-announcements">
+    <div class="home-announcements" id="home-announcements">
         <h1 style="text-align: center; margin-bottom: 20px;">Recent</h1>
-        <Vue3SeamlessScroll :list="announcements" :step="0.2" :hover="true" :wheel="true" class="scroll">
+        <Vue3Marquee :pauseOnHover="true" :vertical="true" :duration="10" class="scroll" style="width: 100%;">
             <div class="announcement" v-for="(announcement, index) in announcements" :key="index">
                 <span class="title">
                     <a :href="announcement.link">{{ announcement.title }}</a>
                 </span>
                 <span class="date">{{ announcement.date }}</span>
             </div>
-        </Vue3SeamlessScroll>
+        </Vue3Marquee>
     </div>
 </template>
     
 <script>
 import axios from 'axios';
 import { ref } from 'vue';
-import { Vue3SeamlessScroll } from 'vue3-seamless-scroll';
+import { Vue3Marquee } from 'vue3-marquee';
 
 export default {
-    components: { Vue3SeamlessScroll },
+    components: { Vue3Marquee,},
     data() {
         return {
             announcements: ref([
@@ -58,11 +58,13 @@ export default {
     height: 270px;
     background-color: white;
     border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     overflow: hidden;
 }
 
 .scroll {
+    position: absolute;
+    width: 100%;
     height: calc(100% - 50px);
     overflow: hidden;
 }
@@ -72,7 +74,7 @@ export default {
     justify-content: space-between;
     padding: 8px;
     background-color: #f9f9f9;
-    width: 90%;
+    width: 80%;
     margin-left: 5%;
     border-radius: 8px;
     margin-bottom: 10px;

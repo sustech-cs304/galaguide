@@ -9,21 +9,21 @@
         </div>
         <div class="bar-options" style="top: 120px;">
             <router-link to="/events" >
-            <img src="../assets/logo.png" alt="events" style="width: 30%; height: auto;" />
+            <img src="../assets/events.png" alt="events" style="width: 30%; height: auto;" />
             <h1>Events</h1>
             </router-link>
         </div>
         
         <div class="bar-options" style="top: 240px;">
-            <img src="../assets/logo.png" alt="reservations.png" style="width: 30%; height: auto;" />
+            <img src="../assets/reservations.png" alt="reservations.png" style="width: 30%; height: auto;" />
             <h1>Reservations</h1>
         </div>
         <div class="bar-options" style="top: 360px;">
-            <img src="../assets/logo.png" alt="forum.png" style="width: 30%; height: auto;" />
+            <img src="../assets/forum.png" alt="forum.png" style="width: 30%; height: auto;" />
             <h1>Forum</h1>
         </div>
         <div class="bar-options" style="top: 480px;">
-            <img src="../assets/logo.png" alt="chat.png" style="width: 30%; height: auto;" />
+            <img src="../assets/chat.png" alt="chat.png" style="width: 30%; height: auto;" />
             <h1>Chat</h1>
         </div>
     </div>
@@ -37,7 +37,7 @@
     width: 10%;
     height: 100%;
     background-color: white;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     overflow: hidden;
 }
 
