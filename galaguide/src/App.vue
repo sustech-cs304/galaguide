@@ -174,6 +174,7 @@ onMounted(() => {
     </div>
 
     <LeftSideBar/>
+
     <GlobeFooter/>
 
 </template>

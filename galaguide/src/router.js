@@ -20,7 +20,12 @@ const routes = [
         path: '/register',
         name: 'UserRegister',
         component: () => import(/* webpackChunkName: "register" */ './components/user/UserRegister.vue')
-    }
+    },
+    {
+        path: '/events',
+        name: 'EventCenter',
+        component: () => import( /* webpackChunkName: "events" */ './components/events/EventCenter.vue')
+    },
 ]
 
 const router = createRouter({

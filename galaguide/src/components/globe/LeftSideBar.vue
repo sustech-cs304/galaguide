@@ -8,8 +8,8 @@
             <h1 style="color: white;">GalaGuide</h1></router-link>
         </div>
         <div class="bar-options" style="top: 120px;">
-            <img src="../../assets/events.png" alt="events.png" style="width: 30%; height: auto;" />
-            <h1>Events</h1>
+            <router-link to="/events"><img src="../../assets/events.png" alt="events.png" style="width: 30%; height: auto;" />
+            <h1>Events</h1></router-link>
         </div>
         <div class="bar-options" style="top: 240px;">
             <img src="../../assets/reservations.png" alt="reservations.png" style="width: 30%; height: auto;" />
