@@ -12,6 +12,9 @@
                         <label>Password: </label>
                         <input type="text" class="form-control" v-model="user.password">
                     </div>
+                    <div class="form-group">
+                        <label id="errors" style="color: red;position: relative;left: 0;"></label>
+                    </div>
                     <button type="submit" class="btn btn-primary" v-on:click="login()">Submit</button>
                 </form>
                 <router-link to="/register" class="btn btn-link">Don't have an account? Register.</router-link>
@@ -33,6 +36,18 @@ const user = ref({
 
 const errors = ref([]);
 
+const encSHA256 = async (str) => {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(str);
+    const hash = await crypto.subtle.digest("SHA-256", data);
+    let result = "";
+    const view = new DataView(hash);
+    for (let i = 0; i < hash.byteLength; i += 4) {
+        result += ("00000000" + view.getUint32(i).toString(16)).slice(-8);
+    }
+    return result;
+};
+
 const check = (e) => {
     e.preventDefault();
     errors.value = [];
@@ -51,11 +66,12 @@ const check = (e) => {
                     break;
                 }
             }
-            if (user.value.password === password) {
-                alert("Login successful");
+            if (encSHA256(user.value.password) === password) {
+                // alert("Login successful");
                 console.log("Login successful");
             } else {
-                alert("Invalid credentials");
+                // alert("Invalid credentials");
+                document.getElementById("errors").textContent = "Invalid credentials";
                 console.log("Invalid credentials");
                 errors.value.push("Invalid credentials");
             }

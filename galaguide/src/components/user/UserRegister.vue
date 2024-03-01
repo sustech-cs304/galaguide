@@ -68,7 +68,6 @@ onMounted(() => {
         for (let i = 0; i < 1; i++) {
             const span = document.createElement("span");
             let tmp = Math.floor(Math.random() * 10);
-            console.log(tmp);
             span.textContent = "🍀 " + sentences[tmp];
             span.style.fontSize = Math.random() * 20 + 10 + "px";
             span.style.color = `hsl(${Math.random() * 360}, 50%, 50%)`;
