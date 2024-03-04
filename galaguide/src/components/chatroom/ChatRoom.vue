@@ -1,17 +1,74 @@
 <script setup>
+import axios from "axios";
 import { ref, onMounted } from "vue";
 
 const inputText = ref("");
+const groups = ref([
+    {
+        name: "Group 1",
+        id: 1,
+        members: ["User 1", "User 2", "User 3"],
+        messages: [
+            { sender: "User 1", content: "Hello" },
+            { sender: "User 2", content: "Hi" },
+            { sender: "User 3", content: "Hey" }
+        ]
+    },
+    {
+        name: "Group 2",
+        id: 2,
+        members: ["User 1", "User 2", "User 3"],
+        messages: [
+            { sender: "User 1", content: "Hello" },
+            { sender: "User 2", content: "Hi" },
+            { sender: "User 3", content: "Hey" }
+        ]
+    }
+]);
 
 onMounted(() => {
     document.querySelector("#footer").style.display = "none";
+
+    axios.get("/api/groups")
+        .then(response => {
+            groups.value = response.data;
+        })
+        .catch(error => {
+            console.error('Error fetching groups:', error);
+        });
 });
+
+const showGroup = (id) => {
+    document.querySelector("#main-chat-room").style.display = "block";
+    axios.get(`/api/groups/${id}`)
+        .then(response => {
+            document.querySelector("#group-details").innerHTML = `
+                <h1>${response.data.name}</h1>
+                <p>Members: ${response.data.members.join(", ")}</p>
+            `;
+            document.querySelector("#chat-box").innerHTML = response.data.messages.map(message => `
+                <div class="message">
+                    <p>${message.sender}</p>
+                    <p>${message.content}</p>
+                </div>
+            `).join("");
+        })
+        .catch(error => {
+            console.error('Error fetching group:', error);
+        });
+};
 </script>
 
 <template>
     <div id="chat-room">
-        <div id="left-chat-room-bar"></div>
-        <div id="main-chat-room">
+        <div id="left-chat-room-bar">
+            <div v-for="group in groups" :key="group.id" class="group">
+                <p class="group-name" @click="showGroup(group.id)">
+                    {{ group.name }}
+                </p>
+            </div>
+        </div>
+        <div id="main-chat-room" style="display: none;">
             <div id="group-details"></div>
             <div id="group-chat">
                 <div id="pinned"></div>
@@ -139,5 +196,36 @@ onMounted(() => {
 
 #send-button:hover {
     background-color: #1f9e64;
+}
+
+.group {
+    padding: 10px;
+    background-color: #f9f9f9;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.group:hover {
+    background-color: #ebebeb;
+}
+
+.group-name {
+    font-size: 0.9em;
+}
+
+.group-name:hover {
+    color: #23b375;
+}
+
+.message {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px;
+    background-color: #f9f9f9;
+    width: 80%;
+    margin-left: 5%;
+    border-radius: 8px;
+    margin-bottom: 10px;
 }
 </style>

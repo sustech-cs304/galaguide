@@ -2,6 +2,7 @@
 import {onMounted, ref, computed} from 'vue'
 import LeftSideBar from './components/globe/LeftSideBar.vue'
 import GlobeFooter from './components/globe/GlobeFooter.vue'
+import AIAssist from './components/ai/AIAssist.vue'
 import { DatePicker } from 'v-calendar';
 import 'v-calendar/style.css';
 // import HomePage from "./components/HomePage.vue";
@@ -88,7 +89,7 @@ function getRoleFromCookie() {
         const roleValue = cookie.split('=')[1]
         role.value = parseInt(roleValue)
     } else {
-        role.value = 0
+        role.value = 1
     }
 }
 
@@ -176,11 +177,19 @@ onMounted(() => {
     <LeftSideBar :role="role"/>
 
     <GlobeFooter/>
-
+    <AIAssist/>
 </template>
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+
+* {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
 
 #app {
     /*font-family: Avenir, Helvetica, Arial, sans-serif;*/

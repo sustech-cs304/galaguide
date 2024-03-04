@@ -2,10 +2,18 @@
 import HomeFunctions from "./home/HomeFunctions.vue";
 import HomeAnnouncements from "./home/HomeAnnouncements.vue";
 import HomeERHolder from "./home/HomeERHolder.vue";
-import { defineProps } from 'vue'
+import { defineProps, onMounted, onUnmounted } from 'vue'
 
 const propss = defineProps({
     role: Number
+})
+
+onMounted(() => {
+    document.querySelector('#ai-assist').style.display = 'block';
+})
+
+onUnmounted(() => {
+    document.querySelector('#ai-assist').style.display = 'none';
 })
 
 </script>
