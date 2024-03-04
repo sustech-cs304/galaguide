@@ -1,0 +1,11 @@
+ktor:
+  deployment:
+    port: 8080
+  application:
+    modules:
+      - galaGuide.MainKt.init
+user-jwt:
+  secret: 1145141919810
+  issuer: localhost
+  audience: localhost/user
+  realm: 'Access to user'
