@@ -49,7 +49,14 @@ export default {
     toggleFavorite(event) {
       event.isFavorite = !event.isFavorite;
     },
+    hideFooter() {
+      const footer = document.querySelector('#footer');
+      footer.style.display = 'none';
+    },
   },
+  mounted() {
+    this.hideFooter()
+  }
 };
 </script>
 <!-- 

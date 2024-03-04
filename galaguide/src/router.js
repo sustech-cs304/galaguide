@@ -26,6 +26,11 @@ const routes = [
         name: 'EventCenter',
         component: () => import( /* webpackChunkName: "events" */ './components/events/EventCenter.vue')
     },
+    {
+        path: '/chatroom',
+        name: 'ChatRoom',
+        component: () => import( /* webpackChunkName: "chatroom" */ './components/chatroom/ChatRoom.vue')
+    }
 ]
 
 const router = createRouter({

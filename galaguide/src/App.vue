@@ -173,7 +173,7 @@ onMounted(() => {
         </div>
     </div>
 
-    <LeftSideBar/>
+    <LeftSideBar :role="role"/>
 
     <GlobeFooter/>
 
