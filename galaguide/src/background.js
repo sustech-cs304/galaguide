@@ -63,7 +63,51 @@ app.on('ready', async () => {
             console.error('Vue Devtools failed to install:', e.toString())
         }
     }
-    createWindow()
+    const loadingWindow = new BrowserWindow({
+        width: 400,
+        height: 300,
+        frame: false, 
+        resizable: false,
+        transparent: true,
+        webPreferences: {
+          nodeIntegration: true
+        }
+      });
+    
+      loadingWindow.loadFile('../public/loading.html');
+      loadingWindow.once('ready-to-show', () => {
+        loadingWindow.show();
+      });
+
+    const win = new BrowserWindow({
+        width: 1500,
+        height: 1000,
+        show: false,
+        webPreferences: {
+
+            // Use pluginOptions.nodeIntegration, leave this alone
+            // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
+            nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
+            contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION
+        }
+    })
+
+    win.once('ready-to-show', () => {
+        setTimeout(() => {
+            loadingWindow.destroy();
+            win.show();
+        }, 1);
+    });
+
+    if (process.env.WEBPACK_DEV_SERVER_URL) {
+        // Load the url of the dev server if in development mode
+        await win.loadURL(process.env.WEBPACK_DEV_SERVER_URL)
+        // if (!process.env.IS_TEST) win.webContents.openDevTools()
+    } else {
+        createProtocol('app')
+        // Load the index.html when not in development
+        win.loadURL('app://./index.html')
+    }
 })
 
 // Exit cleanly on request from parent process in development mode.
