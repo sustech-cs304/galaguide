@@ -10,7 +10,8 @@
                     </div>
                     <div class="form-group">
                         <label>Password: </label>
-                        <input type="text" class="form-control" v-model="user.password">
+                        <input type="password" class="form-control" v-model="user.password" id="ps">
+                        <button type="button" class="btn btn-primary" style="left: 65%;" @click="togglePassword">View</button>
                     </div>
                     <div class="form-group">
                         <label id="errors" style="color: red;position: relative;left: 0;"></label>
@@ -54,6 +55,16 @@ const setCookie = (cname, cvalue, exdays) => {
     d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
     const expires = "expires=" + d.toUTCString();
     document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+};
+
+const togglePassword = () => {
+    const password = document.querySelector("input[type='password']");
+    if (password !== null) {
+        password.type = 'text';
+    } else {
+        document.querySelector("#ps").type = "password";
+    }
+
 };
 
 const check = (e) => {

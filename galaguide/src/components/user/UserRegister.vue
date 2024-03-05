@@ -14,7 +14,8 @@
                     </div>
                     <div class="form-group">
                         <label>Your Password: </label>
-                        <input type="text" class="form-control" v-model="user.password">
+                        <input type="password" class="form-control" v-model="user.password" id="ps">
+                        <button type="button" class="btn btn-primary" style="left: 65%;" @click="togglePassword">View</button>
                     </div>
                     <div class="form-group">
                         <label id="errors" style="color: red;position: relative;left: 0;"></label>
@@ -55,6 +56,16 @@ const user = ref({
     verificationCode: ""
 });
 const errors = ref([]);
+
+const togglePassword = () => {
+    const password = document.querySelector("input[type='password']");
+    if (password !== null) {
+        password.type = 'text';
+    } else {
+        document.querySelector("#ps").type = "password";
+    }
+
+};
 
 const validateAndSubmit = (e) => {
     e.preventDefault()
