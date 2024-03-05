@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <div class="row">
+        <div class="row" id="main-reg">
             <div class="col-md-6">
                 <h1>Register to enroll in campus galas!</h1>
                 <form @submit="validateAndSubmit">
@@ -16,37 +16,96 @@
                         <label>Your Password: </label>
                         <input type="text" class="form-control" v-model="user.password">
                     </div>
+                    <div class="form-group">
+                        <label id="errors" style="color: red;position: relative;left: 0;"></label>
+                    </div>
                     <button type="submit" class="btn btn-primary">Submit</button>
                     <router-link to="/login" class="btn btn-link">Already have an account? Login.</router-link>
                 </form>
             </div>
+        </div>
+        <div id="verify-email" style="display: none;">
+            <h1>Verify your email</h1>
+            <p>Check your email for a 6-digit verification code.</p>
+            <form @submit="verifyEmail">
+                <div class="form-group">
+                    <label>Verification Code: </label>
+                    <input type="text" class="form-control" v-model="user.verificationCode">
+                </div>
+                <div class="form-group">
+                    <label id="errors-email" style="color: red;position: relative;left: 0;"></label>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
         </div>
     </div>
     <div class="words"></div>
 </template>
 
 <script setup>
-import UserService from "../../service/UserService";
+import axios from "axios";
+// import UserService from "../../service/UserService";
 import { ref, onMounted } from "vue";
+import setCookie from "./UserLogin.vue";
 
 const user = ref({
     name: "",
     email: "",
-    password: ""
+    password: "",
+    verificationCode: ""
 });
 const errors = ref([]);
 
 const validateAndSubmit = (e) => {
     e.preventDefault()
     errors.value = [];
-    if (!user.value.name) {
+    if (!user.value.name || !user.value.email || !user.value.password) {
         errors.value.push("Enter valid values");
+    } else if (user.value.password.length < 8) {
+        errors.value.push("Password must be at least 8 characters long");
+    } else {
+        axios.post('/api/user/register', {
+            name: user.value.name,
+            email: user.value.email,
+            password: user.value.password
+        }).then((response) => {
+            if (response.data.success) {
+                // setCookie('userRole', response.data.role, 1)
+                // window.location.href = '/home'
+                document.querySelector('#main-reg').style.display = 'none';
+                document.querySelector('#verify-email').style.display = 'block';
+            } else {
+                errors.value.push(response.data.message)
+            }
+        }).catch((error) => {
+            errors.value.push(error.message)
+        })
     }
-    UserService.findUserByName(user.value.name).then((res) => {
-        if (res.data.name === user.value.name) {
-            errors.value.push("User already exists");
-        }
-    });
+    document.getElementById('errors').innerHTML = errors.value.join('<br>')
+};
+
+const verifyEmail = (e) => {
+    e.preventDefault()
+    errors.value = [];
+    if (!user.value.verificationCode) {
+        errors.value.push("Enter a valid verification code");
+    } else {
+        axios.post('/api/user/verify-email', {
+            email: user.value.email,
+            verificationCode: user.value.verificationCode
+        }).then((response) => {
+            if (response.data.success) {
+                setCookie('userRole', response.data.role, 7)
+                // window.location.href = '/home'
+                this.$router.push("/login")
+            } else {
+                errors.value.push(response.data.message)
+            }
+        }).catch((error) => {
+            errors.value.push(error.message)
+        })
+    }
+    document.getElementById('errors-email').innerHTML = errors.value.join('<br>')
 };
 
 const sentences = [

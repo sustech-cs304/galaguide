@@ -15,7 +15,7 @@
                     <div class="form-group">
                         <label id="errors" style="color: red;position: relative;left: 0;"></label>
                     </div>
-                    <button type="submit" class="btn btn-primary" v-on:click="login()">Submit</button>
+                    <button type="submit" class="btn btn-primary">Submit</button>
                 </form>
                 <router-link to="/register" class="btn btn-link">Don't have an account? Register.</router-link>
             </div>
@@ -25,7 +25,8 @@
 </template>
 
 <script setup>
-import UserService from "../../service/UserService";
+// import UserService from "../../service/UserService";
+import axios from "axios";
 import { ref, onMounted, onUnmounted } from "vue";
 
 const user = ref({
@@ -36,47 +37,51 @@ const user = ref({
 
 const errors = ref([]);
 
-const encSHA256 = async (str) => {
-    const encoder = new TextEncoder();
-    const data = encoder.encode(str);
-    const hash = await crypto.subtle.digest("SHA-256", data);
-    let result = "";
-    const view = new DataView(hash);
-    for (let i = 0; i < hash.byteLength; i += 4) {
-        result += ("00000000" + view.getUint32(i).toString(16)).slice(-8);
-    }
-    return result;
+// const encSHA256 = async (str) => {
+//     const encoder = new TextEncoder();
+//     const data = encoder.encode(str);
+//     const hash = await crypto.subtle.digest("SHA-256", data);
+//     let result = "";
+//     const view = new DataView(hash);
+//     for (let i = 0; i < hash.byteLength; i += 4) {
+//         result += ("00000000" + view.getUint32(i).toString(16)).slice(-8);
+//     }
+//     return result;
+// };
+
+const setCookie = (cname, cvalue, exdays) => {
+    const d = new Date();
+    d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
+    const expires = "expires=" + d.toUTCString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 };
 
 const check = (e) => {
     e.preventDefault();
     errors.value = [];
-
-    UserService.findUserByName(user.value.name).then((res) => {
-        if (res.data.length === 0) {
-            alert("Invalid credentials");
-            console.log("Invalid credentials");
-            errors.value.push("Invalid credentials");
-        } else {
-            let password = "";
-            for (let i = 0; i < res.data.length; i++) {
-                if (user.value.name === res.data[i].name) {
-                    user.value.id = res.data[i].id;
-                    password = res.data[i].password;
-                    break;
-                }
-            }
-            if (encSHA256(user.value.password) === password) {
-                // alert("Login successful");
-                console.log("Login successful");
+    
+    if (!user.value.name || !user.value.password) {
+        errors.value.push("Enter valid values");
+    } else {
+        // use jwt scheme
+        axios.post('/api/user/login', {
+            nameOrEmail: user.value.name,
+            password: user.value.password
+        }).then((res) => {
+            if (res.data.status === 200) {
+                localStorage.setItem("token", res.data.token);
+                localStorage.setItem("user", JSON.stringify(res.data.user));
+                setCookie("token", res.data.token, 1);
+                this.$router.push("/");
             } else {
-                // alert("Invalid credentials");
-                document.getElementById("errors").textContent = "Invalid credentials";
-                console.log("Invalid credentials");
-                errors.value.push("Invalid credentials");
+                errors.value.push(res.data.message);
             }
-        }
-    });
+        }).catch((err) => {
+            console.log(err);
+        });
+    }
+
+    document.querySelector("#errors").textContent = errors.value.join("<br>");
 };
 
 onMounted(() => {
