@@ -6,6 +6,8 @@ import galaGuide.data.failRestResponse
 import galaGuide.table.UserTable
 import io.ktor.resources.*
 import io.ktor.server.application.*
+import io.ktor.server.resources.*
+import io.ktor.server.resources.post
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.jetbrains.exposed.sql.insertAndGetId
@@ -40,6 +42,10 @@ fun Route.routeUser() {
         .withClaim("id", id)
         .withExpiresAt(Instant.now() + 30.days.toJavaDuration())
         .sign(Algorithm.HMAC256(secret))
+
+    get<User> {
+        call.respondRedirect("/user/login")
+    }
 
     post<User.Register> {
         transaction {
