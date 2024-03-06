@@ -69,7 +69,11 @@ const showGroup = (id) => {
             </div>
         </div>
         <div id="main-chat-room" style="display: none;">
-            <div id="group-details"></div>
+            <div id="group-details">
+                <div id="group-avatar"></div>
+                <div id="members-holder"></div>
+                <button id="leave-group">Leave Group</button>
+            </div>
             <div id="group-chat">
                 <div id="pinned"></div>
                 <div id="chat-box"></div>
@@ -227,5 +231,43 @@ const showGroup = (id) => {
     margin-left: 5%;
     border-radius: 8px;
     margin-bottom: 10px;
+}
+
+#group-avatar {
+    position: absolute;
+    top: 0%;
+    left: 50%;
+    width: 100%;
+    height: 20%;
+    background-color: #ccc;
+    transform: translateX(-50%);
+}
+
+#members-holder {
+    position: absolute;
+    top: 60%;
+    left: 50%;
+    width: 50%;
+    height: 30%;
+    transform: translateX(-50%);
+}
+
+#leave-group {
+    position: absolute;
+    bottom: 5%;
+    left: 50%;
+    width: 50%;
+    height: 5%;
+    border-radius: 5px;
+    border: none;
+    background-color: #e74c3c;
+    color: white;
+    cursor: pointer;
+    transform: translateX(-50%);
+    font-family: 'Montserrat', sans-serif;
+}
+
+#leave-group:hover {
+    background-color: #c0392b;
 }
 </style>
