@@ -1,54 +1,127 @@
 <template>
-  <div class="container">
-    <div class="sidebar-space">
-      <h1>This is sidebar!</h1>
-      <!-- sidebar content here -->
+  <div class="event-center">
+    <div class="side-bar">
+      <h2>This is sidebar</h2>
     </div>
-    <div class="middle-container">
-      <EventColumn></EventColumn>
+
+    <div class="main-content">
+      <div class="hot-events">
+        <Eventposter></Eventposter>
+        <h2>This is hot-events</h2>
+      </div>
+
+      <div class="top-by-sections">
+
+        <h2>This is top-by-selections</h2>
+      </div>
+
     </div>
-    <div class="right-container">
-      <!-- Structure similar to 'Upcoming' for these sections -->
-      <!-- Recommend Events Section -->
-      <!-- Search Section -->
-      <!-- Favorite Section -->
+
+    <div class="aid-functions">
+      <div class="search-box">
+        <SearchBox></SearchBox>
+      </div>
+      <div class="recommend-column">
+        <EventRecommend></EventRecommend>
+        <h2>This is recommend-column</h2>
+      </div>
     </div>
+
   </div>
 </template>
 
 <script>
-import EventColumn from './EventColumn.vue'
+import Eventposter from './Eventposter.vue';
+import SearchBox from './SearchBox.vue';
+import EventRecommend from './EventRecommend.vue'
 export default {
-  components: { EventColumn, },
-  
-};
+  name: 'EventCenter',
+  components: {
+    Eventposter,
+    SearchBox,
+    EventRecommend,
+    // SidebarComponent,
+    // HotEventsComponent,
+    // SearchComponent,
+    // RecommendColumnComponent,
+    // TopBySectionsComponent
+  }
+
+}
+
 </script>
 
 <style scoped>
-  .container {
-    display: flex;
-    height: 100%;
-  }
+.event-center {
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  font-family: 'Arial', sans-serif;
+  max-width: 100%;
+  margin: auto;
+}
 
+.sidebar {
+  width: 10%;
+  flex: 1;
+  background-color: #f2f2f2;
+  /* Example color */
+  padding: 20px;
+  box-sizing: border-box;
+}
 
-  
-  .middle-container {
-    width: 50%;
-    display: flex;
-    flex-wrap: wrap; /* Allows items to wrap as needed */
-    justify-content: space-between;
-  }
+.main-content {
+  width: 60%;
+  height: 100%;
+  flex: 4;
+  padding: 20px;
+  box-sizing: border-box;
+}
 
-  .sidebar-space {
-    width: 10%; /* Adjusted to take the full width on its own line if necessary */
-    /* Additional styling as needed */
-  }
+.aid-functions {
+  width: 30%;
+}
 
-  .right-container {
-    width: 20%; /* Adjusted width for the right-side container */
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between; /* Spacing between sections */
-    padding: 10px; /* Padding around the sections */
-  }
+.hot-events {
+  background-color: #e6e6e6;
+  /* Example color */
+  margin-bottom: 20px;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.top-by-sections {
+  background-color: #e6e6e6;
+  /* Example color */
+  margin-bottom: 20px;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.search-box {
+  display: flex;
+  justify-content: space-between;
+  width: 95%;
+  height: 100px;
+  align-items: center;
+  padding: 10px;
+  margin-bottom: 20px;
+  background-color: whitesmoke;
+  background: transparent;
+  /* Example color */
+  box-sizing: border-box;
+}
+
+.recommend-column {
+  flex: 1;
+  background-color: #d9d9d9;
+  /* Example color */
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.top-by-sections {
+  background-color: #d0d0d0;
+  /* Example color */
+}
 </style>

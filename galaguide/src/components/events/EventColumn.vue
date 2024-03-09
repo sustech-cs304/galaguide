@@ -1,5 +1,7 @@
 <template>
     <img src="../../assets/arrow_left.png" class="arrow left-arrow" @click="prevColumn" />
+    
+
     <div class="column" v-if="activeColumn">
         <h2>{{ activeColumn.name }}</h2>
         <Vue3Marquee :pauseOnHover="true" :vertical="true" :duration="10" class="scroll">
@@ -12,7 +14,7 @@
     </div>
     <img src="../../assets/arrow_right.png" class="arrow right-arrow" @click="nextColumn" />
 </template>
-  
+
 <script>
 import { Vue3Marquee } from 'vue3-marquee';
 
@@ -90,7 +92,7 @@ export default {
 
 .column {
     width: 80%;
-    border: 2px solid #000;
+    height: 100%;
     /* Solid border as seen in the image */
     border-radius: 25px;
     /* Rounded corners as per design */
@@ -117,7 +119,7 @@ h2 {
 
 .scroll {
     width: 100%;
-    height: calc(100% -60px);
+    height: 100%;
     overflow: hidden;
     margin-top: 20px;
 }
