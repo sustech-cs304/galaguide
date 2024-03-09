@@ -30,6 +30,11 @@ const routes = [
         path: '/chatroom',
         name: 'ChatRoom',
         component: () => import( /* webpackChunkName: "chatroom" */ './components/chatroom/ChatRoom.vue')
+    },
+    {
+        path: '/inbox',
+        name: 'Inbox',
+        component: () => import( /* webpackChunkName: "inbox" */ './components/user/UserInbox.vue')
     }
 ]
 
