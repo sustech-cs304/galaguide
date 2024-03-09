@@ -2,25 +2,7 @@
 import axios from 'axios';
 import { onMounted, ref } from 'vue'
 
-const msgs = ref([
-    {
-        title: 'Welcome to the new semester!',
-        sender: 'Admin',
-        time: 'Yesterday',
-        content: 'Welcome back to the new semester! We hope you have a great time learning and growing with us!<br>\
-                Btw, the new course schedule is out, don\'t forget to check it out!<br>\
-                Have a great day!'
-    },
-    {
-        title: 'Invitation to the English Corner on Feburary 24th (Saturday)',
-        sender: 'English Club',
-        time: '2024-02-21',
-        content: 'Dear students,<br>\
-                We are glad to invite you to the English Corner on Feburary 24th (Saturday).<br>\
-                The English Corner is a great place to practice your English and meet new friends.<br>\
-                We hope to see you there!'
-    }
-])
+const msgs = ref([])
 
 onMounted(() => {
     axios.get('/api/user/inbox')

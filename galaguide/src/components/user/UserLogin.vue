@@ -46,6 +46,8 @@
 // import UserService from "../../service/UserService";
 import axios from "axios";
 import { ref, onMounted, onUnmounted } from "vue";
+import { useRouter } from "vue-router";
+const router = useRouter();
 
 const user = ref({
   name: "",
@@ -98,12 +100,14 @@ const check = (e) => {
       })
       .then((res) => {
         if (res.data.status === 200) {
+          console.log("success")
           localStorage.setItem("token", res.data.token);
           localStorage.setItem("user", JSON.stringify(res.data.user));
           setCookie("token", res.data.token, 1);
           setCookie("userRole", res.data.user_role, 1);
-          this.$router.push("/");
+          router.push("/");
         } else {
+          console.log("fail")
           errors.value.push(res.data.message);
         }
       })

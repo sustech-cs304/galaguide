@@ -21,15 +21,7 @@ export default {
     components: { Vue3Marquee,},
     data() {
         return {
-            announcements: ref([
-                { title: 'Invitation to the English Corner on Feburary 24th (Saturday)', date: '2024-02-21', link: '#' },
-                { title: 'GRE General Test - Please tell us about your experience', date: '2024-01-01', link: '#' },
-                { title: 'Algorithm Design and Analysis SE2 Spring 2024: CS208 Course Info', date: '2024-01-02', link: '#' },
-                { title: '[Info Session] HEC Paris will give an info session on Thursday, Feb. 22, 2024', date: '2024-02-03', link: '#' },
-                { title: 'Upper Elementary French Spring 2024: What is the class like and what should I do?', date: '2024-01-04', link: '#' },
-                { title: 'Reminder for the Start of Classes in Spring 2024', date: '2024-01-05', link: '#' },
-                { title: 'Notice on Issuing and Implementing the Management of Study Abroad Scholarships for Undergraduates of SUSTech', date: '2024-01-06', link: '#' }
-            ])
+            announcements: ref([])
         };
     },
     mounted() {
@@ -39,6 +31,7 @@ export default {
         fetchAnnouncements() {
             axios.get('/api/showcase')
                 .then(response => {
+                    console.log(response.data)
                     this.announcements = response.data;
                 })
                 .catch(error => {

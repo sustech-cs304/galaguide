@@ -42,6 +42,7 @@ const showGroup = (id) => {
     document.querySelector("#main-chat-room").style.display = "block";
     axios.get(`/api/groups/${id}`)
         .then(response => {
+            console.log(response.data);
             document.querySelector("#group-details").innerHTML = `
                 <h1>${response.data.name}</h1>
                 <p>Members: ${response.data.members.join(", ")}</p>
