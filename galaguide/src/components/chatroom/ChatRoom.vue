@@ -44,12 +44,17 @@ const showGroup = (id) => {
         .then(response => {
             console.log(response.data);
             document.querySelector("#group-details").innerHTML = `
-                <h1>${response.data.name}</h1>
-                <p>Members: ${response.data.members.join(", ")}</p>
+                <div id="group-avatar">
+                <h1>${response.data.name}</h1></div>
+                <div class="group-members">
+                    <h3>Members</h3>
+                        ${response.data.members.map(member => `<p class="one-group-member">${member}</p>`).join("")}
+                </div>
+                <button id="leave-group">Leave Group</button>
             `;
             document.querySelector("#chat-box").innerHTML = response.data.messages.map(message => `
+                <div class="msg-username">${message.sender} : <span style="color: grey;">${message.time}</span></div>
                 <div class="message">
-                    <p>${message.sender}</p>
                     <p>${message.content}</p>
                 </div>
             `).join("");
@@ -87,7 +92,7 @@ const showGroup = (id) => {
     </div>
 </template>
 
-<style scoped>
+<style>
 #chat-room {
     display: flex;
     justify-content: space-between;
@@ -158,7 +163,7 @@ const showGroup = (id) => {
     height: 70%;
     background-color: white;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
+    overflow: auto;
 }
 
 #bottom-input {
@@ -271,4 +276,79 @@ const showGroup = (id) => {
 #leave-group:hover {
     background-color: #c0392b;
 }
+
+.message {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    max-width: 70%;
+    margin: 10px;
+    padding: 12px;
+    border-radius: 12px;
+    background-color: #DCF8C6; 
+    position: relative;
+}
+
+.message p {
+    margin: 4px 0;
+    font-size: 0.9em;
+    line-height: 1.4;
+    color: #333;
+}
+
+.message p.sender {
+    font-weight: bold; 
+}
+
+.message p.content {
+    margin-left: 0; 
+}
+
+.message::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 100%;
+    margin-top: -10px;
+    border-width: 10px;
+    border-style: solid;
+    border-color: transparent #DCF8C6 transparent transparent;
+}
+
+.msg-username {
+    position: relative;
+    display: flex;
+    left: 10px;
+    font-weight: bold;
+    color: #555; 
+    margin-bottom: 4px; 
+    align-self: flex-start; 
+}
+
+.group-members {
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    height: 60%;
+    background-color: #f9f9f9;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    overflow: auto;
+}
+
+.one-group-member {
+    font-size: 0.9em;
+    padding: 8px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s; 
+}
+
+.one-group-member:hover {
+    background-color: #ebebeb;
+}
+
 </style>

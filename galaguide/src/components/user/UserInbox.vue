@@ -20,7 +20,7 @@ onMounted(() => {
     <div id="user-inbox">
         <h1>Inbox</h1>
         <div class="inbox">
-            <div class="message" v-for="msg in msgs" :key="msg.title">
+            <div class="inbox-message" v-for="msg in msgs" :key="msg.title">
                 <h2 class="msg-title">{{ msg.title }}</h2>
                 <p class="msg-sender">{{ msg.sender }}</p>
                 <p class="msg-time">{{ msg.time }}</p>
@@ -53,7 +53,7 @@ onMounted(() => {
         margin-bottom: 50px;
     }
 
-    .message {
+    .inbox-message {
         padding: 20px;
         border: 1px solid #ddd;
         border-radius: 5px;
@@ -62,7 +62,7 @@ onMounted(() => {
         width: 70%;
     }
 
-    .message:hover {
+    .inbox-message:hover {
         background-color: #f5f5f5;
     }
 
