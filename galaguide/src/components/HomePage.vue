@@ -14,6 +14,7 @@ onMounted(() => {
 
 onUnmounted(() => {
     document.querySelector('#ai-assist').style.display = 'none';
+    document.querySelector('#footer').style.display = 'none';
 })
 
 </script>

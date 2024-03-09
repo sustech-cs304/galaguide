@@ -83,6 +83,7 @@ app.on('ready', async () => {
         width: 1500,
         height: 1000,
         show: false,
+        icon: 'src/assets/logo.png',
         webPreferences: {
 
             // Use pluginOptions.nodeIntegration, leave this alone
