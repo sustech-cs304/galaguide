@@ -1,130 +1,127 @@
 <template>
-    <div class="container">
-      <div class="event-center">
-      <div class="column" v-for="status in eventStatuses" :key="status.name">
-        <h2>{{ status.name }}</h2>
-        <Vue3Marquee :pauseOnHover="true" :vertical="true" :duration="10" class="scroll" style="width: 100%;">
-          <div class="card" v-for="event in status.events" :key="event.id">
-            <h3>{{ event.title }}</h3>
-            <p>{{ event.date }}</p>
-            <button @click="toggleFavorite(event)">♥</button>
-          </div>
-        </Vue3Marquee>
+  <div class="event-center">
+    <div class="side-bar">
+      <h2>This is sidebar</h2>
+    </div>
+
+    <div class="main-content">
+      <div class="hot-events">
+        <Eventposter></Eventposter>
+        <h2>This is hot-events</h2>
+      </div>
+
+      <div class="top-by-sections">
+
+        <h2>This is top-by-selections</h2>
+      </div>
+
+    </div>
+
+    <div class="aid-functions">
+      <div class="search-box">
+        <SearchBox></SearchBox>
+      </div>
+      <div class="recommend-column">
+        <EventRecommend></EventRecommend>
+        <h2>This is recommend-column</h2>
       </div>
     </div>
-    <div class="sidebar-space">
-      <h1>This is sidebar!</h1>
-    </div>
+
   </div>
-  
 </template>
 
 <script>
-import { Vue3Marquee } from 'vue3-marquee';
+import Eventposter from './Eventposter.vue';
+import SearchBox from './SearchBox.vue';
+import EventRecommend from './EventRecommend.vue'
 export default {
-  components: { Vue3Marquee },
-  data() {
-    return {
-      eventStatuses: [
-        {
-          name: 'Upcoming',
-          events: [{ id: 1, title: 'Event 1', date: '2024-01-01', isFavorite: false }],
-        },
-        {
-          name: 'Registration Open',
-          events: [{ id: 2, title: 'Event 2', date: '2024-02-01', isFavorite: false }],
-        },
-        {
-          name: 'Happening Now',
-          events: [{ id: 3, title: 'Event 3', date: '2024-03-01', isFavorite: false }],
-        },
-        {
-          name: 'Recommendation',
-          events: [{ id: 3, title: 'Event 4', date: '2024-04-01', isFavorite: false }],
-        },
-      ],
-    };
-  },
-  methods: {
-    toggleFavorite(event) {
-      event.isFavorite = !event.isFavorite;
-    },
-    hideFooter() {
-      const footer = document.querySelector('#footer');
-      footer.style.display = 'none';
-    },
-  },
-  mounted() {
-    this.hideFooter()
+  name: 'EventCenter',
+  components: {
+    Eventposter,
+    SearchBox,
+    EventRecommend,
+    // SidebarComponent,
+    // HotEventsComponent,
+    // SearchComponent,
+    // RecommendColumnComponent,
+    // TopBySectionsComponent
   }
-};
+
+}
+
 </script>
-<!-- 
+
 <style scoped>
 .event-center {
+  height: 100%;
   display: flex;
-  justify-content: space-between;
+  flex-direction: row;
+  font-family: 'Arial', sans-serif;
+  max-width: 100%;
+  margin: auto;
 }
 
-.sidebar-space {
+.sidebar {
   width: 10%;
-  /* Style as needed for sidebar or other content */
-}
-.column {
-  width: 20%;
-  padding: 10px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-.card {
-  width: 100%;
-  background-color: #f9f9f9;
-  margin-bottom: 10px;
-  padding: 10px;
-  border-radius: 5px;
-}
-.scroll {
-    position: relative;
-    width: 20%;
-    height: calc(100% - 50px);
-    overflow: hidden;
-}
-</style> -->
-<style scoped>
-.container {
-  display: flex;
-  flex-direction: row-reverse; /* Reverses the order of flex items */
+  flex: 1;
+  background-color: #f2f2f2;
+  /* Example color */
+  padding: 20px;
+  box-sizing: border-box;
 }
 
-.event-center {
-  width: 80%;
+.main-content {
+  width: 60%;
+  height: 100%;
+  flex: 4;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.aid-functions {
+  width: 30%;
+}
+
+.hot-events {
+  background-color: #e6e6e6;
+  /* Example color */
+  margin-bottom: 20px;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.top-by-sections {
+  background-color: #e6e6e6;
+  /* Example color */
+  margin-bottom: 20px;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.search-box {
   display: flex;
-  flex-wrap: wrap; /* Allows items to wrap as needed */
   justify-content: space-between;
-}
-
-.sidebar-space {
-  width: 10%; /* Adjusted to take the full width on its own line if necessary */
-  /* Additional styling as needed */
-}
-
-.column {
-  width: calc(50% - 20px); /* Adjust width to allow two columns per row */
-  margin-bottom: 20px; /* Add some space between rows */
+  width: 95%;
+  height: 100px;
+  align-items: center;
   padding: 10px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+  background-color: whitesmoke;
+  background: transparent;
+  /* Example color */
+  box-sizing: border-box;
 }
 
-.card {
-  width: 100%;
-  background-color: #f9f9f9;
-  margin-bottom: 10px;
-  padding: 10px;
-  border-radius: 5px;
+.recommend-column {
+  flex: 1;
+  background-color: #d9d9d9;
+  /* Example color */
+  padding: 20px;
+  box-sizing: border-box;
 }
 
-.scroll {
-  position: relative;
-  height: calc(100% - 50px); /* Adjust height as necessary */
-  overflow: hidden;
+.top-by-sections {
+  background-color: #d0d0d0;
+  /* Example color */
 }
 </style>
