@@ -101,6 +101,7 @@ const check = (e) => {
           localStorage.setItem("token", res.data.token);
           localStorage.setItem("user", JSON.stringify(res.data.user));
           setCookie("token", res.data.token, 1);
+          setCookie("userRole", res.data.user_role, 1);
           this.$router.push("/");
         } else {
           errors.value.push(res.data.message);
