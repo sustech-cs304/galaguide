@@ -1,5 +1,7 @@
 # GalaGuide
 
+![logo](./galaguide/src/assets/logo.png)
+
 *GalaGuide* is an MIT-licensed open-source cross-platform software application as your personal manager for campus events & reservations based on Electron, Vue, and Ktor.
 
 GitHub: [![GitHub](https://img.shields.io/badge/GitHub-GalaGuide-blue?logo=github)](https://github.com/sustech-cs304/team-project-24spring-23333)
@@ -22,10 +24,9 @@ TODO: Add more prerequisites
 git clone https://github.com/sustech-cs304/team-project-24spring-23333.git
 ```
 
-2. Install the dependencies for the frontend
+2. Enter the directory `galaguide/` and install the dependencies for the frontend
 
 ```bash
-cd team-project-24spring-23333/galaguide
 npm install
 ```
 
@@ -41,10 +42,9 @@ TODO
 TODO
 ```
 
-2. Run the frontend
+2. Enter the directory `galaguide/` and run the frontend
 
 ```bash
-cd team-project-24spring-23333/galaguide
 npm run electron:serve
 ```
 
@@ -58,10 +58,10 @@ Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduc
 
 GalaGuide is a team project for the course CS304 Software Engineering at Southern University of Science and Technology. The team members are (in ascending order of Pinyin):
 
-- [Hanran Zhou](#)
+- [Hanran Zhou](https://github.com/NoMathExpectation)
 - [Haodong He](https://github.com/qwurd231)
-- [Jianzheng Huang](#)
-- [Lianji Bai](#)
+- [Jianzheng Huang](https://github.com/Cara-Zinc)
+- [Lianji Bai](https://github.com/WinwayCome)
 - [Qiwen Xiao](https://github.com/Charley-xiao)
 
 ## License

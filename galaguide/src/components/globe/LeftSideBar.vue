@@ -1,4 +1,9 @@
 <script setup>
+import { defineProps } from 'vue'
+
+defineProps({
+    role: Number
+})
 </script>
 
 <template>
@@ -8,7 +13,9 @@
             <h1 style="color: white;">GalaGuide</h1></router-link>
         </div>
         <div class="bar-options" style="top: 120px;">
-            <router-link to="/events"><img src="../../assets/events.png" alt="events.png" style="width: 30%; height: auto;" />
+            <router-link to="/events" v-if="role > 0"><img src="../../assets/events.png" alt="events.png" style="width: 30%; height: auto;" />
+            <h1>Events</h1></router-link>
+            <router-link to="/login" v-else><img src="../../assets/events.png" alt="events.png" style="width: 30%; height: auto;" />
             <h1>Events</h1></router-link>
         </div>
         <div class="bar-options" style="top: 240px;">
@@ -20,8 +27,10 @@
             <h1>Forum</h1>
         </div>
         <div class="bar-options" style="top: 480px;">
-            <img src="../../assets/chat.png" alt="chat.png" style="width: 30%; height: auto;" />
-            <h1>Chat</h1>
+            <router-link to="/chatroom" v-if="role > 0"><img src="../../assets/chat.png" alt="chat.png" style="width: 30%; height: auto;" />
+            <h1>Chat Room</h1></router-link>
+            <router-link to="/login" v-else><img src="../../assets/chat.png" alt="chat.png" style="width: 30%; height: auto;" />
+            <h1>Chat Room</h1></router-link>
         </div>
     </div>
 </template>
