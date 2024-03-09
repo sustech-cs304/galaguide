@@ -9,24 +9,24 @@ defineProps({
 <template>
     <div class="left-side-bar">
         <div class="bar-logo">
-            <router-link to="/"><img src="../../assets/logo.png" alt="logo.png" style="width: 30%; height: auto;" />
+            <router-link to="/"><img src="../../assets/logo.png" alt="logo.png" style="width: 50%; height: auto;" />
             <h1 style="color: white;">GalaGuide</h1></router-link>
         </div>
-        <div class="bar-options" style="top: 120px;">
+        <div class="bar-options" style="top: 160px;">
             <router-link to="/events" v-if="role > 0"><img src="../../assets/events.png" alt="events.png" style="width: 30%; height: auto;" />
             <h1>Events</h1></router-link>
             <router-link to="/login" v-else><img src="../../assets/events.png" alt="events.png" style="width: 30%; height: auto;" />
             <h1>Events</h1></router-link>
         </div>
-        <div class="bar-options" style="top: 240px;">
+        <div class="bar-options" style="top: 280px;">
             <img src="../../assets/reservations.png" alt="reservations.png" style="width: 30%; height: auto;" />
             <h1>Reservations</h1>
         </div>
-        <div class="bar-options" style="top: 360px;">
+        <div class="bar-options" style="top: 400px;">
             <img src="../../assets/forum.png" alt="forum.png" style="width: 30%; height: auto;" />
             <h1>Forum</h1>
         </div>
-        <div class="bar-options" style="top: 480px;">
+        <div class="bar-options" style="top: 520px;">
             <router-link to="/chatroom" v-if="role > 0"><img src="../../assets/chat.png" alt="chat.png" style="width: 30%; height: auto;" />
             <h1>Chat Room</h1></router-link>
             <router-link to="/login" v-else><img src="../../assets/chat.png" alt="chat.png" style="width: 30%; height: auto;" />
@@ -50,12 +50,12 @@ defineProps({
 .bar-logo {
     position: absolute;
     width: 100%;
-    height: 100px;
+    height: 150px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: #2c3e50;
+    background-color: #afc5db;
     color: white;
     font-size: 50%;
     font-weight: bold;
