@@ -47,7 +47,15 @@
 import axios from "axios";
 // import UserService from "../../service/UserService";
 import { ref, onMounted } from "vue";
-import setCookie from "./UserLogin.vue";
+import { useRouter } from "vue-router";
+const router = useRouter();
+
+const setCookie = (cname, cvalue, exdays) => {
+  const d = new Date();
+  d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
+  const expires = "expires=" + d.toUTCString();
+  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+};
 
 const user = ref({
     name: "",
@@ -87,9 +95,11 @@ const validateAndSubmit = (e) => {
                 document.querySelector('#verify-email').style.display = 'block';
             } else {
                 errors.value.push(response.data.message)
+                document.getElementById('errors').innerHTML = errors.value.join('<br>')
             }
         }).catch((error) => {
             errors.value.push(error.message)
+            document.getElementById('errors').innerHTML = errors.value.join('<br>')
         })
     }
     document.getElementById('errors').innerHTML = errors.value.join('<br>')
@@ -108,12 +118,14 @@ const verifyEmail = (e) => {
             if (response.data.success) {
                 setCookie('userRole', response.data.role, 7)
                 // window.location.href = '/home'
-                this.$router.push("/login")
+                router.push("/login")
             } else {
                 errors.value.push(response.data.message)
+                document.getElementById('errors-email').innerHTML = errors.value.join('<br>')
             }
         }).catch((error) => {
             errors.value.push(error.message)
+            document.getElementById('errors-email').innerHTML = errors.value.join('<br>')
         })
     }
     document.getElementById('errors-email').innerHTML = errors.value.join('<br>')

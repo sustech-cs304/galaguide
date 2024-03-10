@@ -17,7 +17,7 @@
             <h1>Chat</h1>
             <p>Hello! I'm <strong>Gal</strong>, your personal AI assistant. What can I help you with today?</p>
             <input type="text" placeholder="Type your message here" id="help-holder"/>
-            <button type="submit" class="btn btn-primary" id="send-button">
+            <button type="submit" id="ai-send-button">
                 Send
             </button>
         </div>
@@ -198,8 +198,9 @@ export default {
     margin-bottom: 20px;
 }
 
-.btn-primary {
-    width: 20%;
+
+#ai-send-button {
+    width: 80%;
     height: 30px;
     border-radius: 5px;
     border: none;
@@ -209,7 +210,7 @@ export default {
     font-family: 'Montserrat', sans-serif;
 }
 
-.btn-primary:hover {
+#ai-send-button:hover {
     background-color: #1f9e64;
 }
 </style>

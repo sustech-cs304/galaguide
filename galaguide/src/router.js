@@ -35,6 +35,11 @@ const routes = [
         path: '/inbox',
         name: 'Inbox',
         component: () => import( /* webpackChunkName: "inbox" */ './components/user/UserInbox.vue')
+    },
+    {
+        path: '/logout',
+        name: 'UserLogout',
+        component: () => import( /* webpackChunkName: "logout" */ './components/user/UserLogout.vue')
     }
 ]
 

@@ -106,9 +106,13 @@ const check = (e) => {
           setCookie("token", res.data.token, 1);
           setCookie("userRole", res.data.user_role, 1);
           router.push("/");
+          location.replace("/");
+          location.reload();
+          location.replace("/");
         } else {
-          console.log("fail")
+          console.log(res.data.message)
           errors.value.push(res.data.message);
+          document.querySelector("#errors").textContent = errors.value.join("<br>");
         }
       })
       .catch((err) => {

@@ -69,6 +69,7 @@ app.on('ready', async () => {
         frame: false, 
         resizable: false,
         transparent: true,
+        icon: 'src/assets/logo.png',
         webPreferences: {
           nodeIntegration: true
         }
@@ -82,6 +83,8 @@ app.on('ready', async () => {
     const win = new BrowserWindow({
         width: 1500,
         height: 1000,
+        // fullscreenable: true,
+        // fullscreen: true,
         show: false,
         icon: 'src/assets/logo.png',
         webPreferences: {

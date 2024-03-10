@@ -1,5 +1,11 @@
 <script setup>
 
+import { defineProps } from 'vue'
+
+const props = defineProps({
+    role: Number
+})
+
 const createEvent = () => {
     console.log('Create an event');
 };
@@ -10,7 +16,7 @@ const makeReservation = () => {
 </script>
 
 <template>
-    <div class="home-functions">
+    <div class="home-functions" v-if="props.role > 0">
         <h1 style="text-align: center; margin-bottom: 20px;">Quick Functions</h1>
         <input class="search" type="text" placeholder="Search in GalaGuide..." />
         <button class="create-event" @click="createEvent">
@@ -19,6 +25,9 @@ const makeReservation = () => {
         <button class="make-res" @click="makeReservation">
             <a href="/make-res" style="color: aliceblue;">Make a reservation</a>
         </button>
+    </div>
+    <div class="home-functions" v-if="props.role === 0">
+        <p style="text-align: center; margin-top: 20px;position: absolute;top:50%;">Please log in to use quick functions</p>
     </div>
 </template>
 

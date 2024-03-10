@@ -130,12 +130,28 @@ class GroupsHandler(tornado.web.RequestHandler):
             self.set_header("Content-Type", "application/json")
             self.write(json.dumps(response))
 
+class RegisterHandler(tornado.web.RequestHandler):
+    def post(self):
+        data = json.loads(self.request.body)
+        
+        response = {"success": True, "message": "Registration successful"}
+        self.set_header("Content-Type", "application/json")
+        self.write(json.dumps(response))
+
+class VerifyEmailHandler(tornado.web.RequestHandler):
+    def post(self):
+        response = {"success": True, "message": "Email verified", "role": 1}
+        self.set_header("Content-Type", "application/json")
+        self.write(json.dumps(response))
+
 def make_app():
     return tornado.web.Application([
         (r"/user/login", LoginHandler),
         (r"/showcase", ShowcaseHandler),
         (r"/user/inbox", InboxHandler),
-        (r"/groups(?:\/\d+)?$", GroupsHandler)
+        (r"/groups(?:\/\d+)?$", GroupsHandler),
+        (r"/user/register", RegisterHandler),
+        (r"/user/verify-email", VerifyEmailHandler)
     ])
 
 if __name__ == "__main__":

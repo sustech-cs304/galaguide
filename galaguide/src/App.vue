@@ -97,10 +97,10 @@ onMounted(() => {
   getRoleFromCookie();
 });
 
-/*function logout() {
+function logout() {
     document.cookie = "userRole=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"
     role.value = 0
-}*/
+}
 </script>
 
 <template>
@@ -360,6 +360,7 @@ onMounted(() => {
               background-color: #e74c3c;
               border-radius: 5px;
             "
+            @click="logout"
             >Logout</router-link
           >
         </div>
@@ -420,7 +421,7 @@ onMounted(() => {
   <LeftSideBar :role="role" />
 
   <GlobeFooter />
-  <AIAssist />
+  <AIAssist :role="role"/>
 </template>
 
 <style>
