@@ -9,7 +9,7 @@ data class RestResponse<out T>(val code: Int, val message: String, val data: T? 
             return RestResponse(0, "success", data)
         }
 
-        fun <T> error(code: Int, message: String): RestResponse<T> {
+        fun <T> error(code: Int, message: String): RestResponse<T?> {
             return RestResponse(code, message)
         }
     }
@@ -19,6 +19,10 @@ fun <T> T.asRestResponse(): RestResponse<T> {
     return RestResponse.success(this)
 }
 
-fun <T> failRestResponse(code: Int, message: String): RestResponse<T> {
+fun <T> failRestResponse(code: Int, message: String): RestResponse<T?> {
+    return RestResponse.error(code, message)
+}
+
+fun failRestResponseDefault(code: Int, message: String): RestResponse<String?> {
     return RestResponse.error(code, message)
 }

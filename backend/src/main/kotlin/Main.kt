@@ -23,6 +23,7 @@ fun Application.init() {
     install(ContentNegotiation) {
         @OptIn(ExperimentalSerializationApi::class)
         json(Json {
+            ignoreUnknownKeys = true
             prettyPrint = true
             isLenient = true
             allowStructuredMapKeys = true
