@@ -1,5 +1,6 @@
 import tornado.ioloop
 import tornado.web
+import tornado.websocket
 import json
 
 class LoginHandler(tornado.web.RequestHandler):
@@ -144,6 +145,17 @@ class VerifyEmailHandler(tornado.web.RequestHandler):
         self.set_header("Content-Type", "application/json")
         self.write(json.dumps(response))
 
+class WebSocketHandler(tornado.websocket.WebSocketHandler):
+    def connect(self):
+        print("WebSocket opened")
+
+    def on_message(self, message):
+        self.write_message(u"You said: " + message)
+        print("Received message: " + message)
+
+    def on_close(self):
+        print("WebSocket closed")
+
 def make_app():
     return tornado.web.Application([
         (r"/user/login", LoginHandler),
@@ -151,7 +163,8 @@ def make_app():
         (r"/user/inbox", InboxHandler),
         (r"/groups(?:\/\d+)?$", GroupsHandler),
         (r"/user/register", RegisterHandler),
-        (r"/user/verify-email", VerifyEmailHandler)
+        (r"/user/verify-email", VerifyEmailHandler),
+        (r"/socket.*", WebSocketHandler)
     ])
 
 if __name__ == "__main__":

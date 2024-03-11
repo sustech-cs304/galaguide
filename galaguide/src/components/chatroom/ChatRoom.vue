@@ -3,28 +3,7 @@ import axios from "axios";
 import { ref, onMounted } from "vue";
 
 const inputText = ref("");
-const groups = ref([
-    {
-        name: "Group 1",
-        id: 1,
-        members: ["User 1", "User 2", "User 3"],
-        messages: [
-            { sender: "User 1", content: "Hello" },
-            { sender: "User 2", content: "Hi" },
-            { sender: "User 3", content: "Hey" }
-        ]
-    },
-    {
-        name: "Group 2",
-        id: 2,
-        members: ["User 1", "User 2", "User 3"],
-        messages: [
-            { sender: "User 1", content: "Hello" },
-            { sender: "User 2", content: "Hi" },
-            { sender: "User 3", content: "Hey" }
-        ]
-    }
-]);
+const groups = ref([]);
 
 onMounted(() => {
     document.querySelector("#footer").style.display = "none";
@@ -48,7 +27,7 @@ const showGroup = (id) => {
                 <h1>${response.data.name}</h1></div>
                 <div class="group-members">
                     <h3>Members</h3>
-                        ${response.data.members.map(member => `<p class="one-group-member">${member}</p>`).join("")}
+                       ${response.data.members.map(member => `<p class="one-group-member">${member}</p>`).join("")}
                 </div>
                 <button id="leave-group">Leave Group</button>
             `;
@@ -58,6 +37,7 @@ const showGroup = (id) => {
                     <p>${message.content}</p>
                 </div>
             `).join("");
+            document.querySelector("#chat-box").scrollTop = document.querySelector("#chat-box").scrollHeight;
         })
         .catch(error => {
             console.error('Error fetching group:', error);
@@ -233,8 +213,9 @@ const showGroup = (id) => {
     justify-content: space-between;
     padding: 8px;
     background-color: #f9f9f9;
-    width: 80%;
+    width: max-content;
     margin-left: 5%;
+    margin-right: 5%;
     border-radius: 8px;
     margin-bottom: 10px;
 }
