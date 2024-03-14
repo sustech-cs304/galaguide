@@ -20,6 +20,9 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("io.ktor:ktor-server-test-host")
 
+    //time
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0-RC.2")
+
     //json serialization
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 
@@ -28,6 +31,7 @@ dependencies {
     implementation("io.ktor:ktor-server-netty")
     implementation("io.ktor:ktor-server-config-yaml")
     implementation("io.ktor:ktor-server-resources")
+    implementation("io.ktor:ktor-server-websockets")
     implementation("io.ktor:ktor-server-content-negotiation")
     implementation("io.ktor:ktor-serialization-kotlinx-json")
     implementation("io.ktor:ktor-server-status-pages")
@@ -47,6 +51,7 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-java-time:$exposedVersion")
     implementation("com.h2database:h2:$h2Version")
     implementation("com.zaxxer:HikariCP:$hikaricpVersion")
 }

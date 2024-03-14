@@ -4,9 +4,12 @@ import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import galaGuide.data.asRestResponse
 import galaGuide.data.failRestResponseDefault
+import galaGuide.table.User
 import galaGuide.table.UserTable
 import io.ktor.resources.*
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
+import io.ktor.server.auth.jwt.*
 import io.ktor.server.request.*
 import io.ktor.server.resources.*
 import io.ktor.server.resources.post
@@ -14,9 +17,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.SchemaUtils
-import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.or
-import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.security.MessageDigest
 import java.time.Instant
@@ -24,15 +25,15 @@ import kotlin.time.Duration.Companion.days
 import kotlin.time.toJavaDuration
 
 @Resource("/user")
-class User {
+class UserRoute {
     @Resource("register")
-    class Register(val parent: User = User()) {
+    class Register(val parent: UserRoute = UserRoute()) {
         @Serializable
         data class Object(val name: String = "", val password: String = "", val email: String = "")
     }
 
     @Resource("login")
-    class Login(val parent: User = User()) {
+    class Login(val parent: UserRoute = UserRoute()) {
         @Serializable
         data class Object(val nameOrEmail: String = "", val password: String = "")
     }
@@ -57,14 +58,14 @@ fun Route.routeUser() {
         SchemaUtils.createMissingTablesAndColumns(UserTable)
     }
 
-    get<User> {
+    get<UserRoute> {
         call.respondRedirect("/user/login")
     }
 
-    post<User.Register> {
-        val obj = call.receive<User.Register.Object>()
+    post<UserRoute.Register> {
+        val obj = call.receive<UserRoute.Register.Object>()
         transaction {
-            UserTable.select {
+            User.find {
                 UserTable.name eq obj.name
             }.firstOrNull()
         }?.let {
@@ -99,18 +100,18 @@ fun Route.routeUser() {
             }
 
         val id = transaction {
-            UserTable.insertAndGetId { statement ->
-                statement[name] = obj.name
-                statement[password] = passwordEncrypted
-                statement[email] = obj.email
+            User.new {
+                name = obj.name
+                password = passwordEncrypted
+                email = obj.email
             }
-        }.value
+        }.id.value
 
         call.respond(mapOf("token" to generateToken(id)).asRestResponse())
     }
 
-    post<User.Login> {
-        val obj = call.receive<User.Login.Object>()
+    post<UserRoute.Login> {
+        val obj = call.receive<UserRoute.Login.Object>()
         val passwordEncrypted = MessageDigest.getInstance("SHA-256")
             .digest(obj.password.toByteArray())
             .joinToString("") { byte ->
@@ -118,7 +119,7 @@ fun Route.routeUser() {
             }
 
         val user = transaction {
-            UserTable.select {
+            User.find {
                 (UserTable.name eq obj.nameOrEmail) or (UserTable.email eq obj.nameOrEmail)
             }.firstOrNull()
         } ?: run {
@@ -126,11 +127,13 @@ fun Route.routeUser() {
             return@post
         }
 
-        if (user[UserTable.password] != passwordEncrypted) {
+        if (user.password != passwordEncrypted) {
             call.respond(failRestResponseDefault(-1, "password incorrect"))
             return@post
         }
 
-        call.respond(mapOf("token" to generateToken(user[UserTable.id].value)).asRestResponse())
+        call.respond(mapOf("token" to generateToken(user.id.value)).asRestResponse())
     }
 }
+
+val ApplicationCall.userId get() = principal<JWTPrincipal>()?.payload?.getClaim("id")?.asLong()
