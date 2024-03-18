@@ -182,7 +182,6 @@ We will obtaining user consent before collecting and using data, and clarifying 
 
 ### Technical requirements
 
-> Warning: Need to checkout.
 
 ---
 #### Vue
