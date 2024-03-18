@@ -58,23 +58,29 @@ Participants highlight the need for a simple and rapid way to contact event orga
 
 Organizers emphasize the importance of quickly disseminating event updates and efficiently responding to participant queries. To accommodate this need, the system is designed to include features for batch notification sending, private and group chats for fielding queries, and the setup of quick replies.
 
+#### Forum System
+
+Both participants and organizers recognize the value of a platform that facilitates the sharing and evaluation of events through posts, comments, and multimedia content. As a solution, a forum system is introduced, where users can publish posts, comment on them, and share images and videos, fostering a vibrant community centered around event experiences and feedback.
+
+#### User Space
+
+GalaGuide's user space offers a personalized dashboard where users can effortlessly manage and review their interactions. This includes a history of events, favorite items, payment records, and upcoming reservations, simplifying the tracking of activities and financial transactions. Users also have the ability to customize their profiles and adjust settings to suit their preferences, from notification management to privacy controls. This streamlined and customizable approach ensures a user-friendly experience, making it easy for individuals to navigate their personal journey with GalaGuide, aligning with the platform's dedication to convenience and personalization.
+
 #### Chat Room
 ##### Private Chat
 Users can chat with each other privately by clicking on others' avatars and sending private messages. 
 ##### Group Chat
 Groups are created by users and can be joined by other users. A group live message will be broadcasted to all the members of the group who is online by then. 
   
-#### Forum System
+#### AI Assistant
 
-Both participants and organizers recognize the value of a platform that facilitates the sharing and evaluation of events through posts, comments, and multimedia content. As a solution, a forum system is introduced, where users can publish posts, comment on them, and share images and videos, fostering a vibrant community centered around event experiences and feedback.
+Gal, GalaGuide's smart assistant, transforms the way users interact with databases by understanding natural language and translating it into SQL queries. It leverages advanced natural language processing (NLP) to decode user intents from casual conversations and then crafts these into SQL commands to fetch the desired data. This breakthrough technology not only simplifies database access for non-technical users but also continuously learns from interactions, enhancing its response accuracy over time. By seamlessly integrating into GalaGuide, Gal provides a user-friendly interface for diverse inquiries, ranging from local recommendations to complex data analysis, making information retrieval intuitive and efficient.
+
 
 #### Events Exploring and Recommendation System
 
 Participants search for personalized event recommendations that match their interests and seamlessly fit into their schedules. To cater to this, an automated recommendation system is implemented, offering tailored event suggestions based on individual preferences and availability, thereby enhancing the event discovery process significantly.
 
-#### AI Assistant
-
-Gal, GalaGuide's smart assistant, transforms the way users interact with databases by understanding natural language and translating it into SQL queries. It leverages advanced natural language processing (NLP) to decode user intents from casual conversations and then crafts these into SQL commands to fetch the desired data. This breakthrough technology not only simplifies database access for non-technical users but also continuously learns from interactions, enhancing its response accuracy over time. By seamlessly integrating into GalaGuide, Gal provides a user-friendly interface for diverse inquiries, ranging from local recommendations to complex data analysis, making information retrieval intuitive and efficient.
 
 #### Currency System
 
