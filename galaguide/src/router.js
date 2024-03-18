@@ -40,6 +40,16 @@ const routes = [
         path: '/logout',
         name: 'UserLogout',
         component: () => import( /* webpackChunkName: "logout" */ './components/user/UserLogout.vue')
+    },
+    {
+        path: '/space',
+        name: 'UserSpace',
+        component: () => import( /* webpackChunkName: "space" */ './components/user/UserSpace.vue')
+    },
+    {
+        path: '/forum',
+        name: 'ForumDiscuss',
+        component: () => import( /* webpackChunkName: "forum" */ './components/forum/ForumDiscuss.vue')
     }
 ]
 

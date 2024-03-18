@@ -1,7 +1,7 @@
 <template>
   <div class="event-center">
     <div class="side-bar">
-      <h2>This is sidebar</h2>
+      <h2 style="color: #e5e1db">This is sidebar</h2>
     </div>
 
     <div class="main-content">
@@ -11,10 +11,8 @@
       </div>
 
       <div class="top-by-sections">
-
         <h2>This is top-by-selections</h2>
       </div>
-
     </div>
 
     <div class="aid-functions">
@@ -26,16 +24,15 @@
         <h2>This is recommend-column</h2>
       </div>
     </div>
-
   </div>
 </template>
 
 <script>
-import Eventposter from './Eventposter.vue';
-import SearchBox from './SearchBox.vue';
-import EventRecommend from './EventRecommend.vue'
+import Eventposter from "./Eventposter.vue";
+import SearchBox from "./SearchBox.vue";
+import EventRecommend from "./EventRecommend.vue";
 export default {
-  name: 'EventCenter',
+  name: "EventCenter",
   components: {
     Eventposter,
     SearchBox,
@@ -45,10 +42,8 @@ export default {
     // SearchComponent,
     // RecommendColumnComponent,
     // TopBySectionsComponent
-  }
-
-}
-
+  },
+};
 </script>
 
 <style scoped>
@@ -56,7 +51,7 @@ export default {
   height: 100%;
   display: flex;
   flex-direction: row;
-  font-family: 'Arial', sans-serif;
+  font-family: "Arial", sans-serif;
   max-width: 100%;
   margin: auto;
 }
