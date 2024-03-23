@@ -94,7 +94,7 @@ const check = (e) => {
   } else {
     // use jwt scheme
     axios
-      .post("/api/user/login", {
+      .post("/user/login", {
         nameOrEmail: user.value.name,
         password: user.value.password,
       })

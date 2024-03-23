@@ -7,7 +7,7 @@ import { DatePicker } from "v-calendar";
 import "v-calendar/style.css";
 // import HomePage from "./components/HomePage.vue";
 
-const role = ref(0); // 0 for not logged in, 1 for user, 2 for admin
+const role = ref(2); // 0 for not logged in, 1 for user, 2 for admin
 
 const hoveredOnCalendar = ref(false);
 const hoveredOnAvatar = ref(false);
@@ -89,7 +89,7 @@ function getRoleFromCookie() {
         const roleValue = cookie.split('=')[1]
         role.value = parseInt(roleValue)
     } else {
-        role.value = 0
+        role.value = 1
     }
 }
 

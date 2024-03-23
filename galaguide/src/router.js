@@ -40,7 +40,12 @@ const routes = [
         path: '/logout',
         name: 'UserLogout',
         component: () => import( /* webpackChunkName: "logout" */ './components/user/UserLogout.vue')
-    }
+    },
+    {
+        path: '/reservations',
+        name: 'ReservationCenter',
+        component: () => import( /* webpackChunkName: "reservations" */ './components/reservations/ReserveCenter.vue')
+    },
 ]
 
 const router = createRouter({

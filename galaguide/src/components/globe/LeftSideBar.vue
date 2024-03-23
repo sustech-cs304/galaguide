@@ -10,27 +10,42 @@ defineProps({
     <div class="left-side-bar">
         <div class="bar-logo">
             <router-link to="/"><img src="../../assets/logo.png" alt="logo.png" style="width: 50%; height: auto;" />
-            <h1 style="color: white;">GalaGuide</h1></router-link>
+                <h1 style="color: white;">GalaGuide</h1>
+            </router-link>
         </div>
         <div class="bar-options" style="top: 160px;">
-            <router-link to="/events" v-if="role > 0"><img src="../../assets/events.png" alt="events.png" style="width: 30%; height: auto;" />
-            <h1>Events</h1></router-link>
-            <router-link to="/login" v-else><img src="../../assets/events.png" alt="events.png" style="width: 30%; height: auto;" />
-            <h1>Events</h1></router-link>
+            <router-link to="/events" v-if="role > 0"><img src="../../assets/events.png" alt="events.png"
+                    style="width: 30%; height: auto;" />
+                <h1>Events</h1>
+            </router-link>
+            <router-link to="/login" v-else><img src="../../assets/events.png" alt="events.png"
+                    style="width: 30%; height: auto;" />
+                <h1>Events</h1>
+            </router-link>
         </div>
         <div class="bar-options" style="top: 280px;">
-            <img src="../../assets/reservations.png" alt="reservations.png" style="width: 30%; height: auto;" />
-            <h1>Reservations</h1>
+            <router-link to="/reservations" v-if="role > 0"><img src="../../assets/reservations.png" alt="reservations.png"
+                    style="width: 30%; height: auto;" />
+                <h1>Reservations</h1>
+            </router-link>
+            <router-link to="/login" v-else><img src="../../assets/reservations.png" alt="reservations.png"
+                    style="width: 30%; height: auto;" />
+                <h1>Reservations</h1>
+            </router-link>
         </div>
         <div class="bar-options" style="top: 400px;">
             <img src="../../assets/forum.png" alt="forum.png" style="width: 30%; height: auto;" />
             <h1>Forum</h1>
         </div>
         <div class="bar-options" style="top: 520px;">
-            <router-link to="/chatroom" v-if="role > 0"><img src="../../assets/chat.png" alt="chat.png" style="width: 30%; height: auto;" />
-            <h1>Chat Room</h1></router-link>
-            <router-link to="/login" v-else><img src="../../assets/chat.png" alt="chat.png" style="width: 30%; height: auto;" />
-            <h1>Chat Room</h1></router-link>
+            <router-link to="/chatroom" v-if="role > 0"><img src="../../assets/chat.png" alt="chat.png"
+                    style="width: 30%; height: auto;" />
+                <h1>Chat Room</h1>
+            </router-link>
+            <router-link to="/login" v-else><img src="../../assets/chat.png" alt="chat.png"
+                    style="width: 30%; height: auto;" />
+                <h1>Chat Room</h1>
+            </router-link>
         </div>
     </div>
 </template>
@@ -77,15 +92,16 @@ defineProps({
     font-weight: bold;
 }
 
-.bar-logo:hover{
+.bar-logo:hover {
     background-color: #34495e;
 }
 
-.bar-options:hover{
+.bar-options:hover {
     background-color: #a5adba;
 }
 
-.bar-logo img, .bar-options {
+.bar-logo img,
+.bar-options {
     margin-top: 10px;
     margin-bottom: 10px;
 }
