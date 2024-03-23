@@ -153,7 +153,8 @@ const template = [
             },
             {
                 label: 'Dev Tools',
-                role: 'toggledevtools'
+                role: 'toggledevtools',
+                accelerator: 'ctrl+d'
             }
         ]
     },

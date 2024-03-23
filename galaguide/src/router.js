@@ -46,6 +46,16 @@ const routes = [
         name: 'ReservationCenter',
         component: () => import( /* webpackChunkName: "reservations" */ './components/reservations/ReserveCenter.vue')
     },
+    {
+        path: '/space',
+        name: 'UserSpace',
+        component: () => import( /* webpackChunkName: "space" */ './components/user/UserSpace.vue')
+    },
+    {
+        path: '/forum',
+        name: 'ForumDiscuss',
+        component: () => import( /* webpackChunkName: "forum" */ './components/forum/ForumDiscuss.vue')
+    },
 ]
 
 const router = createRouter({

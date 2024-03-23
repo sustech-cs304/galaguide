@@ -5,6 +5,43 @@ import { ref, onMounted } from "vue";
 const inputText = ref("");
 const groups = ref([]);
 
+var socket = null;
+var lockReconnect = false;
+var wsUrl = 'ws://localhost:8080/ws';
+var timeout = 2000;
+var timeoutnum = null;
+
+const initWebsocket = async () => {
+    if ('WebSocket' in window) {
+        socket = new WebSocket(wsUrl);
+        socket.onerror = function () {
+            reconnect();
+        }
+        socket.onopen = function () {
+            console.log('WebSocket open');
+            clearTimeout(timeoutnum);
+        }
+        socket.onmessage = function (event) {
+            console.log('WebSocket message:', event.data);
+        }
+        socket.onclose = function () {
+            console.log('WebSocket close');
+            reconnect();
+        }
+    } else {
+        console.log('Your browser does not support WebSocket!');
+    }
+};
+
+const reconnect = () => {
+    if (lockReconnect) return;
+    lockReconnect = true;
+    timeoutnum = setTimeout(() => {
+        initWebsocket();
+        lockReconnect = false;
+    }, timeout);
+};
+
 onMounted(() => {
     document.querySelector("#footer").style.display = "none";
 
@@ -15,6 +52,9 @@ onMounted(() => {
         .catch(error => {
             console.error('Error fetching groups:', error);
         });
+
+    initWebsocket();
+
 });
 
 const showGroup = (id) => {

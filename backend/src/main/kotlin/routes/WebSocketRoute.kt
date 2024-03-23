@@ -3,8 +3,8 @@ package galaGuide.routes
 import galaGuide.data.*
 import galaGuide.resources.userId
 import galaGuide.table.GroupMemberTable
-import galaGuide.table.GroupMessage
-import galaGuide.table.PrivateMessage
+import galaGuide.table.GroupMessageTable
+import galaGuide.table.PrivateMessageTable
 import io.ktor.server.auth.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
@@ -14,6 +14,7 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toLocalDateTime
+import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.*
@@ -43,11 +44,11 @@ object WebsocketManager {
                     is PrivateMessageEvent -> {
                         val messageEvent = event.copy(from = id, time = Clock.System.now())
                         transaction {
-                            PrivateMessage.new {
-                                from = id
-                                to = event.to
-                                content = event.content
-                                time = messageEvent.time
+                            PrivateMessageTable.insert {
+                                it[from] = id
+                                it[to] = event.to
+                                it[content] = event.content
+                                it[time] = messageEvent.time
                                     .toLocalDateTime(TimeZone.currentSystemDefault())
                                     .toJavaLocalDateTime()
                             }
@@ -60,18 +61,17 @@ object WebsocketManager {
                         val messageEvent = event.copy(from = id, time = Clock.System.now())
 
                         val ids = transaction {
-                            GroupMessage.new {
-                                from = id
-                                group = event.group
-                                content = event.content
-                                time = messageEvent.time
+                            GroupMessageTable.insert {
+                                it[from] = id
+                                it[group] = event.group
+                                it[content] = event.content
+                                it[time] = messageEvent.time
                                     .toLocalDateTime(TimeZone.currentSystemDefault())
                                     .toJavaLocalDateTime()
-
                             }
 
-                            GroupMemberTable.select { GroupMemberTable.groupId eq messageEvent.group }
-                                .map { it[GroupMemberTable.userId] }
+                            GroupMemberTable.select { GroupMemberTable.group eq messageEvent.group }
+                                .map { it[GroupMemberTable.user].value }
                         }
 
                         ids.mapNotNull { connected[it] }

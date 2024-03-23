@@ -13,9 +13,17 @@ class Group(id: EntityID<Long>) : LongEntity(id) {
     companion object : LongEntityClass<Group>(GroupTable)
 
     var name by GroupTable.name
+    val members by GroupMember referrersOn GroupMemberTable.group
 }
 
 object GroupMemberTable : LongIdTable() {
-    val groupId = long("group_id").references(GroupTable.id)
-    val userId = long("user_id").references(UserTable.id)
+    val group = reference("group", GroupTable)
+    val user = reference("user", UserTable)
+}
+
+class GroupMember(id: EntityID<Long>) : LongEntity(id) {
+    companion object : LongEntityClass<GroupMember>(GroupMemberTable)
+
+    val group by Group referencedOn GroupMemberTable.group
+    val user by User referencedOn GroupMemberTable.user
 }
