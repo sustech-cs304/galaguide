@@ -50,6 +50,11 @@ const routes = [
         path: '/forum',
         name: 'ForumDiscuss',
         component: () => import( /* webpackChunkName: "forum" */ './components/forum/ForumDiscuss.vue')
+    },
+    {
+        path: '/help',
+        name: 'HelpCenter',
+        component: () => import( /* webpackChunkName: "help" */ './components/help/HelpCenter.vue')
     }
 ]
 

@@ -40,12 +40,16 @@ const initWebsocket = async () => {
         socket.onmessage = function (event) {
             console.log('WebSocket message:', event.data);
             const jsonData = JSON.parse(event.data);
-            document.querySelector("#chat-box").innerHTML += `
-                <div class="msg-username">${jsonData.sender} : <span style="color: grey;">${jsonData.time}</span></div>
-                <div class="message my-message">
+            document.querySelector("#chat-box").innerHTML += `<div class="message">
+                <div class="msg-username">${jsonData.sender} : <span style="color: grey;">${jsonData.time}&emsp;</span></div>
                     <p>${jsonData.content}</p>
                 </div>
             `;
+            document.querySelectorAll(".message").forEach(msg => {
+                if (msg.querySelector(".msg-username").textContent.includes(getCookie("username"))) {
+                    msg.classList.add("my-message");
+                }
+            });
             document.querySelector("#chat-box").scrollTop = document.querySelector("#chat-box").scrollHeight;
         }
         socket.onclose = function () {
@@ -94,6 +98,11 @@ onMounted(() => {
 
     initWebsocket();
 
+    document.querySelector('#input-box').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            sendMessage(cur_g_id.value);
+        }
+    });
 });
 
 const showGroup = (id) => {
@@ -110,14 +119,19 @@ const showGroup = (id) => {
                 </div>
                 <button id="leave-group">Leave Group</button>
             `;
-            document.querySelector("#chat-box").innerHTML = response.data.messages.map(message => `
-                <div class="msg-username">${message.sender} : <span style="color: grey;">${message.time}</span></div>
-                <div class="message">
+            document.querySelector("#chat-box").innerHTML = response.data.messages.map(message => `<div class="message">
+                <div class="msg-username">${message.sender} : <span style="color: grey;">${message.time}&emsp;</span></div>
                     <p>${message.content}</p>
                 </div>
             `).join("");
             document.querySelector("#chat-box").scrollTop = document.querySelector("#chat-box").scrollHeight;
             cur_g_id.value = id;
+            // document.querySelector("#group-avatar").style.backgroundImage = `url(${response.data.avatar})`;
+            document.querySelectorAll(".message").forEach(msg => {
+                if (msg.querySelector(".msg-username").textContent.includes(getCookie("username"))) {
+                    msg.classList.add("my-message");
+                }
+            });
         })
         .catch(error => {
             console.error('Error fetching group:', error);
@@ -290,7 +304,7 @@ const showGroup = (id) => {
     color: #23b375;
 }
 
-.message {
+/* .message {
     display: flex;
     justify-content: space-between;
     padding: 8px;
@@ -300,7 +314,7 @@ const showGroup = (id) => {
     margin-right: 5%;
     border-radius: 8px;
     margin-bottom: 10px;
-}
+} */
 
 #group-avatar {
     position: absolute;
@@ -348,6 +362,8 @@ const showGroup = (id) => {
     margin: 10px;
     padding: 12px;
     border-radius: 12px;
+    width: max-content;
+    margin-right: 5%;
     background-color: #DCF8C6; 
     position: relative;
 }
