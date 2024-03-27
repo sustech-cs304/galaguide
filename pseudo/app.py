@@ -3,6 +3,8 @@ import tornado.web
 import tornado.websocket
 import json
 
+connections = []
+
 class LoginHandler(tornado.web.RequestHandler):
     def post(self):
         data = json.loads(self.request.body)
@@ -10,7 +12,7 @@ class LoginHandler(tornado.web.RequestHandler):
         password = data["password"]
         
         if username == "admin" and password == "password":
-            response = {"success": True, "message": "Login successful", "user": "admin", "token": "123", "user_role": 1, "status": 200}
+            response = {"success": True, "message": "Login successful", "user": "admin", "token": "123", "user_role": 1, "status": 200, "username": "admin"}
         else:
             response = {"success": False, "message": "Invalid username or password"}
         
@@ -146,15 +148,29 @@ class VerifyEmailHandler(tornado.web.RequestHandler):
         self.write(json.dumps(response))
 
 class WebSocketHandler(tornado.websocket.WebSocketHandler):
+    def check_origin(self, origin):
+        return True
+
+    def open(self):
+        connections.append(self)
+        print("WebSocket opened")
+
     def connect(self):
         print("WebSocket opened")
 
     def on_message(self, message):
-        self.write_message(u"You said: " + message)
+        # self.write_message(u"You said: " + message)
         print("Received message: " + message)
+        print(message)
+        group_info[0]["messages"].append(json.loads(message))
+        # Broadcast message
+        for conn in connections:
+            conn.write_message(message)
 
     def on_close(self):
+        connections.remove(self)
         print("WebSocket closed")
+
 
 def make_app():
     return tornado.web.Application([
@@ -164,7 +180,7 @@ def make_app():
         (r"/groups(?:\/\d+)?$", GroupsHandler),
         (r"/user/register", RegisterHandler),
         (r"/user/verify-email", VerifyEmailHandler),
-        (r"/socket.*", WebSocketHandler)
+        (r".*/ws.*", WebSocketHandler)
     ])
 
 if __name__ == "__main__":
