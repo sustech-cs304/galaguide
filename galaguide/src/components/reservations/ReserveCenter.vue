@@ -10,6 +10,7 @@
         <div style="width: 80%;">
             <!-- <EventDetail></EventDetail> -->
             <!-- <EventSearch></EventSearch> -->
+            <FavoriteEvent></FavoriteEvent>
         </div>
     </div>
 
@@ -19,13 +20,15 @@
 <script>
 // import ReservationForm from './ReservationForm.vue'
 //import EventDetail from './EventDetail.vue';
-import EventSearch from '../events/EventSearch.vue'
+//import EventSearch from '../events/EventSearch.vue'
+import FavoriteEvent from '../events/FavoriteEvent.vue'
 export default {
     name: 'ReserveCenter',
     components: {
         // ReservationForm,
         //EventDetail,
-        EventSearch,
+        //EventSearch,
+        FavoriteEvent,
     }
 }
 </script>
