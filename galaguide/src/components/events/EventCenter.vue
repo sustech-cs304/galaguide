@@ -7,6 +7,7 @@
     <div class="main-content">
       <div class="hot-events">
         <Eventposter></Eventposter>
+
         <h2>This is hot-events</h2>
       </div>
 
@@ -31,12 +32,14 @@
 import Eventposter from "./Eventposter.vue";
 import SearchBox from "./SearchBox.vue";
 import EventRecommend from "./EventRecommend.vue";
+//import EventSearch from "./EventSearch.vue";
 export default {
   name: "EventCenter",
   components: {
     Eventposter,
     SearchBox,
     EventRecommend,
+    //EventSearch,
     // SidebarComponent,
     // HotEventsComponent,
     // SearchComponent,

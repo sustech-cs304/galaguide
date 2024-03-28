@@ -91,7 +91,7 @@ function getRoleFromCookie() {
     const roleValue = cookie.split("=")[1];
     role.value = parseInt(roleValue);
   } else {
-    role.value = 0;
+    role.value = 1;
   }
 }
 
