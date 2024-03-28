@@ -4,12 +4,28 @@ import { ref, onMounted } from "vue";
 
 const inputText = ref("");
 const groups = ref([]);
+const cur_g_id = ref(null);
 
 var socket = null;
 var lockReconnect = false;
 var wsUrl = 'ws://localhost:8080/ws';
 var timeout = 2000;
 var timeoutnum = null;
+
+const getCookie = (name) => {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+};
 
 const initWebsocket = async () => {
     if ('WebSocket' in window) {
@@ -23,6 +39,18 @@ const initWebsocket = async () => {
         }
         socket.onmessage = function (event) {
             console.log('WebSocket message:', event.data);
+            const jsonData = JSON.parse(event.data);
+            document.querySelector("#chat-box").innerHTML += `<div class="message">
+                <div class="msg-username">${jsonData.sender} : <span style="color: grey;">${jsonData.time}&emsp;</span></div>
+                    <p>${jsonData.content}</p>
+                </div>
+            `;
+            document.querySelectorAll(".message").forEach(msg => {
+                if (msg.querySelector(".msg-username").textContent.includes(getCookie("username"))) {
+                    msg.classList.add("my-message");
+                }
+            });
+            document.querySelector("#chat-box").scrollTop = document.querySelector("#chat-box").scrollHeight;
         }
         socket.onclose = function () {
             console.log('WebSocket close');
@@ -42,6 +70,21 @@ const reconnect = () => {
     }, timeout);
 };
 
+const sendMessage = (g_id) => {
+    if (inputText.value.trim() === "") {
+        return;
+    }
+    let json_msg = {
+        "sender": getCookie("username"),
+        "content": inputText.value,
+        "time": new Date().toLocaleTimeString(),
+        "group_id": g_id
+    };
+    json_msg = JSON.stringify(json_msg);
+    socket.send(json_msg);
+    inputText.value = "";
+};
+
 onMounted(() => {
     document.querySelector("#footer").style.display = "none";
 
@@ -55,6 +98,11 @@ onMounted(() => {
 
     initWebsocket();
 
+    document.querySelector('#input-box').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            sendMessage(cur_g_id.value);
+        }
+    });
 });
 
 const showGroup = (id) => {
@@ -71,13 +119,19 @@ const showGroup = (id) => {
                 </div>
                 <button id="leave-group">Leave Group</button>
             `;
-            document.querySelector("#chat-box").innerHTML = response.data.messages.map(message => `
-                <div class="msg-username">${message.sender} : <span style="color: grey;">${message.time}</span></div>
-                <div class="message">
+            document.querySelector("#chat-box").innerHTML = response.data.messages.map(message => `<div class="message">
+                <div class="msg-username">${message.sender} : <span style="color: grey;">${message.time}&emsp;</span></div>
                     <p>${message.content}</p>
                 </div>
             `).join("");
             document.querySelector("#chat-box").scrollTop = document.querySelector("#chat-box").scrollHeight;
+            cur_g_id.value = id;
+            // document.querySelector("#group-avatar").style.backgroundImage = `url(${response.data.avatar})`;
+            document.querySelectorAll(".message").forEach(msg => {
+                if (msg.querySelector(".msg-username").textContent.includes(getCookie("username"))) {
+                    msg.classList.add("my-message");
+                }
+            });
         })
         .catch(error => {
             console.error('Error fetching group:', error);
@@ -105,7 +159,9 @@ const showGroup = (id) => {
                 <div id="chat-box"></div>
                 <div id="bottom-input">
                     <textarea v-model="inputText" rows="4" id="input-box"></textarea>
-                    <button id="send-button">Send</button>
+                    <button id="send-button" @click="sendMessage(cur_g_id)">
+                        Send
+                    </button>
                 </div>
             </div>
         </div>
@@ -248,7 +304,7 @@ const showGroup = (id) => {
     color: #23b375;
 }
 
-.message {
+/* .message {
     display: flex;
     justify-content: space-between;
     padding: 8px;
@@ -258,7 +314,7 @@ const showGroup = (id) => {
     margin-right: 5%;
     border-radius: 8px;
     margin-bottom: 10px;
-}
+} */
 
 #group-avatar {
     position: absolute;
@@ -306,8 +362,14 @@ const showGroup = (id) => {
     margin: 10px;
     padding: 12px;
     border-radius: 12px;
+    width: max-content;
+    margin-right: 5%;
     background-color: #DCF8C6; 
     position: relative;
+}
+
+.message.my-message {
+    background-color: #15d3f0; 
 }
 
 .message p {
@@ -334,6 +396,10 @@ const showGroup = (id) => {
     border-width: 10px;
     border-style: solid;
     border-color: transparent #DCF8C6 transparent transparent;
+}
+
+.message.my-message::before {
+    border-color: transparent transparent transparent #15d3f0;
 }
 
 .msg-username {

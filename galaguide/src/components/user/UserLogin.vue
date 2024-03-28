@@ -105,6 +105,7 @@ const check = (e) => {
           localStorage.setItem("user", JSON.stringify(res.data.user));
           setCookie("token", res.data.token, 1);
           setCookie("userRole", res.data.user_role, 1);
+          setCookie("username", res.data.username, 1);
           router.push("/");
           location.replace("/");
           location.reload();
