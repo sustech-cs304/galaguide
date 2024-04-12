@@ -8,7 +8,7 @@
             <h1>This is side-bar</h1>
         </div>
         <div style="width: 80%;">
-            <!-- <EventDetail></EventDetail> -->
+            <EventDetail></EventDetail>
             <!-- <EventSearch></EventSearch> -->
             <FavoriteEvent></FavoriteEvent>
         </div>
@@ -19,14 +19,14 @@
 
 <script>
 // import ReservationForm from './ReservationForm.vue'
-//import EventDetail from './EventDetail.vue';
+import EventDetail from './EventDetail.vue';
 //import EventSearch from '../events/EventSearch.vue'
 import FavoriteEvent from '../events/FavoriteEvent.vue'
 export default {
     name: 'ReserveCenter',
     components: {
         // ReservationForm,
-        //EventDetail,
+        EventDetail,
         //EventSearch,
         FavoriteEvent,
     }

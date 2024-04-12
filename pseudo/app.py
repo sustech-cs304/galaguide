@@ -2,6 +2,19 @@ import tornado.ioloop
 import tornado.web
 import tornado.websocket
 import json
+from openai import OpenAI
+import os
+import random
+
+os.environ["http_proxy"] = "http://127.0.0.1:7890"
+os.environ["https_proxy"] = "http://127.0.0.1:7890"
+
+# key = "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"
+# client = OpenAI(api_key=key)
+pseudo_responses = [
+    "There are a total of <num> events that will take place at <time>. <br/>For example, <event1>, <event2>, and <event3>.<br/>\
+    Which one would you like to know more about?",
+]
 
 connections = []
 
@@ -63,23 +76,23 @@ group_info = [
         "id": 0,
         "members": ["olzzz07", "np-hard", "12211634", "LightShadow", "MoonBeam", "StarDust", "DreamCatcher", "OceanWhisper", "SkyWatcher", "FireFly", "ForestGlow", "MountainEcho", "RiverSong"],
         "messages": [
-            { "sender": "olzzz07", "content": "Hello", "time": "2024-02-21 18:30:01" },
-            { "sender": "np-hard", "content": "How often do you play Genshin bro?", "time": "2024-02-21 18:30:02" },
-            { "sender": "12211634", "content": "I play it every day!", "time": "2024-02-21 18:31:00" },
-            { "sender": "LightShadow", "content": "I love the game too!", "time": "2024-02-21 18:31:01" },
-            { "sender": "MoonBeam", "content": "I'm a big fan of Genshin Impact!", "time": "2024-02-21 18:31:02" },
-            { "sender": "StarDust", "content": "I'm a big fan of Genshin Impact!", "time": "2024-02-21 18:31:03" },
-            { "sender": "DreamCatcher", "content": "I'm a big fan of Genshin Impact!", "time": "2024-02-21 18:31:04" },
-            { "sender": "OceanWhisper", "content": "I'm a big fan of Genshin Impact!", "time": "2024-02-21 18:31:05" },
-            { "sender": "SkyWatcher", "content": "I'm a big fan of Genshin Impact!", "time": "2024-02-21 18:31:06" },
-            { "sender": "FireFly", "content": "I'm a big fan of Genshin Impact!", "time": "2024-02-21 18:31:07" },
-            { "sender": "ForestGlow", "content": "I'm a big fan of Genshin Impact!", "time": "2024-02-21 18:31:08" },
-            { "sender": "MountainEcho", "content": "I'm a big fan of Genshin Impact!", "time": "2024-02-21 18:31:09" },
-            { "sender": "RiverSong", "content": "I'm a big fan of Genshin Impact!", "time": "2024-02-21 18:31:10" },
-            { "sender": "olzzz07", "content": "Umm, I think we have enough fans here.", "time": "2024-02-21 18:31:11" },
-            { "sender": "np-hard", "content": "Haha, I think so too.", "time": "2024-02-21 18:31:12" },
-            { "sender": "12211634", "content": "Yeah, we should play together!", "time": "2024-02-21 18:31:13" },
-            { "sender": "LightShadow", "content": "I'm in!", "time": "2024-02-21 18:31:14" },
+            { "sender": "olzzz07", "content": "Hello", "time": "2024-02-21 18:30:01", "avatar": "https://cdn.iconscout.com/icon/free/png-256/avatar-370-456322.png" },
+            { "sender": "np-hard", "content": "How often do you play Genshin bro?", "time": "2024-02-21 18:30:02", "avatar": "https://cdn.iconscout.com/icon/free/png-256/avatar-370-456322.png"},
+            { "sender": "12211634", "content": "I play it every day!", "time": "2024-02-21 18:31:00", "avatar": "https://cdn.iconscout.com/icon/free/png-256/avatar-370-456322.png" },
+            { "sender": "LightShadow", "content": "I love the game too!", "time": "2024-02-21 18:31:01", "avatar": "https://cdn.iconscout.com/icon/free/png-256/avatar-370-456322.png"  },
+            { "sender": "MoonBeam", "content": "I'm a big fan of Genshin Impact!", "time": "2024-02-21 18:31:02", "avatar": "https://cdn.iconscout.com/icon/free/png-256/avatar-370-456322.png"  },
+            { "sender": "StarDust", "content": "I'm a big fan of Genshin Impact!", "time": "2024-02-21 18:31:03", "avatar": "https://cdn.iconscout.com/icon/free/png-256/avatar-370-456322.png"  },
+            { "sender": "DreamCatcher", "content": "I'm a big fan of Genshin Impact!", "time": "2024-02-21 18:31:04", "avatar": "https://cdn.iconscout.com/icon/free/png-256/avatar-370-456322.png"  },
+            { "sender": "OceanWhisper", "content": "I'm a big fan of Genshin Impact!", "time": "2024-02-21 18:31:05", "avatar": "https://cdn.iconscout.com/icon/free/png-256/avatar-370-456322.png"  },
+            { "sender": "SkyWatcher", "content": "I'm a big fan of Genshin Impact!", "time": "2024-02-21 18:31:06", "avatar": "https://cdn.iconscout.com/icon/free/png-256/avatar-370-456322.png"  },
+            { "sender": "FireFly", "content": "I'm a big fan of Genshin Impact!", "time": "2024-02-21 18:31:07", "avatar": "https://cdn.iconscout.com/icon/free/png-256/avatar-370-456322.png"  },
+            { "sender": "ForestGlow", "content": "I'm a big fan of Genshin Impact!", "time": "2024-02-21 18:31:08", "avatar": "https://cdn.iconscout.com/icon/free/png-256/avatar-370-456322.png"  },
+            { "sender": "MountainEcho", "content": "I'm a big fan of Genshin Impact!", "time": "2024-02-21 18:31:09", "avatar": "https://cdn.iconscout.com/icon/free/png-256/avatar-370-456322.png"  },
+            { "sender": "RiverSong", "content": "I'm a big fan of Genshin Impact!", "time": "2024-02-21 18:31:10", "avatar": "https://cdn.iconscout.com/icon/free/png-256/avatar-370-456322.png"  },
+            { "sender": "olzzz07", "content": "Umm, I think we have enough fans here.", "time": "2024-02-21 18:31:11", "avatar": "https://cdn.iconscout.com/icon/free/png-256/avatar-370-456322.png"  },
+            { "sender": "np-hard", "content": "Haha, I think so too.", "time": "2024-02-21 18:31:12", "avatar": "https://cdn.iconscout.com/icon/free/png-256/avatar-370-456322.png"  },
+            { "sender": "12211634", "content": "Yeah, we should play together!", "time": "2024-02-21 18:31:13", "avatar": "https://cdn.iconscout.com/icon/free/png-256/avatar-370-456322.png"  },
+            { "sender": "LightShadow", "content": "I'm in!", "time": "2024-02-21 18:31:14", "avatar": "https://cdn.iconscout.com/icon/free/png-256/avatar-370-456322.png"  },
             { "sender": "MoonBeam", "content": "Me too!", "time": "2024-02-21 18:31:15" },
             { "sender": "DreamCatcher", "content": "I'm a big fan of Genshin Impact!", "time": "2024-02-21 18:31:16" },
             { "sender": "OceanWhisper", "content": "I'm a big fan of Genshin Impact!", "time": "2024-02-21 18:31:17" },
@@ -171,6 +184,27 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
         connections.remove(self)
         print("WebSocket closed")
 
+class AIHandler(tornado.web.RequestHandler):
+    def post(self):
+        data = json.loads(self.request.body)
+        message = data["message"]
+        # response = client.chat.completions.create(
+        # model="gpt-3.5-turbo-0125",
+        # response_format={ "type": "json_object" },
+        # messages=[
+        #     {"role": "system", "content": "You are a helpful assistant designed to output JSON."},
+        #     {"role": "user", "content": message}
+        # ]
+        # ).choices[0].message.content
+        resp = random.choice(pseudo_responses)
+        resp = resp.replace("<num>", str(random.randint(1, 10)))
+        resp = resp.replace("<time>", "<strong>tomorrow</strong>")
+        resp = resp.replace("<event1>", "<strong>English Corner</strong>")
+        resp = resp.replace("<event2>", "<strong>GRE General Test</strong>")
+        resp = resp.replace("<event3>", "<strong>the midterm for Algorithm Design and Analysis SE2 Spring 2024</strong>")
+        response = f'{{"message": "{resp}"}}'
+        self.set_header("Content-Type", "application/json")
+        self.write(json.dumps(response))
 
 def make_app():
     return tornado.web.Application([
@@ -180,11 +214,12 @@ def make_app():
         (r"/groups(?:\/\d+)?$", GroupsHandler),
         (r"/user/register", RegisterHandler),
         (r"/user/verify-email", VerifyEmailHandler),
-        (r".*/ws.*", WebSocketHandler)
+        (r".*/ws.*", WebSocketHandler),
+        (r"/ai", AIHandler)
     ])
 
 if __name__ == "__main__":
     app = make_app()
-    app.listen(8080)
-    print("Server is running on http://localhost:8080")
+    app.listen(9260)
+    print("Server is running on http://localhost:9260")
     tornado.ioloop.IOLoop.current().start()

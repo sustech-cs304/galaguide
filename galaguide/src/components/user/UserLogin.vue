@@ -94,7 +94,7 @@ const check = (e) => {
   } else {
     // use jwt scheme
     axios
-      .post("/user/login", {
+      .post("/api/user/login", {
         nameOrEmail: user.value.name,
         password: user.value.password,
       })
@@ -102,7 +102,6 @@ const check = (e) => {
         if (res.data.status === 200) {
           console.log("success")
           localStorage.setItem("token", res.data.token);
-          localStorage.setItem("user", JSON.stringify(res.data.user));
           setCookie("token", res.data.token, 1);
           setCookie("userRole", res.data.user_role, 1);
           setCookie("username", res.data.username, 1);

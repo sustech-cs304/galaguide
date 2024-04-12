@@ -8,7 +8,7 @@ const cur_g_id = ref(null);
 
 var socket = null;
 var lockReconnect = false;
-var wsUrl = 'ws://localhost:8080/ws';
+var wsUrl = 'ws://localhost:9260/ws';
 var timeout = 2000;
 var timeoutnum = null;
 
@@ -29,6 +29,7 @@ const getCookie = (name) => {
 
 const initWebsocket = async () => {
     if ('WebSocket' in window) {
+        // socket = new WebSocket(wsUrl, getCookie("token"));
         socket = new WebSocket(wsUrl);
         socket.onerror = function () {
             reconnect();
@@ -40,10 +41,18 @@ const initWebsocket = async () => {
         socket.onmessage = function (event) {
             console.log('WebSocket message:', event.data);
             const jsonData = JSON.parse(event.data);
+            // document.querySelector("#chat-box").innerHTML += `<div class="message">
+            //     <div class="msg-username">${jsonData.sender} : <span style="color: grey;">${jsonData.time}&emsp;</span></div>
+            //         <p>${jsonData.content}</p>
+            //     </div>
+            // `;
             document.querySelector("#chat-box").innerHTML += `<div class="message">
-                <div class="msg-username">${jsonData.sender} : <span style="color: grey;">${jsonData.time}&emsp;</span></div>
-                    <p>${jsonData.content}</p>
+                <div class="user-info">
+                    <img src="${jsonData.avatar}" alt="User Avatar" class="avatar">
+                    <div class="msg-username">${jsonData.sender} : <span class="message-time">${jsonData.time}&emsp;</span></div>
                 </div>
+                <p>${jsonData.content}</p>
+            </div>
             `;
             document.querySelectorAll(".message").forEach(msg => {
                 if (msg.querySelector(".msg-username").textContent.includes(getCookie("username"))) {
@@ -88,7 +97,11 @@ const sendMessage = (g_id) => {
 onMounted(() => {
     document.querySelector("#footer").style.display = "none";
 
-    axios.get("/api/groups")
+    axios.get("/api/groups",{
+        headers: {
+            'Authorization': `Bearer ${getCookie("token")}`
+        }
+    })
         .then(response => {
             groups.value = response.data;
         })
@@ -119,11 +132,23 @@ const showGroup = (id) => {
                 </div>
                 <button id="leave-group">Leave Group</button>
             `;
-            document.querySelector("#chat-box").innerHTML = response.data.messages.map(message => `<div class="message">
-                <div class="msg-username">${message.sender} : <span style="color: grey;">${message.time}&emsp;</span></div>
+            // document.querySelector("#chat-box").innerHTML = response.data.messages.map(message => `
+            // <div class="message">
+            //     <div class="msg-username">
+            //         ${message.sender} : <span style="color: grey;">${message.time}&emsp;</span></div>
+            //         <p>${message.content}</p>
+            // </div>
+            // `).join("");
+            document.querySelector("#chat-box").innerHTML = response.data.messages.map(message => `
+                <div class="message">
+                    <div class="user-info">
+                        <img src="${message.avatar}" alt="User Avatar" class="avatar">
+                        <div class="msg-username">${message.sender} : <span class="message-time">${message.time}&emsp;</span></div>
+                    </div>
                     <p>${message.content}</p>
                 </div>
             `).join("");
+
             document.querySelector("#chat-box").scrollTop = document.querySelector("#chat-box").scrollHeight;
             cur_g_id.value = id;
             // document.querySelector("#group-avatar").style.backgroundImage = `url(${response.data.avatar})`;
@@ -438,4 +463,15 @@ const showGroup = (id) => {
     background-color: #ebebeb;
 }
 
+.avatar {
+    width: 40px;
+    height: 40px; 
+    border-radius: 50%; 
+    margin-right: 10px; 
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+}
 </style>

@@ -7,65 +7,92 @@
         <div class="gal">
             <div class="eye"></div>
             <div class="eye"></div>
-
         </div>
 
     </div>
     <div v-if="showModal" class="modal">
-        <div class="modal-content">
+        <div class="modal-content" id="modal-content">
             <span class="close" @click="closeModal">&times;</span>
             <h1>Chat</h1>
             <p>Hello! I'm <strong>Gal</strong>, your personal AI assistant. What can I help you with today?</p>
-            <input type="text" placeholder="Type your message here" id="help-holder"/>
-            <button type="submit" id="ai-send-button">
+            <input type="text" placeholder="Type your message here" id="help-holder" />
+            <button id="ai-send-button" @click="sendmsg">
                 Send
             </button>
         </div>
     </div>
 </template>
   
-<script>
-export default {
-    data() {
-        return {
-            isDragging: false,
-            xPos: 1300,
-            yPos: 700,
-            offsetX: 0,
-            offsetY: 0,
-            lastMouseDownTime: 0,
-            showModal: false,
-        };
-    },
-    methods: {
-        startDrag(event) {
-            this.isDragging = true;
-            this.offsetX = event.clientX - this.xPos;
-            this.offsetY = event.clientY - this.yPos;
-            this.lastMouseDownTime = Date.now();
-        },
-        dragging(event) {
-            if (this.isDragging) {
-                this.xPos = event.clientX - this.offsetX;
-                this.yPos = event.clientY - this.offsetY;
-            }
-        },
-        endDrag() {
-            this.isDragging = false;
-            if (Date.now() - this.lastMouseDownTime < 200) {
-                this.lastMouseDownTime = 0;
-                this.showModal = true;
-            }
-        },
-        closeModal() {
-            // Close the modal
-            this.showModal = false;
-        }
+<script setup>
+import axios from 'axios';
+import { onMounted, ref } from 'vue';
+
+const isDragging = ref(false);
+const xPos = ref(1300);
+const yPos = ref(700);
+const offsetX = ref(0);
+const offsetY = ref(0);
+const lastMouseDownTime = ref(0);
+const showModal = ref(false);
+
+const startDrag = (event) => {
+    isDragging.value = true;
+    offsetX.value = event.clientX - xPos.value;
+    offsetY.value = event.clientY - yPos.value;
+    lastMouseDownTime.value = Date.now();
+};
+
+const dragging = (event) => {
+    if (isDragging.value) {
+        xPos.value = event.clientX - offsetX.value;
+        yPos.value = event.clientY - offsetY.value;
     }
 };
+
+const endDrag = () => {
+    isDragging.value = false;
+    if (Date.now() - lastMouseDownTime.value < 200) {
+        lastMouseDownTime.value = 0;
+        showModal.value = true;
+    }
+};
+
+const closeModal = () => {
+    showModal.value = false;
+};
+
+const sendmsg = () => {
+    axios.post('/api/ai', {
+        message: document.getElementById('help-holder').value,
+    }).then((response) => {
+        console.log(response.data);
+
+        const mymessage = document.createElement('p');
+        mymessage.innerHTML = '<strong>Me:</strong><br/>' + document.getElementById('help-holder').value;
+        mymessage.classList.add('query-my-message');
+        document.querySelector('#modal-content').appendChild(mymessage);
+
+        document.getElementById('help-holder').value = '';
+
+        const message = document.createElement('p');
+        message.innerHTML = '<strong>Gal:</strong><br/>' + JSON.parse(response.data).message;
+        message.classList.add('query-ai-message');
+        document.querySelector('#modal-content').appendChild(message);
+    }).catch((error) => {
+        console.error(error);
+    });
+};
+
+onMounted(() => {
+    document.addEventListener('keypress', (event) => {
+        if (event.key === 'Enter') {
+            sendmsg();
+        }
+    });
+});
 </script>
   
-<style scoped>
+<style>
 .draggable {
     display: none;
     position: fixed;
@@ -165,6 +192,7 @@ export default {
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
+    overflow: scroll;
 }
 
 .modal-content {
@@ -172,7 +200,7 @@ export default {
     margin: 20% auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 80%;
+    width: 50%;
 }
 
 .close {
@@ -212,6 +240,32 @@ export default {
 
 #ai-send-button:hover {
     background-color: #1f9e64;
+}
+
+#modal-content p {
+    width: 50%;
+    left: 50%;
+    transform: translate(50%);
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.query-my-message {
+    background-color: #14e6a0;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    text-align: left;
+    overflow-wrap: break-word;
+}
+
+.query-ai-message {
+    background-color: #58c6fc;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    text-align: right;
+    overflow-wrap: break-word;
 }
 </style>
   
