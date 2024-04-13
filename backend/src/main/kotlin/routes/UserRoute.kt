@@ -4,8 +4,8 @@ import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import galaGuide.data.asRestResponse
 import galaGuide.data.failRestResponseDefault
-import galaGuide.table.User
-import galaGuide.table.UserTable
+import galaGuide.table.user.User
+import galaGuide.table.user.UserTable
 import io.ktor.resources.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*

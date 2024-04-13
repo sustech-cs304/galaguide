@@ -1,5 +1,7 @@
 package galaGuide.table
 
+import galaGuide.table.user.User
+import galaGuide.table.user.UserTable
 import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID

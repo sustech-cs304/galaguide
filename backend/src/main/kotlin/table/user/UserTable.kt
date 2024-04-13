@@ -1,5 +1,6 @@
-package galaGuide.table
+package galaGuide.table.user
 
+import galaGuide.table.Event
 import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
@@ -17,4 +18,6 @@ class User(id: EntityID<Long>) : LongEntity(id) {
     var name by UserTable.name
     var password by UserTable.password
     var email by UserTable.email
+
+    val favoriteEvents by Event via UserFavoriteEventTable
 }
