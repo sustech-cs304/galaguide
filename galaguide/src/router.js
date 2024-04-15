@@ -1,4 +1,4 @@
-import {createRouter, createWebHistory} from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
     {
@@ -25,6 +25,11 @@ const routes = [
         path: '/events',
         name: 'EventCenter',
         component: () => import( /* webpackChunkName: "events" */ './components/events/EventCenter.vue')
+    },
+    {
+        path: '/events/:eventId',
+        name: 'EventDetail',
+        component: () => import(/* webpackChunkName: "event-details" */'@/components/reservations/EventDetail.vue')
     },
     {
         path: '/chatroom',

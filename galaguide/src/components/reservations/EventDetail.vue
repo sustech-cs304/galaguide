@@ -1,42 +1,49 @@
 <!-- Detail display of an event -->
 <template>
-  <div class="event-detail">
-    <div class="title-container" @mouseover="showButtons = true" @mouseleave="showButtons = false">
-      <h1>{{ eventTitle }}</h1>
-      <div class="title-buttons" v-if="showButtons">
-        <button @click="addToFavorites">❤️ Add to Favorites</button>
-        <button @click="reserveNow">⏰ Reserve Now</button>
+  <div class="main">
+    <div class="side-bar">
+      <h2 style="color: #e5e1db">This is sidebar</h2>
+    </div>
+    <div class="event-detail">
+      <div class="title-container" @mouseover="showButtons = true" @mouseleave="showButtons = false">
+        <h1>{{ eventTitle }}</h1>
+        <div class="title-buttons" v-if="showButtons">
+          <button @click="addToFavorites">❤️ Add to Favorites</button>
+          <button @click="reserveNow">⏰ Reserve Now</button>
+        </div>
       </div>
-    </div>
-    <div class="poster-container">
-      <img :src="posterUrl" @load="loading = false" @error="loadError" v-if="!loading" />
-      <div v-else>Loading...</div>
-      <div v-if="error">Error loading image, please try again later.</div>
-    </div>
-    <div class="introduction-container">
-      <p>{{ eventIntroduction }}</p>
-    </div>
-    <div class="details-container">
-      <div class="detail" v-for="(detail, key) in eventDetails" :key="key">
-        <h2>{{ key }}</h2>
-        <p>{{ detail }}</p>
+      <div class="poster-container">
+        <img :src="posterUrl" @load="loading = false" @error="loadError" v-if="!loading" />
+        <div v-else>Loading...</div>
+        <div v-if="error">Error loading image, please try again later.</div>
       </div>
-    </div>
-    <h2>gallery</h2>
-    <div class="gallery-container">
-      <div v-for="image in gallery" :key="image.id" class="image-container">
-        <img :src="image.url" :alt="image.alt" class="event-image" />
+      <div class="introduction-container">
+        <p>{{ eventIntroduction }}</p>
       </div>
-    </div>
-    <div class="action-buttons">
-      <button class="reserve-button" @click="reserveNow">Reserve</button>
-      <button class="help-button" @click="getHelp">Help</button>
+      <div class="details-container">
+        <div class="detail" v-for="(detail, key) in eventDetails" :key="key">
+          <h2>{{ key }}</h2>
+          <p>{{ detail }}</p>
+        </div>
+      </div>
+      <h2>gallery</h2>
+      <div class="gallery-container">
+        <div v-for="image in gallery" :key="image.id" class="image-container">
+          <img :src="image.url" :alt="image.alt" class="event-image" />
+        </div>
+      </div>
+      <div class="action-buttons">
+        <button class="reserve-button" @click="reserveNow">Reserve</button>
+        <button class="help-button" @click="getHelp">Help</button>
+      </div>
     </div>
   </div>
+
 </template>
 
 <script>
 export default {
+  name: 'EventDetail',
   data() {
     return {
       eventTitle: 'Sample Event Title', // This will be dynamic based on event data
@@ -48,12 +55,17 @@ export default {
         Category: 'Arts & Music'
         // More details can be added here as needed
       },
-      gallery:[{id:1,src:"w1.com",alt:"w0.com"},{id:2,src:"w2.com",alt:"w0.com"}],
+      gallery: [{ id: 1, src: "w1.com", alt: "w0.com" }, { id: 2, src: "w2.com", alt: "w0.com" }],
       posterUrl: 'https://via.placeholder.com/400x300?text=Event+Poster', // Mock-up URL
-      showButtons: false,
-      loading: true,
-      error: false
+
     };
+
+  },
+  async created() {
+    this.loading = true;
+    const eventID = this.$route.params.eventID;
+    this.eventDetails = this.fetchEventDetails(eventID);
+    this.loading = false;
   },
   methods: {
     addToFavorites() {
@@ -68,6 +80,17 @@ export default {
     },
     getHelp() {
       // Logic to provide help to the user
+    },
+    fetchEventDetails(eventID) {
+
+      return {
+          Time: '10:00 AM - 3:00 PM',
+          Host: 'Host Name',
+          Fee: '$20 per person',
+          Category: 'Arts & Music',
+          eventID: eventID,
+          // More details can be added here as needed
+        }
     }
   }
 };
@@ -209,8 +232,19 @@ export default {
 
 <!-- revised Classic-->
 <style scoped>
+.main {
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  max-width: 100%;
+  margin: auto;
+}
+
 .event-detail {
   /* font-family: 'Times New Roman', serif; */
+  width: 85%;
+  height: 100%;
+  flex: 4;
   color: #5c5c5c;
   background-color: #fff;
   padding: 20px;
@@ -286,7 +320,8 @@ export default {
 
 .details-container {
   display: flex;
-  flex-wrap: wrap; /* Allow details to wrap onto the next line if space requires */
+  flex-wrap: wrap;
+  /* Allow details to wrap onto the next line if space requires */
   justify-content: space-between;
   padding: 16px;
   background-color: #fff;
@@ -315,14 +350,15 @@ export default {
 }
 
 .image-container {
-  width: 200px; 
+  width: 200px;
   height: 200px;
-  flex: 0 0 auto; /* Ensures that the container does not grow or shrink */
-  display: flex; 
+  flex: 0 0 auto;
+  /* Ensures that the container does not grow or shrink */
+  display: flex;
   justify-content: center;
   align-items: center;
   overflow: hidden;
-  border: 1px solid #dcdcdc; 
+  border: 1px solid #dcdcdc;
   margin: 0 8px;
   border-radius: 8px;
 }
@@ -330,7 +366,8 @@ export default {
 .event-image {
   display: block;
   max-width: 100%;
-  max-height: 200px; /* Example fixed height for consistency */
+  max-height: 200px;
+  /* Example fixed height for consistency */
   border-radius: 4px;
 }
 
@@ -344,7 +381,8 @@ export default {
   padding: 16px;
 }
 
-.reserve-button, .help-button {
+.reserve-button,
+.help-button {
   font-size: 16px;
   padding: 8px 16px;
   margin: 0 8px;
@@ -355,11 +393,21 @@ export default {
 }
 
 .reserve-button:hover {
-  background-color: #d1e8d1; /* Green tint on hover */
+  background-color: #d1e8d1;
+  /* Green tint on hover */
 }
 
 .help-button:hover {
-  background-color: #f0d8d8; /* Red tint on hover */
+  background-color: #f0d8d8;
+  /* Red tint on hover */
+}
+
+.sidebar {
+  width: 15%;
+  flex: 1;
+  background-color: #f2f2f2;
+  padding: 20px;
+  box-sizing: border-box;
 }
 </style>
 

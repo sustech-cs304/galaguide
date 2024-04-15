@@ -22,6 +22,7 @@
 //import EventDetail from './EventDetail.vue';
 //import EventSearch from '../events/EventSearch.vue'
 import FavoriteEvent from '../events/FavoriteEvent.vue'
+// import { defineStore } from 'pinia';
 export default {
     name: 'ReserveCenter',
     components: {

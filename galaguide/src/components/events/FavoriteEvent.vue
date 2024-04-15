@@ -96,7 +96,6 @@ export default {
 <style scoped>
 .container {
   display: flex;
-  font-family: 'Times New Roman', serif;
 }
 
 .left-bar {
@@ -168,7 +167,7 @@ export default {
 
 .delete-button {
   background-color: rgba(189, 18, 18, 0.849); /* Default background to white */
-  color: #333; /* Default text color to dark */
+  color: #f7f7f7; /* Default text color to dark */
   border: 1px solid #dcdcdc; /* Light border for the button */
   border-radius: 4px; /* Rounded corners for the button */
   padding: 8px 16px; /* Padding inside the button */

@@ -1,30 +1,32 @@
 <template>
     <div class="event-poster">
         <div class="navigation-buttons">
-            <a @click="prevEvent">
+            <!-- <a @click="prevEvent">
                 <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="currentColor"
                     class="bi bi-chevron-left" viewBox="0 0 16 16">
                     <path fill-rule="evenodd"
                         d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0" />
                 </svg>
-            </a>
+            </a> -->
             <!-- Posters will be rendered here -->
             <div class="posters">
-                <Vue3Marquee :pauseOnHover="true" :vertical="false" :duration="10000">
-                    <div v-for="event in events" :key="event.id" class="poster"
-                        :style="{ transform: `translateX(-${currentEventIndex * 100}%)` }">
-                        <h3>{{ event.name }}</h3>
-                    </div>
-                </Vue3Marquee>
-
+                <!-- <Vue3Marquee :pauseOnHover="true" :vertical="false" :pause=isPaused :duration=0.3>
+                    
+                </Vue3Marquee> -->
+                <div v-for="event in events" :key="event.id" class="poster"
+                    :style="{ transform: `translateX(-${currentEventIndex * 100}%)` }">
+                    <router-link to="/events/{params:{eventID: event.id}}">
+                        <h1>{{ event.name }}</h1>
+                    </router-link>
+                </div>
             </div>
-            <a @click="nextEvent">
+            <!-- <a @click="nextEvent">
                 <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="currentColor"
                     class="bi bi-chevron-right" viewBox="0 0 16 16">
                     <path fill-rule="evenodd"
                         d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708" />
                 </svg>
-            </a>
+            </a> -->
         </div>
         <div class="indicator-buttons">
             <button v-for="event in events" :key="event.id" @click="goToEvent(event.id)">
@@ -36,7 +38,7 @@
 </template>
 
 <script>
-import { Vue3Marquee } from 'vue3-marquee';
+//import { Vue3Marquee } from 'vue3-marquee';
 export default {
     name: 'EventPoster',
     data() {
@@ -50,20 +52,27 @@ export default {
                 { id: 5, name: 'Event Name 5' },
             ],
             currentEventIndex: 0,
+            isPaused: true,
         };
     },
     methods: {
         prevEvent() {
+            // this.isPaused = false;
+            // setTimeout(() => this.isPaused = true, 300);  // Scrolls for a short period then stops
             this.currentEventIndex = (this.currentEventIndex + 5) % 6
         },
         nextEvent() {
+            // this.isPlaying = true;
+            // setTimeout(() => this.isPlaying = false, 1000);  // Scrolls for a short period then stops
             this.currentEventIndex = (this.currentEventIndex + 1) % 6
         },
         goToEvent(index) {
+            // this.isPlaying = true;
+            // setTimeout(() => this.isPlaying = false, 1000);  // Scrolls for a short period then stops
             this.currentEventIndex = index
         },
     },
-    components: { Vue3Marquee, },
+    // components: { Vue3Marquee, },
 };
 </script>
 <style scoped>
@@ -104,12 +113,13 @@ export default {
     width: 100%;
     display: contents;
     height: 400px;
-    /* overflow: hidden;
-    background-color: bisque; */
+    overflow: hidden;
+    /* background-color: bisque; */
 
 }
 
 .poster {
+    z-index: 1;
     min-width: 100%;
     background-size: cover;
     background-position: center;

@@ -13,7 +13,7 @@ defineProps({
         <h1 style="color: white">GalaGuide</h1>
       </router-link>
     </div>
-    <div class="bar-options" style="top: 160px">
+    <div class="bar-options" style="top: 210px">
       <router-link to="/events" v-if="role > 0"><img src="../../assets/events.png" alt="events.png"
           style="width: 30%; height: auto" />
         <h1>Events</h1>
@@ -23,7 +23,7 @@ defineProps({
         <h1>Events</h1>
       </router-link>
     </div>
-    <div class="bar-options" style="top: 280px">
+    <div class="bar-options" style="top: 330px">
       <router-link to="/reservations" v-if="role > 0">
         <img src="../../assets/reservations.png" alt="reservations.png" style="width: 30%; height: auto" />
         <h1>Reservations</h1>
@@ -33,7 +33,7 @@ defineProps({
         <img src="../../assets/reservations.png" alt="reservations.png" style="width: 30%; height: auto" />
       </router-link>
     </div>
-    <div class="bar-options" style="top: 400px">
+    <div class="bar-options" style="top: 450px">
       <router-link to="/forum" v-if="role > 0"><img src="../../assets/forum.png" alt="forum.png"
           style="width: 30%; height: auto" />
         <h1>Forum</h1>
@@ -43,7 +43,7 @@ defineProps({
         <h1>Forum</h1>
       </router-link>
     </div>
-    <div class="bar-options" style="top: 520px">
+    <div class="bar-options" style="top: 570px">
       <router-link to="/chatroom" v-if="role > 0"><img src="../../assets/chat.png" alt="chat.png"
           style="width: 30%; height: auto" />
         <h1>Chat Room</h1>
@@ -71,7 +71,7 @@ defineProps({
 .bar-logo {
   position: absolute;
   width: 100%;
-  height: 150px;
+  height: 200;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -87,7 +87,7 @@ defineProps({
   width: 90%;
   left: 5%;
   border-radius: 10px;
-  height: 100px;
+  height: auto;
   display: flex;
   flex-direction: column;
   justify-content: center;

@@ -12,7 +12,16 @@
       </div>
 
       <div class="top-by-sections">
-        <h2>This is top-by-selections</h2>
+        <h2>This is sport sections</h2>
+      </div>
+      <div class="top-by-sections">
+        <h2>This is art sections</h2>
+      </div>
+      <div class="top-by-sections">
+        <h2>This is academic lecture sections</h2>
+      </div>
+      <div class="top-by-sections">
+        <h2>This is ceremony sections</h2>
       </div>
     </div>
 
@@ -54,13 +63,12 @@ export default {
   height: 100%;
   display: flex;
   flex-direction: row;
-  font-family: "Arial", sans-serif;
   max-width: 100%;
   margin: auto;
 }
 
 .sidebar {
-  width: 10%;
+  width: 12%;
   flex: 1;
   background-color: #f2f2f2;
   /* Example color */
@@ -81,7 +89,7 @@ export default {
 }
 
 .hot-events {
-  background-color: #e6e6e6;
+  background-color: #8797c2;
   /* Example color */
   margin-bottom: 20px;
   padding: 10px;
@@ -89,7 +97,7 @@ export default {
 }
 
 .top-by-sections {
-  background-color: #e6e6e6;
+  background-color: #7590cc;
   /* Example color */
   margin-bottom: 20px;
   padding: 10px;
@@ -112,14 +120,14 @@ export default {
 
 .recommend-column {
   flex: 1;
-  background-color: #d9d9d9;
+  background-color: #b3d4df;
   /* Example color */
   padding: 20px;
   box-sizing: border-box;
 }
 
 .top-by-sections {
-  background-color: #d0d0d0;
+  background-color: #d4dbdb;
   /* Example color */
 }
 </style>
