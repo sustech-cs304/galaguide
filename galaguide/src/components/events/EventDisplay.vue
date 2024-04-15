@@ -5,10 +5,8 @@
     <Eventposter></Eventposter>
     <Eventposter></Eventposter>
   </div>
-  
+
 </template>
 
-<script>
-import Eventposter from './Eventposter.vue';
-</script>
+<script></script>
 <style scoped></style>

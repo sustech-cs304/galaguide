@@ -1,43 +1,44 @@
 <template>
   <div class="container">
-    <div class="row" id="main-reg">
+    <div id="main-reg" class="row">
       <div class="col-md-6">
         <h1>Register to enroll in campus galas!</h1>
         <form @submit="validateAndSubmit">
           <div class="form-group">
             <label>Your Name: </label>
-            <input type="text" class="form-control" v-model="user.name" />
+            <input v-model="user.name" class="form-control" type="text"/>
           </div>
           <div class="form-group">
             <label>Your Email: </label>
-            <input type="text" class="form-control" v-model="user.email" />
+            <input v-model="user.email" class="form-control" type="text"/>
           </div>
           <div class="form-group">
             <label>Your Password: </label>
             <input
-              type="password"
-              class="form-control"
-              v-model="user.password"
-              id="ps"
+                id="ps"
+                v-model="user.password"
+                class="form-control"
+                type="password"
             />
             <button
-              type="button"
-              class="btn btn-primary"
-              style="left: 65%"
-              @click="togglePassword"
+                class="btn btn-primary"
+                style="left: 65%"
+                type="button"
+                @click="togglePassword"
             >
               View
             </button>
           </div>
           <div class="form-group">
             <label
-              id="errors"
-              style="color: red; position: relative; left: 0"
+                id="errors"
+                style="color: red; position: relative; left: 0"
             ></label>
           </div>
-          <button type="submit" class="btn btn-primary">Submit</button>
-          <router-link to="/login" class="btn btn-link"
-            >Already have an account? Login.</router-link
+          <button class="btn btn-primary" type="submit">Submit</button>
+          <router-link class="btn btn-link" to="/login"
+          >Already have an account? Login.
+          </router-link
           >
         </form>
       </div>
@@ -49,18 +50,18 @@
         <div class="form-group">
           <label>Verification Code: </label>
           <input
-            type="text"
-            class="form-control"
-            v-model="user.verificationCode"
+              v-model="user.verificationCode"
+              class="form-control"
+              type="text"
           />
         </div>
         <div class="form-group">
           <label
-            id="errors-email"
-            style="color: red; position: relative; left: 0"
+              id="errors-email"
+              style="color: red; position: relative; left: 0"
           ></label>
         </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button class="btn btn-primary" type="submit">Submit</button>
       </form>
     </div>
   </div>
@@ -70,8 +71,9 @@
 <script setup>
 import axios from "axios";
 // import UserService from "../../service/UserService";
-import { ref, onMounted } from "vue";
-import { useRouter } from "vue-router";
+import {onMounted, ref} from "vue";
+import {useRouter} from "vue-router";
+
 const router = useRouter();
 
 const setCookie = (cname, cvalue, exdays) => {
@@ -107,27 +109,27 @@ const validateAndSubmit = (e) => {
     errors.value.push("Password must be at least 8 characters long");
   } else {
     axios
-      .post("/api/user/register", {
-        name: user.value.name,
-        email: user.value.email,
-        password: user.value.password,
-      })
-      .then((response) => {
-        if (response.data.success) {
-          // setCookie('userRole', response.data.role, 1)
-          // window.location.href = '/home'
-          document.querySelector("#main-reg").style.display = "none";
-          document.querySelector("#verify-email").style.display = "block";
-        } else {
-          errors.value.push(response.data.message);
-          document.getElementById("errors").innerHTML =
-            errors.value.join("<br>");
-        }
-      })
-      .catch((error) => {
-        errors.value.push(error.message);
-        document.getElementById("errors").innerHTML = errors.value.join("<br>");
-      });
+        .post("/api/user/register", {
+          name: user.value.name,
+          email: user.value.email,
+          password: user.value.password,
+        })
+        .then((response) => {
+          if (response.data.success) {
+            // setCookie('userRole', response.data.role, 1)
+            // window.location.href = '/home'
+            document.querySelector("#main-reg").style.display = "none";
+            document.querySelector("#verify-email").style.display = "block";
+          } else {
+            errors.value.push(response.data.message);
+            document.getElementById("errors").innerHTML =
+                errors.value.join("<br>");
+          }
+        })
+        .catch((error) => {
+          errors.value.push(error.message);
+          document.getElementById("errors").innerHTML = errors.value.join("<br>");
+        });
   }
   document.getElementById("errors").innerHTML = errors.value.join("<br>");
 };
@@ -139,26 +141,26 @@ const verifyEmail = (e) => {
     errors.value.push("Enter a valid verification code");
   } else {
     axios
-      .post("/api/user/verify-email", {
-        email: user.value.email,
-        verificationCode: user.value.verificationCode,
-      })
-      .then((response) => {
-        if (response.data.success) {
-          setCookie("userRole", response.data.role, 7);
-          // window.location.href = '/home'
-          router.push("/login");
-        } else {
-          errors.value.push(response.data.message);
+        .post("/api/user/verify-email", {
+          email: user.value.email,
+          verificationCode: user.value.verificationCode,
+        })
+        .then((response) => {
+          if (response.data.success) {
+            setCookie("userRole", response.data.role, 7);
+            // window.location.href = '/home'
+            router.push("/login");
+          } else {
+            errors.value.push(response.data.message);
+            document.getElementById("errors-email").innerHTML =
+                errors.value.join("<br>");
+          }
+        })
+        .catch((error) => {
+          errors.value.push(error.message);
           document.getElementById("errors-email").innerHTML =
-            errors.value.join("<br>");
-        }
-      })
-      .catch((error) => {
-        errors.value.push(error.message);
-        document.getElementById("errors-email").innerHTML =
-          errors.value.join("<br>");
-      });
+              errors.value.join("<br>");
+        });
   }
   document.getElementById("errors-email").innerHTML = errors.value.join("<br>");
 };

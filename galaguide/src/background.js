@@ -66,19 +66,19 @@ app.on('ready', async () => {
     const loadingWindow = new BrowserWindow({
         width: 400,
         height: 300,
-        frame: false, 
+        frame: false,
         resizable: false,
         transparent: true,
         icon: 'src/assets/logo.png',
         webPreferences: {
-          nodeIntegration: true
+            nodeIntegration: true
         }
-      });
-    
-      loadingWindow.loadFile('../public/loading.html');
-      loadingWindow.once('ready-to-show', () => {
+    });
+
+    loadingWindow.loadFile('../public/loading.html');
+    loadingWindow.once('ready-to-show', () => {
         loadingWindow.show();
-      });
+    });
 
     const win = new BrowserWindow({
         width: 1500,

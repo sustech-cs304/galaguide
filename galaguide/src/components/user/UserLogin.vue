@@ -6,35 +6,36 @@
         <form @submit="check">
           <div class="form-group">
             <label>Name: </label>
-            <input type="text" class="form-control" v-model="user.name" />
+            <input v-model="user.name" class="form-control" type="text"/>
           </div>
           <div class="form-group">
             <label>Password: </label>
             <input
-              type="password"
-              class="form-control"
-              v-model="user.password"
-              id="ps"
+                id="ps"
+                v-model="user.password"
+                class="form-control"
+                type="password"
             />
             <button
-              type="button"
-              class="btn btn-primary"
-              style="left: 65%"
-              @click="togglePassword"
+                class="btn btn-primary"
+                style="left: 65%"
+                type="button"
+                @click="togglePassword"
             >
               View
             </button>
           </div>
           <div class="form-group">
             <label
-              id="errors"
-              style="color: red; position: relative; left: 0"
+                id="errors"
+                style="color: red; position: relative; left: 0"
             ></label>
           </div>
-          <button type="submit" class="btn btn-primary">Submit</button>
+          <button class="btn btn-primary" type="submit">Submit</button>
         </form>
-        <router-link to="/register" class="btn btn-link"
-          >Don't have an account? Register.</router-link
+        <router-link class="btn btn-link" to="/register"
+        >Don't have an account? Register.
+        </router-link
         >
       </div>
     </div>
@@ -45,8 +46,9 @@
 <script setup>
 // import UserService from "../../service/UserService";
 import axios from "axios";
-import { ref, onMounted, onUnmounted } from "vue";
-import { useRouter } from "vue-router";
+import {onMounted, onUnmounted, ref} from "vue";
+import {useRouter} from "vue-router";
+
 const router = useRouter();
 
 const user = ref({
@@ -94,30 +96,30 @@ const check = (e) => {
   } else {
     // use jwt scheme
     axios
-      .post("/api/user/login", {
-        nameOrEmail: user.value.name,
-        password: user.value.password,
-      })
-      .then((res) => {
-        if (res.data.status === 200) {
-          console.log("success")
-          localStorage.setItem("token", res.data.token);
-          setCookie("token", res.data.token, 1);
-          setCookie("userRole", res.data.user_role, 1);
-          setCookie("username", res.data.username, 1);
-          router.push("/");
-          location.replace("/");
-          location.reload();
-          location.replace("/");
-        } else {
-          console.log(res.data.message)
-          errors.value.push(res.data.message);
-          document.querySelector("#errors").textContent = errors.value.join("<br>");
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+        .post("/api/user/login", {
+          nameOrEmail: user.value.name,
+          password: user.value.password,
+        })
+        .then((res) => {
+          if (res.data.status === 200) {
+            console.log("success")
+            localStorage.setItem("token", res.data.token);
+            setCookie("token", res.data.token, 1);
+            setCookie("userRole", res.data.user_role, 1);
+            setCookie("username", res.data.username, 1);
+            router.push("/");
+            location.replace("/");
+            location.reload();
+            location.replace("/");
+          } else {
+            console.log(res.data.message)
+            errors.value.push(res.data.message);
+            document.querySelector("#errors").textContent = errors.value.join("<br>");
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
   }
 
   document.querySelector("#errors").textContent = errors.value.join("<br>");

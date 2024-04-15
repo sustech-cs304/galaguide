@@ -1,9 +1,9 @@
 <!-- Search box for event center -->
 <template>
   <div class="search-box-container">
-    <input type="text" v-model="searchQuery" @keyup.enter="performSearch" placeholder="Search events..."
-      class="search-input" />
-    <button @click="performSearch" class="search-button">🔍</button>
+    <input v-model="searchQuery" class="search-input" placeholder="Search events..." type="text"
+           @keyup.enter="performSearch"/>
+    <button class="search-button" @click="performSearch">🔍</button>
   </div>
 </template>
 

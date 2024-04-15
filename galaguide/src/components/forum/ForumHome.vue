@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref } from "vue";
+import {onMounted, ref} from "vue";
 
 onMounted(() => {
   console.log("Forum Home Page");
@@ -10,7 +10,7 @@ const posts = ref([
     id: 1,
     title: "Animal Science Major advice?",
     content:
-      "I'm a freshman and I'm thinking about majoring in Animal Science. I'm not sure if it's the right choice for me. Can anyone give me some advice?",
+        "I'm a freshman and I'm thinking about majoring in Animal Science. I'm not sure if it's the right choice for me. Can anyone give me some advice?",
     sender: "User 1",
     time: "12:00",
     likes: 1,
@@ -20,7 +20,7 @@ const posts = ref([
     id: 2,
     title: "How to get into the College of Engineering?",
     content:
-      "I'm a high school student and I'm interested in majoring in Computer Science. I'm not sure how to get into the College of Engineering. Can anyone give me some advice?",
+        "I'm a high school student and I'm interested in majoring in Computer Science. I'm not sure how to get into the College of Engineering. Can anyone give me some advice?",
     sender: "User 2",
     time: "12:00",
     likes: 2,
@@ -30,7 +30,7 @@ const posts = ref([
     id: 3,
     title: "SUSTech or PKU?",
     content:
-      "So SUSTech and PKU both accepted me. I'm not sure which one to choose. Can anyone give me some advice?",
+        "So SUSTech and PKU both accepted me. I'm not sure which one to choose. Can anyone give me some advice?",
     sender: "User 3",
     time: "12:10",
     likes: 3,
@@ -40,7 +40,7 @@ const posts = ref([
     id: 4,
     title: "What GRE scores do I need to get into the MSME program?",
     content:
-      "Hello, to get into the Masters of Science in Mechanical Engineering program, what GRE scores do I need?",
+        "Hello, to get into the Masters of Science in Mechanical Engineering program, what GRE scores do I need?",
     sender: "User 4",
     time: "12:20",
     likes: 4,
@@ -50,7 +50,7 @@ const posts = ref([
     id: 5,
     title: "How to get into the College of Engineering?",
     content:
-      "I'm a high school student and I'm interested in majoring in Computer Science. I'm not sure how to get into the College of Engineering. Can anyone give me some advice?",
+        "I'm a high school student and I'm interested in majoring in Computer Science. I'm not sure how to get into the College of Engineering. Can anyone give me some advice?",
     sender: "User 2",
     time: "12:00",
     likes: 5,
@@ -60,7 +60,7 @@ const posts = ref([
     id: 6,
     title: "SUSTech or PKU?",
     content:
-      "So SUSTech and PKU both accepted me. I'm not sure which one to choose. Can anyone give me some advice?",
+        "So SUSTech and PKU both accepted me. I'm not sure which one to choose. Can anyone give me some advice?",
     sender: "User 3",
     time: "12:10",
     likes: 6,
@@ -70,7 +70,7 @@ const posts = ref([
     id: 7,
     title: "What GRE scores do I need to get into the MSME program?",
     content:
-      "Hello, to get into the Masters of Science in Mechanical Engineering program, what GRE scores do I need?",
+        "Hello, to get into the Masters of Science in Mechanical Engineering program, what GRE scores do I need?",
     sender: "User 4",
     time: "12:20",
     likes: 7,
@@ -83,7 +83,7 @@ const posts = ref([
   <div id="forum-home">
     <h1>Recent Posts</h1>
     <div id="posts-filter">
-      <input type="text" placeholder="Search Posts" />
+      <input placeholder="Search Posts" type="text"/>
       <button>Search</button>
       <button>Advanced Search</button>
       <div id="advanced-search"></div>
@@ -91,7 +91,7 @@ const posts = ref([
     <div id="posts-holder">
       <div v-for="post in posts" :key="post.id" class="post">
         <div class="post-title-time">
-          <router-link to="/forum/discuss/" style="width: 100%">
+          <router-link style="width: 100%" to="/forum/discuss/">
             <p class="post-title">{{ post.title }}</p>
           </router-link>
           <p class="post-time">{{ post.time }}</p>

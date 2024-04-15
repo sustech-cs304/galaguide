@@ -3,9 +3,9 @@
     <div class="space">
       <div class="space-header">
         <img
-          :src="user.photo"
-          alt="user photo"
-          style="
+            :src="user.photo"
+            alt="user photo"
+            style="
             position: absolute;
             left: 14.5%;
             top: 30.5%;
@@ -24,11 +24,11 @@
         <div class="space-main-event">
           <div class="space-main-bar">
             <h2>Favorite Events</h2>
-            <router-link to="/favorite"> <h4>View All</h4></router-link>
+            <router-link to="/favorite"><h4>View All</h4></router-link>
           </div>
         </div>
         <div class="cards">
-          <div class="card" v-for="event in userEvents" :key="event.title">
+          <div v-for="event in userEvents" :key="event.title" class="card">
             <h3>{{ event.title }}</h3>
             <p>{{ event.content }}</p>
           </div>
@@ -41,8 +41,8 @@
           </div>
         </div>
         <div class="cards">
-          <div class="card" v-for="post in userPosts" :key="post.title">
-            <img :src="post.photo" alt="post photo" />
+          <div v-for="post in userPosts" :key="post.title" class="card">
+            <img :src="post.photo" alt="post photo"/>
             <h3>{{ post.name }}</h3>
             <p>{{ post.description }}</p>
           </div>
@@ -55,9 +55,9 @@
           </div>
         </div>
         <div class="cards">
-          <div class="card" v-for="group in userGroups" :key="group.name">
+          <div v-for="group in userGroups" :key="group.name" class="card">
             <h3>{{ group.name }}</h3>
-            <img :src="group.photo" alt="group photo" />
+            <img :src="group.photo" alt="group photo"/>
             <p>{{ group.description }}</p>
           </div>
         </div>
@@ -67,7 +67,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import {onMounted, ref} from "vue";
 
 const user = ref({});
 const userName = ref("");
@@ -93,17 +93,17 @@ onMounted(async () => {
     {
       title: "Event 1",
       content:
-        "Lorem ipsum, dolor sit amet consectetur adipisicing elit.Distinctio pariatur iusto accusamus, placeat ea sapiente quaerateum veritatis, fugiat, obcaecati saepe itaque sequi ipsam vel. Utvoluptatem ipsa in consectetur, qui similique aliquam labore vitaeporro voluptatum distinctio, optio ipsum tempore animi corrupti,dolor non natus illo iusto repellat vero.",
+          "Lorem ipsum, dolor sit amet consectetur adipisicing elit.Distinctio pariatur iusto accusamus, placeat ea sapiente quaerateum veritatis, fugiat, obcaecati saepe itaque sequi ipsam vel. Utvoluptatem ipsa in consectetur, qui similique aliquam labore vitaeporro voluptatum distinctio, optio ipsum tempore animi corrupti,dolor non natus illo iusto repellat vero.",
     },
     {
       title: "Event 2",
       content:
-        "Lorem ipsum, dolor sit amet consectetur adipisicing elit.Distinctio pariatur iusto accusamus, placeat ea sapiente quaerateum veritatis, fugiat, obcaecati saepe itaque sequi ipsam vel. Utvoluptatem ipsa in consectetur, qui similique aliquam labore vitaeporro voluptatum distinctio, optio ipsum tempore animi corrupti,dolor non natus illo iusto repellat vero.",
+          "Lorem ipsum, dolor sit amet consectetur adipisicing elit.Distinctio pariatur iusto accusamus, placeat ea sapiente quaerateum veritatis, fugiat, obcaecati saepe itaque sequi ipsam vel. Utvoluptatem ipsa in consectetur, qui similique aliquam labore vitaeporro voluptatum distinctio, optio ipsum tempore animi corrupti,dolor non natus illo iusto repellat vero.",
     },
     {
       title: "Event 3",
       content:
-        "Lorem ipsum, dolor sit amet consectetur adipisicing elit.Distinctio pariatur iusto accusamus, placeat ea sapiente quaerateum veritatis, fugiat, obcaecati saepe itaque sequi ipsam vel. Utvoluptatem ipsa in consectetur, qui similique aliquam labore vitaeporro voluptatum distinctio, optio ipsum tempore animi corrupti,dolor non natus illo iusto repellat vero.",
+          "Lorem ipsum, dolor sit amet consectetur adipisicing elit.Distinctio pariatur iusto accusamus, placeat ea sapiente quaerateum veritatis, fugiat, obcaecati saepe itaque sequi ipsam vel. Utvoluptatem ipsa in consectetur, qui similique aliquam labore vitaeporro voluptatum distinctio, optio ipsum tempore animi corrupti,dolor non natus illo iusto repellat vero.",
     },
   ];
   userPosts.value = [

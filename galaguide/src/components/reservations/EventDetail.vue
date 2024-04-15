@@ -5,15 +5,15 @@
       <h2 style="color: #e5e1db">This is sidebar</h2>
     </div>
     <div class="event-detail">
-      <div class="title-container" @mouseover="showButtons = true" @mouseleave="showButtons = false">
+      <div class="title-container" @mouseleave="showButtons = false" @mouseover="showButtons = true">
         <h1>{{ eventTitle }}</h1>
-        <div class="title-buttons" v-if="showButtons">
+        <div v-if="showButtons" class="title-buttons">
           <button @click="addToFavorites">❤️ Add to Favorites</button>
           <button @click="reserveNow">⏰ Reserve Now</button>
         </div>
       </div>
       <div class="poster-container">
-        <img :src="posterUrl" @load="loading = false" @error="loadError" v-if="!loading" />
+        <img v-if="!loading" :src="posterUrl" @error="loadError" @load="loading = false"/>
         <div v-else>Loading...</div>
         <div v-if="error">Error loading image, please try again later.</div>
       </div>
@@ -21,7 +21,7 @@
         <p>{{ eventIntroduction }}</p>
       </div>
       <div class="details-container">
-        <div class="detail" v-for="(detail, key) in eventDetails" :key="key">
+        <div v-for="(detail, key) in eventDetails" :key="key" class="detail">
           <h2>{{ key }}</h2>
           <p>{{ detail }}</p>
         </div>
@@ -29,7 +29,7 @@
       <h2>gallery</h2>
       <div class="gallery-container">
         <div v-for="image in gallery" :key="image.id" class="image-container">
-          <img :src="image.url" :alt="image.alt" class="event-image" />
+          <img :alt="image.alt" :src="image.url" class="event-image"/>
         </div>
       </div>
       <div class="action-buttons">
@@ -55,7 +55,7 @@ export default {
         Category: 'Arts & Music'
         // More details can be added here as needed
       },
-      gallery: [{ id: 1, src: "w1.com", alt: "w0.com" }, { id: 2, src: "w2.com", alt: "w0.com" }],
+      gallery: [{id: 1, src: "w1.com", alt: "w0.com"}, {id: 2, src: "w2.com", alt: "w0.com"}],
       posterUrl: 'https://via.placeholder.com/400x300?text=Event+Poster', // Mock-up URL
 
     };
@@ -84,13 +84,13 @@ export default {
     fetchEventDetails(eventID) {
 
       return {
-          Time: '10:00 AM - 3:00 PM',
-          Host: 'Host Name',
-          Fee: '$20 per person',
-          Category: 'Arts & Music',
-          eventID: eventID,
-          // More details can be added here as needed
-        }
+        Time: '10:00 AM - 3:00 PM',
+        Host: 'Host Name',
+        Fee: '$20 per person',
+        Category: 'Arts & Music',
+        eventID: eventID,
+        // More details can be added here as needed
+      }
     }
   }
 };

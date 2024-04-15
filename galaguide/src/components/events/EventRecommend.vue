@@ -28,14 +28,14 @@ export default {
     return {
       activeTab: 'rank',
       rankEvents: [
-        { id: 1, name: 'Concert of the Year' },
-        { id: 2, name: 'Tech Expo 2024' },
-        { id: 3, name: 'Artisan Coffee Festival' },
+        {id: 1, name: 'Concert of the Year'},
+        {id: 2, name: 'Tech Expo 2024'},
+        {id: 3, name: 'Artisan Coffee Festival'},
       ],
       newEvents: [
-        { id: 4, name: 'Mystery Book Convention' },
-        { id: 5, name: 'Virtual Reality Adventure' },
-        { id: 6, name: 'Robotics Workshop' },
+        {id: 4, name: 'Mystery Book Convention'},
+        {id: 5, name: 'Virtual Reality Adventure'},
+        {id: 6, name: 'Robotics Workshop'},
       ],
     };
   },
@@ -68,8 +68,9 @@ export default {
 
 .content {
   justify-content: center;
-  
+
 }
+
 .content .tab-content {
   align-items: center;
   justify-content: center;

@@ -11,13 +11,13 @@
       <header class="title">
         <h2>My Favorite Events</h2>
       </header>
-      <section class="event" v-for="event in favoriteEvents" :key="event.id">
+      <section v-for="event in favoriteEvents" :key="event.id" class="event">
         <h2>{{ event.eventTitle }}</h2>
         <p>{{ event.eventIntroduction }}</p>
         <!-- More details can be displayed here -->
         <div class="event-actions">
-          <button @click="shareEvent()" class="share-button">Share</button>
-          <button @click="deleteEvent()" class="delete-button">Delete</button>
+          <button class="share-button" @click="shareEvent()">Share</button>
+          <button class="delete-button" @click="deleteEvent()">Delete</button>
         </div>
       </section>
     </main>
@@ -33,7 +33,7 @@ export default {
         {
           eventTitle: "Sample Event Title", // This will be dynamic based on event data
           eventIntroduction:
-            "This is a sample introduction of the event that gives users insight into what to expect.",
+              "This is a sample introduction of the event that gives users insight into what to expect.",
           eventDetails: {
             Time: "10:00 AM - 3:00 PM",
             Host: "Host Name",
@@ -42,8 +42,8 @@ export default {
             // More details can be added here as needed
           },
           gallery: [
-            { id: 1, src: "w1.com", alt: "w0.com" },
-            { id: 2, src: "w2.com", alt: "w0.com" },
+            {id: 1, src: "w1.com", alt: "w0.com"},
+            {id: 2, src: "w2.com", alt: "w0.com"},
           ],
           posterUrl: "https://via.placeholder.com/400x300?text=Event+Poster", // Mock-up URL
           showButtons: false,
@@ -53,7 +53,7 @@ export default {
         {
           eventTitle: "Sample Event Title", // This will be dynamic based on event data
           eventIntroduction:
-            "This is a sample introduction of the event that gives users insight into what to expect.",
+              "This is a sample introduction of the event that gives users insight into what to expect.",
           eventDetails: {
             Time: "10:00 AM - 3:00 PM",
             Host: "Host Name",
@@ -62,8 +62,8 @@ export default {
             // More details can be added here as needed
           },
           gallery: [
-            { id: 1, src: "w1.com", alt: "w0.com" },
-            { id: 2, src: "w2.com", alt: "w0.com" },
+            {id: 1, src: "w1.com", alt: "w0.com"},
+            {id: 2, src: "w2.com", alt: "w0.com"},
           ],
           posterUrl: "https://via.placeholder.com/400x300?text=Event+Poster", // Mock-up URL
           showButtons: false,
@@ -73,7 +73,7 @@ export default {
         {
           eventTitle: "Sample Event Title", // This will be dynamic based on event data
           eventIntroduction:
-            "This is a sample introduction of the event that gives users insight into what to expect.",
+              "This is a sample introduction of the event that gives users insight into what to expect.",
           eventDetails: {
             Time: "10:00 AM - 3:00 PM",
             Host: "Host Name",
@@ -82,8 +82,8 @@ export default {
             // More details can be added here as needed
           },
           gallery: [
-            { id: 1, src: "w1.com", alt: "w0.com" },
-            { id: 2, src: "w2.com", alt: "w0.com" },
+            {id: 1, src: "w1.com", alt: "w0.com"},
+            {id: 2, src: "w2.com", alt: "w0.com"},
           ],
           posterUrl: "https://via.placeholder.com/400x300?text=Event+Poster", // Mock-up URL
           showButtons: false,

@@ -23,8 +23,10 @@ class UserService {
     updateUser(id, user) {
         return axios.put(`${USER_API_URL}/users/${id}`, user);
     }
+
     createUser(user) {
         return axios.post(`${USER_API_URL}/users`, user);
     }
 }
+
 export default new UserService()

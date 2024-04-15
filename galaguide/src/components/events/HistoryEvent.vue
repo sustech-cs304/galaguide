@@ -3,8 +3,6 @@
   <div></div>
 </template>
 
-<script lang='ts'>
-import { reactive,toRefs,onBeforeMount,onMounted} from 'vue'
-</script>
+<script lang='ts'></script>
 <style scoped>
 </style>

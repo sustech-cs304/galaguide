@@ -2,27 +2,27 @@
 import HomeFunctions from "./home/HomeFunctions.vue";
 import HomeAnnouncements from "./home/HomeAnnouncements.vue";
 import HomeERHolder from "./home/HomeERHolder.vue";
-import { defineProps, onMounted, onUnmounted } from 'vue'
+import {defineProps, onMounted, onUnmounted} from 'vue'
 
 const propss = defineProps({
-    role: Number
+  role: Number
 })
 
 onMounted(() => {
-    document.querySelector('#ai-assist').style.display = 'block';
+  document.querySelector('#ai-assist').style.display = 'block';
 })
 
 onUnmounted(() => {
-    document.querySelector('#ai-assist').style.display = 'none';
-    document.querySelector('#footer').style.display = 'none';
+  document.querySelector('#ai-assist').style.display = 'none';
+  document.querySelector('#footer').style.display = 'none';
 })
 
 </script>
 
 <template>
-    <HomeAnnouncements/>
-    <HomeFunctions :role="propss.role"/>
-    <HomeERHolder :role="propss.role"/>
+  <HomeAnnouncements/>
+  <HomeFunctions :role="propss.role"/>
+  <HomeERHolder :role="propss.role"/>
 </template>
 
 <style scoped>
