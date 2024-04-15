@@ -59,6 +59,13 @@ export default {
 </script>
 
 <style scoped>
+/*
+ * AI-generated-content
+ * tool: Copilot
+ * version: latest
+ * usage: CSS Modify
+ * weight: part of
+ */
 .event-center {
   height: 100%;
   display: flex;

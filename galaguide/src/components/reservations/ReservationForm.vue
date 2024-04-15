@@ -79,6 +79,13 @@ export default {
 </script>
 
 <style>
+/*
+ * AI-generated-content
+ * tool: Copilot
+ * version: latest
+ * usage: CSS Modify
+ * weight: part of
+ */
 .error {
   color: red;
   font-size: 0.875em;

@@ -57,6 +57,13 @@ defineProps({
 </template>
 
 <style scoped>
+/*
+ * AI-generated-content
+ * tool: Copilot
+ * version: latest
+ * usage: CSS Modify
+ * weight: part of
+ */
 .left-side-bar {
   position: fixed;
   top: 0;

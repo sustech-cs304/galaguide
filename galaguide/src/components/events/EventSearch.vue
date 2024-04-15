@@ -84,6 +84,13 @@ export default {
 </script>
 
 <style scoped>
+/*
+ * AI-generated-content
+ * tool: Copilot
+ * version: latest
+ * usage: CSS Modify
+ * weight: part of
+ */
 .event-center {
   /* Applying the classic and interactive style from Revised Plan 2 */
   font-family: 'Times New Roman', serif;

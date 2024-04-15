@@ -4,7 +4,13 @@ import {defineProps, ref} from 'vue'
 const props = defineProps({
   role: Number
 })
-
+/*
+* AI-generated-content
+* tool: Copilot
+* version: latest
+* usage: Placeholder data
+* weight: whole
+*/
 const ers = ref([
   {
     title: 'Tennis Club Meeting',
@@ -132,6 +138,13 @@ const recs = ref([
 </template>
 
 <style scoped>
+/*
+ * AI-generated-content
+ * tool: Copilot
+ * version: latest
+ * usage: CSS Modify
+ * weight: part of
+ */
 .home-er-holder {
   position: absolute;
   top: calc(290px + 7%);

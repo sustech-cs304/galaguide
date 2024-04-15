@@ -31,6 +31,13 @@ onMounted(() => {
 </template>
 
 <style scoped>
+/*
+ * AI-generated-content
+ * tool: Copilot
+ * version: latest
+ * usage: CSS Modify
+ * weight: part of
+ */
 #user-inbox {
   margin-top: 20px;
   position: absolute;

@@ -94,6 +94,14 @@ onMounted(() => {
 </script>
 
 <style>
+/*
+ * AI-generated-content
+ * tool: Copilot
+ * version: latest
+ * usage: CSS Modify
+ * weight: part of
+ */
+
 .draggable {
   display: none;
   position: fixed;

@@ -32,6 +32,13 @@ const makeReservation = () => {
 </template>
 
 <style scoped>
+/*
+ * AI-generated-content
+ * tool: Copilot
+ * version: latest
+ * usage: CSS Modify
+ * weight: part of
+ */
 .home-functions {
   position: absolute;
   top: 7%;

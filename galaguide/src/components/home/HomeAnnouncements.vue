@@ -43,6 +43,13 @@ export default {
 </script>
 
 <style>
+/*
+ * AI-generated-content
+ * tool: Copilot
+ * version: latest
+ * usage: CSS Modify
+ * weight: part of
+ */
 .home-announcements {
   position: absolute;
   top: 7%;

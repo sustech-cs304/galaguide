@@ -194,6 +194,13 @@ const showGroup = (id) => {
 </template>
 
 <style>
+/*
+ * AI-generated-content
+ * tool: Copilot
+ * version: latest
+ * usage: CSS Modify
+ * weight: part of
+ */
 #chat-room {
   display: flex;
   justify-content: space-between;

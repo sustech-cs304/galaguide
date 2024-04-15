@@ -68,6 +68,13 @@ onMounted(() => {
 </template>
 
 <style scoped>
+/*
+ * AI-generated-content
+ * tool: Copilot
+ * version: latest
+ * usage: CSS Modify
+ * weight: part of
+ */
 .footer {
   display: none;
   position: absolute;

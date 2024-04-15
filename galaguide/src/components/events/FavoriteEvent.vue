@@ -25,6 +25,13 @@
 </template>
 
 <script>
+/*
+* AI-generated-content
+* tool: Copilot
+* version: latest
+* usage: Placeholder data
+* weight: whole
+*/
 export default {
   data() {
     return {
@@ -106,6 +113,13 @@ export default {
 </script>
 
 <style scoped>
+/*
+ * AI-generated-content
+ * tool: Copilot
+ * version: latest
+ * usage: CSS Modify
+ * weight: part of
+ */
 .container {
   display: flex;
 }

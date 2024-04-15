@@ -232,6 +232,13 @@ export default {
 
 <!-- revised Classic-->
 <style scoped>
+/*
+ * AI-generated-content
+ * tool: Copilot
+ * version: latest
+ * usage: CSS Modify
+ * weight: part of
+ */
 .main {
   height: 100%;
   display: flex;

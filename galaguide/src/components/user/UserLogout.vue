@@ -10,6 +10,13 @@
 </template>
 
 <style scoped>
+/*
+ * AI-generated-content
+ * tool: Copilot
+ * version: latest
+ * usage: CSS Modify
+ * weight: part of
+ */
 h1 {
   color: #333;
   text-align: center;

@@ -164,7 +164,13 @@ const verifyEmail = (e) => {
   }
   document.getElementById("errors-email").innerHTML = errors.value.join("<br>");
 };
-
+/*
+* AI-generated-content
+* tool: Copilot
+* version: latest
+* usage: Placeholder data
+* weight: whole
+*/
 const sentences = [
   "Welcome to GalaGuide! 🎉",
   "Enroll in campus galas! 🎈",
@@ -207,6 +213,13 @@ onMounted(() => {
 </script>
 
 <style scoped>
+/*
+ * AI-generated-content
+ * tool: Copilot
+ * version: latest
+ * usage: CSS Modify
+ * weight: part of
+ */
 .container {
   margin-top: 50px;
   position: absolute;

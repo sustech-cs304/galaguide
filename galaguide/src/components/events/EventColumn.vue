@@ -17,7 +17,13 @@
 
 <script>
 import {Vue3Marquee} from 'vue3-marquee';
-
+/*
+* AI-generated-content
+* tool: Copilot
+* version: latest
+* usage: Placeholder data
+* weight: whole
+*/
 export default {
   data() {
     return {
@@ -68,6 +74,13 @@ export default {
 };
 </script>
 <style scoped>
+/*
+ * AI-generated-content
+ * tool: Copilot
+ * version: latest
+ * usage: CSS Modify
+ * weight: part of
+ */
 .arrow {
   height: 10%;
   position: relative;

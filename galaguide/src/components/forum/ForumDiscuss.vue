@@ -76,6 +76,13 @@ onMounted(() => {
 </template>
 
 <style>
+/*
+ * AI-generated-content
+ * tool: Copilot
+ * version: latest
+ * usage: CSS Modify
+ * weight: part of
+ */
 #forum-discuss {
   display: flex;
   flex-direction: column;

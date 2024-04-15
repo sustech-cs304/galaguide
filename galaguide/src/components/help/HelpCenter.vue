@@ -43,6 +43,13 @@ function createFireworks() {
 </script>
 
 <style>
+/*
+ * AI-generated-content
+ * tool: Copilot
+ * version: latest
+ * usage: CSS Modify
+ * weight: part of
+ */
 .fireworks-container {
   position: relative;
   width: 100%;

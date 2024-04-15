@@ -84,6 +84,13 @@ onMounted(async () => {
   // userEmail.value = response.data.email;
   // userPosts.value = response.data.posts;
   // userGroups.value = response.data.groups;
+  /*
+ * AI-generated-content
+ * tool: Copilot
+ * version: latest
+ * usage: Placeholder data
+ * weight: whole
+ */
   user.value = {
     photo: "https://via.placeholder.com/100",
   };
@@ -144,6 +151,13 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+/*
+ * AI-generated-content
+ * tool: Copilot
+ * version: latest
+ * usage: CSS Modify
+ * weight: part of
+ */
 .space-header {
   height: 280px;
   margin-left: 12%;

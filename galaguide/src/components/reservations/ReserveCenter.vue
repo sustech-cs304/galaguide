@@ -18,6 +18,13 @@
 </template>
 
 <script>
+/*
+ * AI-generated-content
+ * tool: Copilot
+ * version: latest
+ * usage: CSS Modify
+ * weight: part of
+ */
 // import ReservationForm from './ReservationForm.vue'
 import EventDetail from './EventDetail.vue';
 //import EventSearch from '../events/EventSearch.vue'

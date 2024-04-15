@@ -157,6 +157,13 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+/*
+ * AI-generated-content
+ * tool: Copilot
+ * version: latest
+ * usage: CSS Modify
+ * weight: part of
+ */
 .container {
   margin-top: 50px;
   position: absolute;
