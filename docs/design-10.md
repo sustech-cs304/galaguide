@@ -96,6 +96,37 @@ The architecture is conceptualized with an understanding that it must be viable 
 
 ---
 
+### E-R Design
+
+#### Overview
+
+Our ER diagram shows how our data model is set up. It maps out the different parts and how they connect. This is important for understanding the layout of our database, which helps our app handle data from users and events.
+
+#### Diagram
+
+![21cc8304096c04f181f3eeeea82fa8ec](https://github.com/sustech-cs304/team-project-24spring-10/blob/main/docs/images/design-10.assets/21cc8304096c04f181f3eeeea82fa8ec.jpg)
+
+#### Entities and Relationships
+
+1. **User Entity**: The User entity is the main part of our model and holds all the basic information about our users. It links to other parts and helps manage the data for user activities.
+2. **Financial Tracking**: The UserBalance entity connects to the User entity and looks after each user's financial details, like their balance, which helps us keep track of money within the app.
+3. **Event Management**: The Event and UserFavoriteEvents entities work together to handle details about events. UserFavoriteEvents keeps track of which events users like.
+4. **Communication Framework**: The PrivateMessage and GroupMessage entities let users talk to each other privately or in groups. These messages link back to the users sending and receiving them.
+5. **Group Dynamics**: The Group and GroupMembers entities are about grouping users together and knowing who is in which group.
+6. **Static Assets**: The StaticAsset entity is like a storage place for things that don't change, such as pictures or files related to events or users. It keeps track of when these are used or if they've been deleted.
+
+#### Satisfying the Database Triparadigm
+
+- **Structural Integrity**: Our design uses primary keys (like `id`) and foreign keys (like `userId`, `eventId`) to make sure all the data is organized and connected properly.
+- **Semantic Integrity**: We made sure the connections between different parts make sense and reflect what our app is about, like linking users to their money details or to events they enjoy.
+- **Transactional Integrity**: Our model is set up to handle actions like adding or taking away money from accounts, sending messages, and updating event information. This helps make sure that these tasks are done reliably.
+
+#### Conclusion
+
+Our ER diagram puts the User entity in the center, which helps keep our database solid and trustworthy. By showing the connections and rules clearly, it gives us a guide for setting up the database so that our app works well and follows the rules we've set.
+
+---
+
 ## UI Design
 
 ### Idea Construction
