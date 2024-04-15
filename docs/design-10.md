@@ -8,7 +8,7 @@
 
 ### Idea Construction
 
-<img src="C:\Users\23098\Desktop\design-10.assets\hand-web.jpg" alt="hand-web" style="zoom: 50%;" />
+<img src="https://github.com/sustech-cs304/team-project-24spring-10/blob/main/docs/images/design-10.assets/hand-web.jpg" alt="hand-web" style="zoom: 50%;" />
 
 ### Message Management System
 
@@ -20,7 +20,7 @@ This system's architecture is represented through a Use Case UML diagram, which 
 
 The Use Case UML diagram presented illustrates the two principal actors in the system: the `User` and the `Event-holder`. Each actor interacts with the system through a series of defined use cases, as shown in the diagram.
 
-<img src="C:\Users\23098\Desktop\design-10.assets\IMG_6601.PNG" alt="IMG_6601" style="zoom:67%;" />
+<img src="https://github.com/sustech-cs304/team-project-24spring-10/blob/main/docs/images/design-10.assets/IMG_6601.PNG" alt="IMG_6601" style="zoom:67%;" />
 
 #### System Components and Roles
 
@@ -70,7 +70,7 @@ In our course project, we’ve constructed a Use Case UML diagram to outline the
 
 #### Use Case Diagram Description
 
-![IMG_6602](C:\Users\23098\Desktop\design-10.assets\IMG_6602.PNG)
+![IMG_6602](https://github.com/sustech-cs304/team-project-24spring-10/blob/main/docs/images/design-10.assets/IMG_6602.PNG)
 
 The UML diagram delineates several key use cases:
 
@@ -100,13 +100,13 @@ The architecture is conceptualized with an understanding that it must be viable 
 
 ### Idea Construction
 
-<img src="C:\Users\23098\Desktop\design-10.assets\hand-UI.jpg" alt="hand-UI" style="zoom: 67%;" />
+<img src="https://github.com/sustech-cs304/team-project-24spring-10/blob/main/docs/images/design-10.assets/hand-UI.jpg" alt="hand-UI" style="zoom: 67%;" />
 
 ### Functional UI Design
 
 #### Home Page
 
-![image-20240415220103641](C:\Users\23098\Desktop\design-10.assets\image-20240415220103641.png)
+![image-20240415220103641](https://github.com/sustech-cs304/team-project-24spring-10/blob/main/docs/images/design-10.assets/image-20240415220103641.png)
 
 ##### User-Centric Design Considerations
 
@@ -124,7 +124,7 @@ The homepage wireframe for the GALAGuide represents our team’s approach to cre
 
 #### Event Detail Page
 
-![image-20240415220131217](C:\Users\23098\Desktop\design-10.assets\image-20240415220131217.png)
+![image-20240415220131217](https://github.com/sustech-cs304/team-project-24spring-10/blob/main/docs/images/design-10.assets/image-20240415220131217.png)
 
 ##### Overview
 
@@ -146,7 +146,7 @@ The design of the Event Detail page wireframe is a testament to our team's commi
 
 #### UI Design Report for Chat Interface on GALAGuide
 
-![image-20240415220150605](C:\Users\23098\Desktop\design-10.assets\image-20240415220150605.png)
+![image-20240415220150605](https://github.com/sustech-cs304/team-project-24spring-10/blob/main/docs/images/design-10.assets/image-20240415220150605.png)
 
 ##### Overview
 
@@ -168,7 +168,7 @@ The chat interface wireframe for the GALAGuide platform is the outcome of our en
 
 ### Color Design
 
-![32c9bad2839e5a25453084353b647eaa](C:\Users\23098\Desktop\design-10.assets\32c9bad2839e5a25453084353b647eaa.jpg)
+![32c9bad2839e5a25453084353b647eaa](https://github.com/sustech-cs304/team-project-24spring-10/blob/main/docs/images/design-10.assets/32c9bad2839e5a25453084353b647eaa.jpg)
 
 #### Overview
 
