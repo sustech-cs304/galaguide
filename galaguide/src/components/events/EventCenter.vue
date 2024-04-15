@@ -127,7 +127,8 @@ export default {
 }
 
 .top-by-sections {
-  background-color: #d4dbdb;
+  background-color: #7aa5a5;
+  border-radius: 6px;
   /* Example color */
 }
 </style>

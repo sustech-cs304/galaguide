@@ -32,6 +32,11 @@ const routes = [
         component: () => import(/* webpackChunkName: "event-details" */'@/components/reservations/EventDetail.vue')
     },
     {
+        path: '/favorite',
+        name: 'FavoriteEvent',
+        component: () => import( /* webpackChunkName: "events" */ './components/events/FavoriteEvent.vue')
+    },
+    {
         path: '/chatroom',
         name: 'ChatRoom',
         component: () => import( /* webpackChunkName: "chatroom" */ './components/chatroom/ChatRoom.vue')
