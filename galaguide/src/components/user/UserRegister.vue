@@ -146,6 +146,8 @@ const verifyEmail = (e) => {
       .then((response) => {
         if (response.data.success) {
           setCookie("userRole", response.data.role, 7);
+          setCookie("username", response.data.username, 7);
+          setCookie("token", response.data.token, 7);
           // window.location.href = '/home'
           router.push("/login");
         } else {
