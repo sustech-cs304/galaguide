@@ -1,8 +1,11 @@
 <!--  -->
 <template>
   <div class="container">
-    <!-- <aside class="left-bar"> -->
+    <div class="left-bar">
       <!-- Content for left sidebar -->
+    </div>
+    <!-- <aside class="left-bar"> -->
+    <!-- Content for left sidebar -->
     <!-- </aside> -->
     <main class="main-content">
       <header class="title">
@@ -28,52 +31,64 @@ export default {
       // Your event data here
       favoriteEvents: [
         {
-          eventTitle: 'Sample Event Title', // This will be dynamic based on event data
-          eventIntroduction: 'This is a sample introduction of the event that gives users insight into what to expect.',
+          eventTitle: "Sample Event Title", // This will be dynamic based on event data
+          eventIntroduction:
+            "This is a sample introduction of the event that gives users insight into what to expect.",
           eventDetails: {
-            Time: '10:00 AM - 3:00 PM',
-            Host: 'Host Name',
-            Fee: '$20 per person',
-            Category: 'Arts & Music'
+            Time: "10:00 AM - 3:00 PM",
+            Host: "Host Name",
+            Fee: "$20 per person",
+            Category: "Arts & Music",
             // More details can be added here as needed
           },
-          gallery: [{ id: 1, src: "w1.com", alt: "w0.com" }, { id: 2, src: "w2.com", alt: "w0.com" }],
-          posterUrl: 'https://via.placeholder.com/400x300?text=Event+Poster', // Mock-up URL
+          gallery: [
+            { id: 1, src: "w1.com", alt: "w0.com" },
+            { id: 2, src: "w2.com", alt: "w0.com" },
+          ],
+          posterUrl: "https://via.placeholder.com/400x300?text=Event+Poster", // Mock-up URL
           showButtons: false,
           loading: true,
-          error: false
+          error: false,
         },
         {
-          eventTitle: 'Sample Event Title', // This will be dynamic based on event data
-          eventIntroduction: 'This is a sample introduction of the event that gives users insight into what to expect.',
+          eventTitle: "Sample Event Title", // This will be dynamic based on event data
+          eventIntroduction:
+            "This is a sample introduction of the event that gives users insight into what to expect.",
           eventDetails: {
-            Time: '10:00 AM - 3:00 PM',
-            Host: 'Host Name',
-            Fee: '$20 per person',
-            Category: 'Arts & Music'
+            Time: "10:00 AM - 3:00 PM",
+            Host: "Host Name",
+            Fee: "$20 per person",
+            Category: "Arts & Music",
             // More details can be added here as needed
           },
-          gallery: [{ id: 1, src: "w1.com", alt: "w0.com" }, { id: 2, src: "w2.com", alt: "w0.com" }],
-          posterUrl: 'https://via.placeholder.com/400x300?text=Event+Poster', // Mock-up URL
+          gallery: [
+            { id: 1, src: "w1.com", alt: "w0.com" },
+            { id: 2, src: "w2.com", alt: "w0.com" },
+          ],
+          posterUrl: "https://via.placeholder.com/400x300?text=Event+Poster", // Mock-up URL
           showButtons: false,
           loading: true,
-          error: false
+          error: false,
         },
         {
-          eventTitle: 'Sample Event Title', // This will be dynamic based on event data
-          eventIntroduction: 'This is a sample introduction of the event that gives users insight into what to expect.',
+          eventTitle: "Sample Event Title", // This will be dynamic based on event data
+          eventIntroduction:
+            "This is a sample introduction of the event that gives users insight into what to expect.",
           eventDetails: {
-            Time: '10:00 AM - 3:00 PM',
-            Host: 'Host Name',
-            Fee: '$20 per person',
-            Category: 'Arts & Music'
+            Time: "10:00 AM - 3:00 PM",
+            Host: "Host Name",
+            Fee: "$20 per person",
+            Category: "Arts & Music",
             // More details can be added here as needed
           },
-          gallery: [{ id: 1, src: "w1.com", alt: "w0.com" }, { id: 2, src: "w2.com", alt: "w0.com" }],
-          posterUrl: 'https://via.placeholder.com/400x300?text=Event+Poster', // Mock-up URL
+          gallery: [
+            { id: 1, src: "w1.com", alt: "w0.com" },
+            { id: 2, src: "w2.com", alt: "w0.com" },
+          ],
+          posterUrl: "https://via.placeholder.com/400x300?text=Event+Poster", // Mock-up URL
           showButtons: false,
           loading: true,
-          error: false
+          error: false,
         },
       ],
       // ... rest of your data
@@ -82,14 +97,11 @@ export default {
   methods: {
     shareEvent() {
       // Logic to share an event
-      
     },
     deleteEvent() {
       // Logic to remove an event from favorites
-      
     },
-    
-  }
+  },
 };
 </script>
 
@@ -101,6 +113,7 @@ export default {
 .left-bar {
   width: 10%;
   background-color: #f8f8f8;
+  opacity: 0;
   /* Subtle background for the sidebar */
   padding: 20px;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
