@@ -16,7 +16,9 @@ export default {
   },
   methods: {
     performSearch() {
-      // Logic to perform the search
+      if (this.searchQuery.trim()) {
+        this.$router.push({ path: '/events/search', name: 'search', query: { q: this.searchQuery } });
+      }
       console.log('Searching for:', this.searchQuery);
     },
   },

@@ -14,7 +14,7 @@
                     </button>
                 </div>
             </div>
-            <button @click="applyFilters">Filter</button>
+            <button @click="applyFilters" style="width: 10%; align-self: center;">Filter</button>
         </div>
         <div class="events-list">
             <!-- Event listing -->
@@ -58,7 +58,7 @@ export default {
 
     methods: {
         searchEvents() {
-            // Method to search events
+            // TODO() Implement event search
         },
         toggleFilter(category, option) {
             const index = this.selectedFilters[category].indexOf(option);
@@ -78,26 +78,43 @@ export default {
     },
     components:{
         SearchBox,
-    }
+    },
+    created() {
+        // Fetch events data
+        const searchQuery = this.$route.query.q;
+        if(searchQuery) {
+            this.searchQuery = searchQuery;
+            this.searchEvents();
+        }
+    },
 };
 </script>
 
 <style scoped>
 .event-center {
     /* Applying the classic and interactive style from Revised Plan 2 */
-    font-family: 'Times New Roman', serif;
     color: #5c5c5c;
     background-color: #fff;
     padding: 20px;
+    display: flex;
+    flex-direction: column;
+    
 }
 
 .search-container,
 .filter-container {
     display: flex;
     flex-direction: column;
+    margin-bottom: 20px;
     gap:10px;
 }
 
+.filter-container button {
+    padding: 5px 10px;
+    cursor: pointer;
+    border: 1px solid #dcdcdc;
+    border-radius: 4px;
+}
 .search-container input[type="text"] {
     font-size: 20;
 }
@@ -135,8 +152,17 @@ export default {
     margin-right: 5px;
     /* Additional styles for buttons */
 }
+.filter-category {
+    margin-left: 20px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
 .filter-category label {
-  margin-right: 20px; /* Pushes the label to the left and options to the right */
+    margin-right: 40px; /* Pushes the label to the left and options to the right */
+    font-weight: bold; /* Makes the label bold */
+    align-self: center;
 }
 .filter-options {
   display: flex; 

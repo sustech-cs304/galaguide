@@ -68,7 +68,7 @@ export default {
 }
 
 .sidebar {
-  width: 12%;
+  width: 15%;
   flex: 1;
   background-color: #f2f2f2;
   /* Example color */
@@ -77,7 +77,7 @@ export default {
 }
 
 .main-content {
-  width: 60%;
+  width: 55%;
   height: 100%;
   flex: 4;
   padding: 20px;

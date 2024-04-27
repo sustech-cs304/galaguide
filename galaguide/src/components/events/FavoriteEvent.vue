@@ -25,6 +25,8 @@
 </template>
 
 <script>
+// import EventCard from './EventCard.vue';
+// import axios from 'axios';
 export default {
   data() {
     return {

@@ -4,13 +4,14 @@
         <ReservationForm></ReservationForm>
     </div> -->
     <div style="height: 100%;display: flex;flex-direction: row;max-width: 100%; margin: auto;">
-        <div style="width: 10%;">
-            <h1>This is side-bar</h1>
+        <div style="width: 15%;">
+            
         </div>
-        <div style="width: 80%;">
-            <EventDetail></EventDetail>
+        <div style="width: 80%; justify-content: flex-end;">
+            <!-- <EventDetail></EventDetail> -->
             <!-- <EventSearch></EventSearch> -->
-            <FavoriteEvent></FavoriteEvent>
+            <EventCard></EventCard>
+            <!-- <FavoriteEvent></FavoriteEvent> -->
         </div>
     </div>
 
@@ -18,18 +19,20 @@
 </template>
 
 <script>
-// import ReservationForm from './ReservationForm.vue'
-import EventDetail from './EventDetail.vue';
+//import ReservationForm from './ReservationForm.vue'
+//import EventDetail from './EventDetail.vue';
 //import EventSearch from '../events/EventSearch.vue'
-import FavoriteEvent from '../events/FavoriteEvent.vue'
+//import FavoriteEvent from '../events/FavoriteEvent.vue'
 // import { defineStore } from 'pinia';
+import EventCard from '../events/EventCard.vue';
 export default {
     name: 'ReserveCenter',
     components: {
         // ReservationForm,
-        EventDetail,
-        //EventSearch,
-        FavoriteEvent,
+        //EventDetail,
+        // EventSearch,
+        //FavoriteEvent,
+        EventCard,
     }
 }
 </script>

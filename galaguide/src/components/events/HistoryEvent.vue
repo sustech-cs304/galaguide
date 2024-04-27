@@ -1,10 +1,12 @@
-<!--  -->
+<!-- This component is used to show history trace of users' events -->
 <template>
-  <div></div>
+  <div>
+    <h1>History Event</h1>
+  </div>
 </template>
 
 <script lang='ts'>
-import { reactive,toRefs,onBeforeMount,onMounted} from 'vue'
+
 </script>
 <style scoped>
 </style>
