@@ -3,9 +3,18 @@ import tornado.web
 import tornado.websocket
 import json
 import sqlite3
+import hashlib
+import random
+import time
+import smtplib
+from email.mime.text import MIMEText
+import base64
 
 connections = []
 DATABASE = "real.db"
+
+def sha256_encode(s):
+    return hashlib.sha256(s.encode()).hexdigest()
 
 class LoginHandler(tornado.web.RequestHandler):
     """
@@ -38,6 +47,7 @@ class LoginHandler(tornado.web.RequestHandler):
         password = data["password"]
         conn = sqlite3.connect(DATABASE)
         cursor = conn.cursor()
+        password = sha256_encode(password)
         cursor.execute("SELECT * FROM users WHERE (username=? OR email=?) AND password=?", (nameOrEmail, nameOrEmail, password))
         user = cursor.fetchone()
         if user:
@@ -98,7 +108,7 @@ class InboxHandler(tornado.web.RequestHandler):
     ]
     """
     def get(self):
-        token = self.request.headers.get("Authorization")
+        token = self.request.headers.get("Bearer")
         if not token:
             raise tornado.web.HTTPError(401, "Unauthorized")
         conn = sqlite3.connect(DATABASE)
@@ -118,6 +128,103 @@ class InboxHandler(tornado.web.RequestHandler):
 
 class GroupsHandler(tornado.web.RequestHandler):
     pass
+
+class RegisterHandler(tornado.web.RequestHandler):
+    """
+    POST /user/register
+
+    Request:
+    {
+        "name": "username",
+        "email": "email",
+        "password": "password"
+    }
+
+    Response:
+    If success:
+        {
+            "success": true,
+            "message": "message"
+        }
+    If failed:
+        {
+            "success": false,
+            "message": "message"
+        }
+    """
+    def post(self):
+        data = json.loads(self.request.body)
+        name = data["name"]
+        email = data["email"]
+        password = data["password"]
+        conn = sqlite3.connect(DATABASE)
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM users WHERE username=? OR email=?", (name, email))
+        user = cursor.fetchone()
+        if user:
+            self.write({
+                "success": False,
+                "message": "User already exists"
+            })
+        else:
+            password = sha256_encode(password)
+            ver_code = random.randint(100000, 999999)
+            cursor.execute("INSERT INTO unverified_users (username, email, password, role, code) VALUES (?, ?, ?, 0)", (name, email, password, ver_code))
+            conn.commit()
+            self.write({
+                "success": True,
+                "message": "Register success, awaiting email verification"
+            })
+        conn.close()
+
+class VerifyEmailHandler(tornado.web.RequestHandler):
+    """
+    POST /user/verify-email
+
+    Request:
+    {
+        "email": "email",
+        "verificationCode": "code"
+    }
+
+    Response:
+    If success:
+        {
+            "success": true,
+            "message": "message",
+            "token": "token"
+        }
+    If failed:
+        {
+            "success": false,
+            "message": "message"
+        }
+    """
+    def post(self):
+        data = json.loads(self.request.body)
+        email = data["email"]
+        code = data["verificationCode"]
+        conn = sqlite3.connect(DATABASE)
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM unverified_users WHERE email=? AND code=?", (email, code))
+        user = cursor.fetchone()
+        if user:
+            cursor.execute("INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, 1)", (user[1], user[2], user[3]))
+            cursor.execute("DELETE FROM unverified_users WHERE email=?", (email,))
+            token = sha256_encode(user[1] + str(time.time()))
+            cursor.execute("INSERT INTO tokens (token, username) VALUES (?, ?)", (token, user[1]))
+            conn.commit()
+            self.write({
+                "success": True,
+                "message": "Email verification success",
+                "token": token
+            })
+        else:
+            self.write({
+                "success": False,
+                "message": "Email verification failed"
+            })
+        conn.close()
 
 
 def make_app():
