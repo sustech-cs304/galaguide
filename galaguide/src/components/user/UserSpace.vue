@@ -201,7 +201,6 @@ onMounted(async () => {
   justify-content: flex-start;
   margin: 0;
   padding: 0;
-  color: rgb(82, 177, 177);
 }
 
 .space-main-bar > router-link > h4 {
