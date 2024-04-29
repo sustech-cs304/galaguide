@@ -95,7 +95,7 @@ const routes = [
       ),
   },
   {
-    path: "/forum/discuss",
+    path: "/forum/discuss/:id",
     name: "ForumDiscuss",
     component: () =>
       import(

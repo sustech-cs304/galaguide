@@ -1,82 +1,28 @@
 <script setup>
 import { onMounted, ref } from "vue";
+import axios from "axios";
 
 onMounted(() => {
   console.log("Forum Home Page");
+  // get token from local storage
+  const token = localStorage.getItem("token");
+  // if token exists, set the token in the axios headers
+  if (token) {
+    axios.defaults.headers.common["Bearer"] = token;
+  }
+  // get posts from the server
+  axios
+    .get("/api/posts")
+    .then((response) => {
+      console.log(response.data);
+      posts.value = response.data;
+    })
+    .catch((error) => {
+      console.error("Error fetching posts:", error);
+    });
 });
 
-const posts = ref([
-  {
-    id: 1,
-    title: "Animal Science Major advice?",
-    content:
-      "I'm a freshman and I'm thinking about majoring in Animal Science. I'm not sure if it's the right choice for me. Can anyone give me some advice?",
-    sender: "User 1",
-    time: "12:00",
-    likes: 1,
-    tags: ["Animal Science", "Major Advice"],
-  },
-  {
-    id: 2,
-    title: "How to get into the College of Engineering?",
-    content:
-      "I'm a high school student and I'm interested in majoring in Computer Science. I'm not sure how to get into the College of Engineering. Can anyone give me some advice?",
-    sender: "User 2",
-    time: "12:00",
-    likes: 2,
-    tags: ["College of Engineering", "Computer Science"],
-  },
-  {
-    id: 3,
-    title: "SUSTech or PKU?",
-    content:
-      "So SUSTech and PKU both accepted me. I'm not sure which one to choose. Can anyone give me some advice?",
-    sender: "User 3",
-    time: "12:10",
-    likes: 3,
-    tags: ["SUSTech", "PKU"],
-  },
-  {
-    id: 4,
-    title: "What GRE scores do I need to get into the MSME program?",
-    content:
-      "Hello, to get into the Masters of Science in Mechanical Engineering program, what GRE scores do I need?",
-    sender: "User 4",
-    time: "12:20",
-    likes: 4,
-    tags: ["GRE", "MSME"],
-  },
-  {
-    id: 5,
-    title: "How to get into the College of Engineering?",
-    content:
-      "I'm a high school student and I'm interested in majoring in Computer Science. I'm not sure how to get into the College of Engineering. Can anyone give me some advice?",
-    sender: "User 2",
-    time: "12:00",
-    likes: 5,
-    tags: ["College of Engineering", "Computer Science"],
-  },
-  {
-    id: 6,
-    title: "SUSTech or PKU?",
-    content:
-      "So SUSTech and PKU both accepted me. I'm not sure which one to choose. Can anyone give me some advice?",
-    sender: "User 3",
-    time: "12:10",
-    likes: 6,
-    tags: ["SUSTech", "PKU"],
-  },
-  {
-    id: 7,
-    title: "What GRE scores do I need to get into the MSME program?",
-    content:
-      "Hello, to get into the Masters of Science in Mechanical Engineering program, what GRE scores do I need?",
-    sender: "User 4",
-    time: "12:20",
-    likes: 7,
-    tags: ["GRE", "MSME"],
-  },
-]);
+const posts = ref();
 </script>
 
 <template>
@@ -91,7 +37,7 @@ const posts = ref([
     <div id="posts-holder">
       <div v-for="post in posts" :key="post.id" class="post">
         <div class="post-title-time">
-          <router-link to="/forum/discuss/" style="width: 100%">
+          <router-link :to="'/forum/discuss/'+post.id" style="width: 100%">
             <p class="post-title">{{ post.title }}</p>
           </router-link>
           <p class="post-time">{{ post.time }}</p>
