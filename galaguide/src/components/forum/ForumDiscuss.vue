@@ -4,6 +4,7 @@ import { useRoute } from "vue-router";
 import axios from "axios";
 const route = useRoute();
 const discussId = route.params.id;
+const textareaInput = ref("");
 
 const comments = ref([
   {
@@ -18,8 +19,24 @@ const comments = ref([
 
 const filteredComments = ref([]);
 
+// const getCookie = (name) => {
+//   const value = `; ${document.cookie}`;
+//   const parts = value.split(`; ${name}=`);
+//   if (parts.length === 2) return parts.pop().split(";").shift();
+// };
+
 onMounted(() => {
   console.log(discussId);
+  const token = localStorage.getItem("token");
+  // if token exists, set the token in the axios headers
+  if (token) {
+    axios.defaults.headers.common["Bearer"] = token;
+  }
+  document.querySelector('#comment-form').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      postComment();
+    }
+  });
   axios
     .get(`/api/discuss/${discussId}`)
     .then((response) => {
@@ -31,6 +48,48 @@ onMounted(() => {
       console.error("Error fetching discussion:", error);
     });
 });
+
+const postComment = () => {
+  console.log("Posting comment");
+  axios
+    .post(`/api/discuss/${discussId}`, {
+      title: " ",
+      content: textareaInput.value,
+      sender_name: "admin",
+      time: new Date().toLocaleString()
+    })
+    .then((response) => {
+      console.log(response.data);
+      window.location.reload();
+    })
+    .catch((error) => {
+      console.error("Error posting comment:", error);
+    });
+};
+
+const likeComment = (id) => {
+  console.log("Liking post");
+  axios
+    .post(`/api/discuss/${discussId}/like/${id}`)
+    .then((response) => {
+      console.log(response.data);
+      // window.location.reload();
+      if (response.data.message === "Liked") {
+        comments.value[id].likes = response.data.likes + " (You liked this)";
+      }
+      else {
+        comments.value[id].likes = response.data.likes;
+      }
+    })
+    .catch((error) => {
+      console.error("Error liking post:", error);
+    });
+};
+
+const replyComment = (name) => {
+  document.querySelector("#comment-form textarea").focus();
+  textareaInput.value = `@${name} `;
+};
 </script>
 
 <template>
@@ -43,8 +102,12 @@ onMounted(() => {
         <p id="op-time">&nbsp;at&nbsp;{{ comments[0].time }}</p>
       </div>
       <div class="actions"> 
-        <button style="background-color: rgb(253, 135, 155);">Liked by {{ comments[0].likes }}</button>
-        <button style="background-color: rgb(254, 121, 73);">Comment</button>
+        <button style="background-color: rgb(253, 135, 155);" @click="likeComment(0)">
+          Liked by {{ comments[0].likes }}
+        </button>
+        <button style="background-color: rgb(254, 121, 73);" @click="replyComment(comments[0].sender_name)">
+          Comment
+        </button>
         <button style="background-color: darkmagenta;">Share</button>
       </div>
     </div>
@@ -61,10 +124,20 @@ onMounted(() => {
         </div>
         <p class="comment-content">{{ comment.content }}</p>
         <div class="actions">
-          <button>Liked by {{ comment.likes }}</button>
-          <button>Reply</button>
+          <button @click="likeComment(comment.id)">
+            Liked by {{ comment.likes }}
+          </button>
+          <button style="background-color: rgb(254, 121, 73);" @click="replyComment(comment.sender_name)">
+            Reply
+          </button>
         </div>
       </div>
+    </div>
+    <div id="comment-form">
+      <textarea placeholder="Write a comment" v-model="textareaInput" rows="4" cols="50"></textarea>
+      <button @click="postComment">
+        Post Comment
+      </button>
     </div>
   </div>
 </template>
@@ -192,5 +265,43 @@ onMounted(() => {
 .comment-content {
   padding: 10px;
   background-color: rgb(251, 251, 251);
+}
+
+#comment-form {
+  background-color: rgb(251, 251, 251);
+  width: 80%;
+  margin: auto;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+#comment-form textarea {
+  width: 90%;
+  height: 100px;
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 10px;
+  font-family: Monteserrat;
+}
+
+#comment-form button {
+  background-color: #4ca2af;
+  border: none;
+  color: white;
+  padding: 10px 24px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+  border-radius: 10px;
+}
+
+#comment-form button:hover {
+  background-color: white;
+  color: rgb(151, 185, 252);
+  border: 2px solid #fafcfa;
 }
 </style>

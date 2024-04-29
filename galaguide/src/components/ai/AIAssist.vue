@@ -86,7 +86,11 @@ const sendmsg = () => {
 onMounted(() => {
     document.addEventListener('keypress', (event) => {
         if (event.key === 'Enter') {
-            sendmsg();
+            try {
+                sendmsg();
+            } catch (error) {
+                console.error(error);
+            }
         }
     });
 });

@@ -244,46 +244,65 @@ class PostsHandler(tornado.web.RequestHandler):
         self.set_header("Content-Type", "application/json")
         self.write(json.dumps(response))
 
+discuss_info = [
+    { 
+        "id": 0, 
+        "title": "Crazy to spend 70,000 to go to Davis?",
+        "content": "So I have been pretty dead set on attending UC Davis in the fall, until financial aid packages came out and I saw that I would be paying nearly 70k a year. Compare this to my best offer which is to attend LSU (Louisiana State University) for less than 17,000 a year. I am a pre vet major looking to attend veterinary school so there is a pathway towards me making more money, but is this amount of debt simply not worth it?", 
+        "sender_name": "Ok Championship", 
+        "sender_id": "114514", 
+        "time": "11:00",
+        "likes": 7
+    },
+    {
+        "id": 1,
+        "title": "Re: Crazy to spend 70,000 to go to Davis?",
+        "content": "I think it's a good idea to go to LSU. You can save a lot of money and still get a good education. You can always transfer to Davis later if you want to.", 
+        "sender_name": "Tiger Fan", 
+        "sender_id": "1919810", 
+        "time": "11:05",
+        "likes": 5
+    },
+    {
+        "id": 2,
+        "title": "Re: Crazy to spend 70,000 to go to Davis?",
+        "content": "Adding on to what everyone seems to have already said... don't spend this amount on your undergraduate degree. UC Davis has been a great school, but we're paying in-state tuition (and even that feels a bit steep for me). Honestly, for Californians, the two-year community college, then transfer to a UC seems the best option. I know someone who was devastated because they didn't get accepted into a UC, reluctantly went the community college route, and now it's time to transfer. Their choices: Berkeley or Davis. I think that worked out for them!\n\nBut back to your question. It's not worth the expense. Got to Louisiana State University.",
+        "sender_name": "Aggie",
+        "sender_id": "334455",
+        "time": "11:15",
+        "likes": 3
+    },
+    {
+        "id": 3,
+        "title": "Re: Crazy to spend 70,000 to go to Davis?",
+        "content": "I agree with Tiger Fan. You can always transfer to Davis later if you want to.", 
+        "sender_name": "LSU Fan", 
+        "sender_id": "8101919", 
+        "time": "11:10",
+        "likes": 2
+    }
+]
+
 class DiscussionsHandler(tornado.web.RequestHandler):
     def get(self):
-        response = [
-            { 
-                "id": 0, 
-                "title": "Crazy to spend 70,000 to go to Davis?",
-                "content": "So I have been pretty dead set on attending UC Davis in the fall, until financial aid packages came out and I saw that I would be paying nearly 70k a year. Compare this to my best offer which is to attend LSU (Louisiana State University) for less than 17,000 a year. I am a pre vet major looking to attend veterinary school so there is a pathway towards me making more money, but is this amount of debt simply not worth it?", 
-                "sender_name": "Ok Championship", 
-                "sender_id": "114514", 
-                "time": "11:00",
-                "likes": 7
-            },
-            {
-                "id": 1,
-                "title": "Re: Crazy to spend 70,000 to go to Davis?",
-                "content": "I think it's a good idea to go to LSU. You can save a lot of money and still get a good education. You can always transfer to Davis later if you want to.", 
-                "sender_name": "Tiger Fan", 
-                "sender_id": "1919810", 
-                "time": "11:05",
-                "likes": 5
-            },
-            {
-                "id": 2,
-                "title": "Re: Crazy to spend 70,000 to go to Davis?",
-                "content": "Adding on to what everyone seems to have already said... don't spend this amount on your undergraduate degree. UC Davis has been a great school, but we're paying in-state tuition (and even that feels a bit steep for me). Honestly, for Californians, the two-year community college, then transfer to a UC seems the best option. I know someone who was devastated because they didn't get accepted into a UC, reluctantly went the community college route, and now it's time to transfer. Their choices: Berkeley or Davis. I think that worked out for them!\n\nBut back to your question. It's not worth the expense. Got to Louisiana State University.",
-                "sender_name": "Aggie",
-                "sender_id": "334455",
-                "time": "11:15",
-                "likes": 3
-            },
-            {
-                "id": 3,
-                "title": "Re: Crazy to spend 70,000 to go to Davis?",
-                "content": "I agree with Tiger Fan. You can always transfer to Davis later if you want to.", 
-                "sender_name": "LSU Fan", 
-                "sender_id": "8101919", 
-                "time": "11:10",
-                "likes": 2
-            },
-        ]
+        response = discuss_info
+        print(response)
+        self.set_header("Content-Type", "application/json")
+        self.write(json.dumps(response))
+
+    def post(self):
+        data = json.loads(self.request.body)
+        print(data)
+        response = {
+            "id": 4,
+            "title": data["title"],
+            "content": data["content"],
+            "sender_name": data["sender_name"],
+            "sender_id": "123456",
+            "time": data["time"],
+            "likes": 0
+        }
+        discuss_info.append(response)
         self.set_header("Content-Type", "application/json")
         self.write(json.dumps(response))
 
@@ -293,6 +312,16 @@ class UserAvatarHandler(tornado.web.RequestHandler):
         self.set_header("Content-Type", "image/png")
         with open("../galaguide/src/assets/logo.png", "rb") as f:
             self.write(f.read())
+
+class DiscussionsLikeHandler(tornado.web.RequestHandler):
+    def post(self):
+        print(self.request)
+        discuss_id = int(self.request.path.split("/")[-3])
+        comment_id = int(self.request.path.split("/")[-1])
+        discuss_info[comment_id]["likes"] += 1
+        response = {"success": True, "message": "Liked", "likes": discuss_info[comment_id]["likes"]}
+        self.set_header("Content-Type", "application/json")
+        self.write(json.dumps(response))
 
 def make_app():
     return tornado.web.Application([
@@ -305,6 +334,7 @@ def make_app():
         (r".*/ws.*", WebSocketHandler),
         (r"/ai", AIHandler),
         (r"/posts", PostsHandler),
+        (r"/discuss(?:\/\d+)/like(?:\/\d+)?$", DiscussionsLikeHandler),
         (r"/discuss(?:\/\d+)?$", DiscussionsHandler),
         (r"/user(?:\/\d+)/avatar", UserAvatarHandler)
     ])
