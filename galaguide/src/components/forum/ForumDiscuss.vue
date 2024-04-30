@@ -2,6 +2,7 @@
 import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import axios from "axios";
+import CustomAlert from "../../components/CustomAlert.vue";
 const route = useRoute();
 const discussId = route.params.id;
 const textareaInput = ref("");
@@ -19,6 +20,28 @@ const comments = ref([
 
 const filteredComments = ref([]);
 
+const relatedDiscussions = ref([
+  {
+    id: 1,
+    title: "Animal Science Major advice?",
+    content:
+    "I'm a freshman and I'm thinking about majoring in Animal Science. I'm not sure if it's the right choice for me. Can anyone give me some advice?",
+    sender: "User 1",
+    time: "12:00",
+    likes: 1,
+    tags: ["Animal Science", "Major Advice"],
+  },
+  {
+    id: 2,
+    title: "First time didi user in Shanghai",
+    content: "I will be traveling with my aunt and mom in shanghai. We will be arriving at the Hongqiao railway station and I will have two large check-in luggages with me because I will be flying out of pudong airport later that week. I think it'll be difficult for us to take the subway with the luggage so I was thinking of calling a didi cab. I read online that they only accept 2 max riders at a time. So a few questions: Is it okay if I hail the car ride, have my mom and aunt use the cab ride while I take the subway? I'll just monitor the cab ride through my phone. How do I know if the car is big enough for the two suitcases? The types of car I see are \"Discount Express\", \"Express\"..etc. Thank you!",
+    sender: "Wendy",
+    time: "12:00",
+    likes: 1,
+    tags: ["Shanghai", "Didi", "Hongqiao Railway Station", "Pudong Airport"],
+  }
+]);
+
 // const getCookie = (name) => {
 //   const value = `; ${document.cookie}`;
 //   const parts = value.split(`; ${name}=`);
@@ -32,6 +55,7 @@ onMounted(() => {
   if (token) {
     axios.defaults.headers.common["Bearer"] = token;
   }
+  getRelatedDiscussions();
   document.querySelector('#comment-form').addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
       postComment();
@@ -122,6 +146,29 @@ const sortBy = (criteria) => {
 
 const sortedByLikes = ref(1); // 1 for ascending, -1 for descending
 const sortedByTime = ref(1); // 1 for ascending, -1 for descending
+
+const getRelatedDiscussions = () => {
+  console.log("Getting related discussions");
+  axios
+    .get(`/api/discuss/${discussId}/related`)
+    .then((response) => {
+      console.log(response.data);
+      relatedDiscussions.value = response.data;
+    })
+    .catch((error) => {
+      console.error("Error fetching related discussions:", error);
+    });
+};
+
+const sharePost = () => {
+  console.log("Sharing post");
+  navigator.clipboard.writeText(window.location.href);
+  showAlert.value = true;
+  //alert("Link copied to clipboard!");
+};
+
+const showAlert = ref(false);
+
 </script>
 
 <template>
@@ -140,7 +187,9 @@ const sortedByTime = ref(1); // 1 for ascending, -1 for descending
         <button style="background-color: rgb(254, 121, 73);" @click="replyComment(comments[0].sender_name)">
           Comment
         </button>
-        <button style="background-color: darkmagenta;">Share</button>
+        <button style="background-color: darkmagenta;" @click="sharePost">
+          Share
+        </button>
       </div>
     </div>
     <div id="discuss-content">
@@ -183,6 +232,36 @@ const sortedByTime = ref(1); // 1 for ascending, -1 for descending
         Post Comment
       </button>
     </div>
+    <div id="discuss-right-bar">
+      <h2>Community Guidelines</h2>
+      <p>
+        Please be respectful and courteous to others. Do not post any inappropriate content. If you see any inappropriate content, please report it.
+      </p>
+      <p>
+        For full guidelines, please visit our <router-link to="/guidelines" style="color: rgb(0, 179, 255);">Community Guidelines</router-link>.
+      </p>
+      <h2>Tags</h2>
+      <div class="discuss-tags">
+        <span v-for="tag in comments[0].tags" :key="tag" class="discuss-tag">{{ tag }}</span>
+      </div>
+      <h2>Related Discussions</h2>
+      <div class="related-discussions">
+        <div v-for="discussion in relatedDiscussions" :key="discussion.id" class="related-discussion">
+          <h3>{{ discussion.title }}</h3>
+          <p>{{ discussion.content }}</p>
+          <h4>{{ discussion.sender }} at {{ discussion.time }}</h4>
+        </div>
+      </div>
+      <button @click="getRelatedDiscussions" id="check-others">
+        Check Others
+      </button>
+    </div>
+    <CustomAlert 
+      :visible="showAlert" 
+      title="Congrats!" 
+      message="Link copied to clipboard!" 
+      @close="showAlert = false"
+    />
   </div>
 </template>
 
@@ -192,7 +271,7 @@ const sortedByTime = ref(1); // 1 for ascending, -1 for descending
   top: 3%;
   left: 10%;
   width: 90%;
-  overflow: hidden;
+  overflow: visible;
 }
 
 #discuss-header {
@@ -265,18 +344,22 @@ const sortedByTime = ref(1); // 1 for ascending, -1 for descending
 #discuss-content {
   padding: 10px;
   background-color: rgb(251, 251, 251);
+  position: relative;
   width: 60%;
-  margin: auto;
+  /*margin: auto;*/
   border-radius: 10px;
-  left: 50%;
+  left: 5%;
 }
 
 #comments-holder {
   background-color: white;
+  position: relative;
+  left: 5%;
   width: 60%;
-  margin: auto;
+  /*margin: auto;*/
   border-radius: 10px;
   padding: 10px;
+  margin-top: 10px;
 }
 
 .comment {
@@ -313,10 +396,13 @@ const sortedByTime = ref(1); // 1 for ascending, -1 for descending
 
 #comment-form {
   background-color: rgb(251, 251, 251);
+  position: relative;
+  left: 5%;
   width: 60%;
-  margin: auto;
+  /* margin: auto; */
   border-radius: 10px;
   padding: 10px;
+  margin-top: 10px;
 }
 
 #comment-form textarea {
@@ -373,5 +459,66 @@ const sortedByTime = ref(1); // 1 for ascending, -1 for descending
   background-color: white;
   color: rgb(151, 185, 252);
   /*border: 2px solid #fafcfa;*/
+}
+
+#discuss-right-bar {
+  position: absolute;
+  top: 15%;
+  right: 10px;
+  width: 30%;
+  background-color: rgb(251, 251, 251);
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.related-discussion {
+  padding: 10px;
+  background-color: rgb(235, 235, 235);
+  margin-top: 10px;
+  border-radius: 10px;
+}
+
+.related-discussion:hover {
+  background-color: rgb(245, 245, 245);
+  border: 1px solid rgb(235, 235, 235);
+}
+
+.discuss-tags {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.discuss-tag {
+  padding: 5px;
+  background-color: rgb(159, 199, 90);
+  margin: 5px;
+  border-radius: 10px;
+}
+
+.discuss-tag:hover {
+  background-color: rgb(92, 218, 132);
+  border: 1px solid rgb(66, 176, 86);
+}
+
+#check-others {
+  background-color: #479fb3;
+  border: none;
+  color: white;
+  padding: 10px 24px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 8px 4px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+  border-radius: 10px;
+}
+
+#check-others:hover {
+  background-color: white;
+  color: rgb(151, 185, 252);
+  border: 2px solid #fafcfa;
 }
 </style>

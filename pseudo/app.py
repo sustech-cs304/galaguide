@@ -252,7 +252,8 @@ discuss_info = [
         "sender_name": "Ok Championship", 
         "sender_id": "114514", 
         "time": "11:00",
-        "likes": 7
+        "likes": 7,
+        "tags": ["UC Davis", "LSU", "Pre Vet Major", "Veterinary School", "Debt"]
     },
     {
         "id": 1,
@@ -323,6 +324,43 @@ class DiscussionsLikeHandler(tornado.web.RequestHandler):
         self.set_header("Content-Type", "application/json")
         self.write(json.dumps(response))
 
+candidate_recommendations = [
+    {
+        "id": 1,
+        "title": "Animal Science Major advice?",
+        "content":
+        "I'm a freshman and I'm thinking about majoring in Animal Science. I'm not sure if it's the right choice for me. Can anyone give me some advice?",
+        "sender": "User 1",
+        "time": "12:00",
+        "likes": 1,
+        "tags": ["Animal Science", "Major Advice"]
+    },
+    {
+        "id": 2,
+        "title": "Anyone ever take Bis 002a w/ Z. Jaramillo",
+        "content": "I'm taking Bis 002a with Z. Jaramillo this quarter and I was wondering if anyone has taken it before. How is the class? How are the exams? Any tips?",
+        "sender": "FrostyGG__3",
+        "time": "12:10",
+        "likes": 2,
+        "tags": ["Bis 002a", "Z. Jaramillo"]
+    },
+    {
+        "id": 3,
+        "title": "Rejected from UC Davis MPH Program - Any Advice or Insights",
+        "content": "Hey everyone, I'm reaching out to the community because I'm puzzled and a bit down after receiving some unexpected news. I'm a Global Disease Biology major and I recently applied to the Master of Public Health program at UC Davis. I thought my application essay was strong, and I put a lot of effort into making sure every part of my application was as good as it could be. I applied back in January, and just yesterday, I received my rejection letter. To add to the confusion, a friend of mine, who has a higher GPA than I do, also got rejected. We're both trying to wrap our heads around why we might have been turned down, especially considering UC Davis's program, while great, isn't typically viewed on the same tier as, say, Berkeley's. Does anyone have insights into the admissions process at UC Davis for their MPH program? Maybe there are factors I'm not considering, or perhaps the program is just far more competitive than I realized. Any advice or personal experiences with their public health grad school admissions would be greatly appreciated. How can I strengthen my application if I decide to reapply next year?",
+        "sender": "CaliGirl",
+        "time": "12:20",
+        "likes": 3,
+        "tags": ["UC Davis", "MPH Program", "Admissions"]
+    }
+]
+
+class DiscussionsRecommendHandler(tornado.web.RequestHandler):
+    def get(self):
+        response = random.choices(candidate_recommendations, k=2)
+        self.set_header("Content-Type", "application/json")
+        self.write(json.dumps(response))
+
 def make_app():
     return tornado.web.Application([
         (r"/user/login", LoginHandler),
@@ -336,7 +374,8 @@ def make_app():
         (r"/posts", PostsHandler),
         (r"/discuss(?:\/\d+)/like(?:\/\d+)?$", DiscussionsLikeHandler),
         (r"/discuss(?:\/\d+)?$", DiscussionsHandler),
-        (r"/user(?:\/\d+)/avatar", UserAvatarHandler)
+        (r"/user(?:\/\d+)/avatar", UserAvatarHandler),
+        (r"/discuss(?:\/\d+)/related", DiscussionsRecommendHandler)
     ])
 
 if __name__ == "__main__":
