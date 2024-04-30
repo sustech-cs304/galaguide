@@ -75,10 +75,12 @@ const likeComment = (id) => {
       console.log(response.data);
       // window.location.reload();
       if (response.data.message === "Liked") {
-        comments.value[id].likes = response.data.likes + " (You liked this)";
+        comments.value[id].likes = response.data.likes;
+        filteredComments.value = comments.value.slice(1);
       }
       else {
         comments.value[id].likes = response.data.likes;
+        filteredComments.value = comments.value.slice(1);
       }
     })
     .catch((error) => {
@@ -90,6 +92,36 @@ const replyComment = (name) => {
   document.querySelector("#comment-form textarea").focus();
   textareaInput.value = `@${name} `;
 };
+
+const sortBy = (criteria) => {
+  if (criteria === 'time') {
+    sortedByTime.value *= -1;
+    document.querySelector('#sort-buttons button:nth-child(1)').style.backgroundColor = 'rgb(254, 121, 73)';
+    document.querySelector('#sort-buttons button:nth-child(2)').style.backgroundColor = 'grey';
+  } else if (criteria === 'likes') {
+    sortedByLikes.value *= -1;
+    document.querySelector('#sort-buttons button:nth-child(2)').style.backgroundColor = 'rgb(254, 121, 73)';
+    document.querySelector('#sort-buttons button:nth-child(1)').style.backgroundColor = 'grey';
+  }
+  filteredComments.value.sort((a, b) => {
+    if (criteria === 'time') {
+      if (sortedByTime.value === 1) {
+        return new Date(a.time) - new Date(b.time);
+      } else {
+        return new Date(b.time) - new Date(a.time);
+      }
+    } else if (criteria === 'likes') {
+      if (sortedByLikes.value === 1) {
+        return (a.likes || 0) - (b.likes || 0);
+      } else {
+        return (b.likes || 0) - (a.likes || 0);
+      }
+    }
+  });
+};
+
+const sortedByLikes = ref(1); // 1 for ascending, -1 for descending
+const sortedByTime = ref(1); // 1 for ascending, -1 for descending
 </script>
 
 <template>
@@ -116,6 +148,18 @@ const replyComment = (name) => {
       <p>{{ comments[0].content }}</p>
     </div>
     <div id="comments-holder">
+      <div id="sort-buttons">
+        <button @click="sortBy('time')">
+          Sort by Time
+          <span v-if="sortedByTime === 1">▲</span>
+          <span v-else>▼</span>
+        </button>
+        <button @click="sortBy('likes')">
+          Sort by Likes
+          <span v-if="sortedByLikes == 1">▲</span>
+          <span v-else>▼</span>
+        </button>
+      </div>
       <div v-for="comment in filteredComments" :key="comment.id" class="comment">
         <div class="comment-info">
           <img :src="`/api/user/${comment.sender_id}/avatar`" />
@@ -269,7 +313,7 @@ const replyComment = (name) => {
 
 #comment-form {
   background-color: rgb(251, 251, 251);
-  width: 80%;
+  width: 60%;
   margin: auto;
   border-radius: 10px;
   padding: 10px;
@@ -303,5 +347,31 @@ const replyComment = (name) => {
   background-color: white;
   color: rgb(151, 185, 252);
   border: 2px solid #fafcfa;
+}
+
+#sort-buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+#sort-buttons button {
+  background-color: #4CAF50;
+  border: none;
+  color: white;
+  padding: 10px 24px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+  border-radius: 10px;
+}
+
+#sort-buttons button:hover {
+  background-color: white;
+  color: rgb(151, 185, 252);
+  /*border: 2px solid #fafcfa;*/
 }
 </style>
