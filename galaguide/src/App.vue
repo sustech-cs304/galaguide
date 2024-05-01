@@ -239,7 +239,7 @@ function logout() {
       >
         <div
           class="avatar"
-          style="display: flex; justify-content: center; align-items: center"
+          style="display: flex; justify-content: center; align-items: center; position: relative;"
         >
           <!-- Avatar code here -->
           <router-link
