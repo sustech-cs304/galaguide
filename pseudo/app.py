@@ -74,25 +74,97 @@ group_info = [
     {
         "name": "I love Genshin Impact!",
         "id": 0,
-        "members": ["olzzz07", "np-hard", "12211634", "LightShadow", "MoonBeam", "StarDust", "DreamCatcher", "OceanWhisper", "SkyWatcher", "FireFly", "ForestGlow", "MountainEcho", "RiverSong"],
+        "avatar": "https://fastcdn.hoyoverse.com/mi18n/hk4e_global/m20240416hy38hwmjuo/upload/3a44c8360866622e06d44738b7a643d0_1796956232662757728.jpg?x-oss-process=image/format,webp/quality,Q_90",
+        "pinned": { 
+            "content": "Welcome to the Genshin Impact fan club! We are a group of Genshin Impact fans who love to play the game together. Feel free to join us for some fun and exciting adventures in the world of Teyvat!",
+            "time": "2024-02-21 18:30:00", 
+            "sender": "olzzz07"
+        },
+        "members": [
+            {
+                "name": "olzzz07",
+                "id": 123456,
+                "avatar": "https://cdn.iconscout.com/icon/free/png-256/avatar-370-456322.png"
+            },
+            {
+                "name": "np-hard",
+                "id": 123457,
+                "avatar": "https://cdn.iconscout.com/icon/free/png-256/avatar-370-456323.png"
+            },
+            {
+                "name": "12211634",
+                "id": 123458,
+                "avatar": "https://cdn.iconscout.com/icon/free/png-256/avatar-370-456324.png"
+            },
+            {
+                "name": "LightShadow",
+                "id": 123459,
+                "avatar": "https://cdn.iconscout.com/icon/free/png-256/avatar-370-456325.png"
+            },
+            {
+                "name": "MoonBeam",
+                "id": 123460,
+                "avatar": "https://cdn.iconscout.com/icon/free/png-256/avatar-370-456326.png"
+            },
+            {
+                "name": "StarDust",
+                "id": 123461,
+                "avatar": "https://cdn.iconscout.com/icon/free/png-256/avatar-370-456327.png"
+            },
+            {
+                "name": "DreamCatcher",
+                "id": 123462,
+                "avatar": "https://cdn.iconscout.com/icon/free/png-256/avatar-370-456328.png"
+            },
+            {
+                "name": "OceanWhisper",
+                "id": 123463,
+                "avatar": "https://cdn.iconscout.com/icon/free/png-256/avatar-370-456329.png"
+            },
+            {
+                "name": "SkyWatcher",
+                "id": 123464,
+                "avatar": "https://cdn.iconscout.com/icon/free/png-256/avatar-370-456330.png"
+            },
+            {
+                "name": "FireFly",
+                "id": 123465,
+                "avatar": "https://cdn.iconscout.com/icon/free/png-256/avatar-370-456331.png"
+            },
+            {
+                "name": "ForestGlow",
+                "id": 123466,
+                "avatar": "https://cdn.iconscout.com/icon/free/png-256/avatar-370-456332.png"
+            },
+            {
+                "name": "MountainEcho",
+                "id": 123467,
+                "avatar": "https://cdn.iconscout.com/icon/free/png-256/avatar-370-456333.png"
+            },
+            {
+                "name": "RiverSong",
+                "id": 123468,
+                "avatar": "https://cdn.iconscout.com/icon/free/png-256/avatar-370-456334.png"
+            }
+        ],
         "messages": [
             { "sender": "olzzz07", "content": "Hello", "time": "2024-02-21 18:30:01", "avatar": "https://cdn.iconscout.com/icon/free/png-256/avatar-370-456322.png" },
             { "sender": "np-hard", "content": "How often do you play Genshin bro?", "time": "2024-02-21 18:30:02", "avatar": "https://cdn.iconscout.com/icon/free/png-256/avatar-370-456322.png"},
             { "sender": "12211634", "content": "I play it every day!", "time": "2024-02-21 18:31:00", "avatar": "https://cdn.iconscout.com/icon/free/png-256/avatar-370-456322.png" },
-            { "sender": "LightShadow", "content": "I love the game too!", "time": "2024-02-21 18:31:01", "avatar": "https://cdn.iconscout.com/icon/free/png-256/avatar-370-456322.png"  },
-            { "sender": "MoonBeam", "content": "I'm a big fan of Genshin Impact!", "time": "2024-02-21 18:31:02", "avatar": "https://cdn.iconscout.com/icon/free/png-256/avatar-370-456322.png"  },
-            { "sender": "StarDust", "content": "I'm a big fan of Genshin Impact!", "time": "2024-02-21 18:31:03", "avatar": "https://cdn.iconscout.com/icon/free/png-256/avatar-370-456322.png"  },
-            { "sender": "DreamCatcher", "content": "I'm a big fan of Genshin Impact!", "time": "2024-02-21 18:31:04", "avatar": "https://cdn.iconscout.com/icon/free/png-256/avatar-370-456322.png"  },
-            { "sender": "OceanWhisper", "content": "I'm a big fan of Genshin Impact!", "time": "2024-02-21 18:31:05", "avatar": "https://cdn.iconscout.com/icon/free/png-256/avatar-370-456322.png"  },
-            { "sender": "SkyWatcher", "content": "I'm a big fan of Genshin Impact!", "time": "2024-02-21 18:31:06", "avatar": "https://cdn.iconscout.com/icon/free/png-256/avatar-370-456322.png"  },
-            { "sender": "FireFly", "content": "I'm a big fan of Genshin Impact!", "time": "2024-02-21 18:31:07", "avatar": "https://cdn.iconscout.com/icon/free/png-256/avatar-370-456322.png"  },
-            { "sender": "ForestGlow", "content": "I'm a big fan of Genshin Impact!", "time": "2024-02-21 18:31:08", "avatar": "https://cdn.iconscout.com/icon/free/png-256/avatar-370-456322.png"  },
-            { "sender": "MountainEcho", "content": "I'm a big fan of Genshin Impact!", "time": "2024-02-21 18:31:09", "avatar": "https://cdn.iconscout.com/icon/free/png-256/avatar-370-456322.png"  },
-            { "sender": "RiverSong", "content": "I'm a big fan of Genshin Impact!", "time": "2024-02-21 18:31:10", "avatar": "https://cdn.iconscout.com/icon/free/png-256/avatar-370-456322.png"  },
-            { "sender": "olzzz07", "content": "Umm, I think we have enough fans here.", "time": "2024-02-21 18:31:11", "avatar": "https://cdn.iconscout.com/icon/free/png-256/avatar-370-456322.png"  },
-            { "sender": "np-hard", "content": "Haha, I think so too.", "time": "2024-02-21 18:31:12", "avatar": "https://cdn.iconscout.com/icon/free/png-256/avatar-370-456322.png"  },
-            { "sender": "12211634", "content": "Yeah, we should play together!", "time": "2024-02-21 18:31:13", "avatar": "https://cdn.iconscout.com/icon/free/png-256/avatar-370-456322.png"  },
-            { "sender": "LightShadow", "content": "I'm in!", "time": "2024-02-21 18:31:14", "avatar": "https://cdn.iconscout.com/icon/free/png-256/avatar-370-456322.png"  },
+            { "sender": "LightShadow", "content": "I love the game too!", "time": "2024-02-21 18:31:01"},
+            { "sender": "MoonBeam", "content": "I'm a big fan of Genshin Impact!", "time": "2024-02-21 18:31:02"},
+            { "sender": "StarDust", "content": "I'm a big fan of Genshin Impact!", "time": "2024-02-21 18:31:03"},
+            { "sender": "DreamCatcher", "content": "I'm a big fan of Genshin Impact!", "time": "2024-02-21 18:31:04"},
+            { "sender": "OceanWhisper", "content": "I'm a big fan of Genshin Impact!", "time": "2024-02-21 18:31:05"},
+            { "sender": "SkyWatcher", "content": "I'm a big fan of Genshin Impact!", "time": "2024-02-21 18:31:06"},
+            { "sender": "FireFly", "content": "I'm a big fan of Genshin Impact!", "time": "2024-02-21 18:31:07"},
+            { "sender": "ForestGlow", "content": "I'm a big fan of Genshin Impact!", "time": "2024-02-21 18:31:08"},
+            { "sender": "MountainEcho", "content": "I'm a big fan of Genshin Impact!", "time": "2024-02-21 18:31:09"},
+            { "sender": "RiverSong", "content": "I'm a big fan of Genshin Impact!", "time": "2024-02-21 18:31:10"},
+            { "sender": "olzzz07", "content": "Umm, I think we have enough fans here.", "time": "2024-02-21 18:31:11"},
+            { "sender": "np-hard", "content": "Haha, I think so too.", "time": "2024-02-21 18:31:12"},
+            { "sender": "12211634", "content": "Yeah, we should play together!", "time": "2024-02-21 18:31:13"},
+            { "sender": "LightShadow", "content": "I'm in!", "time": "2024-02-21 18:31:14"},
             { "sender": "MoonBeam", "content": "Me too!", "time": "2024-02-21 18:31:15" },
             { "sender": "DreamCatcher", "content": "I'm a big fan of Genshin Impact!", "time": "2024-02-21 18:31:16" },
             { "sender": "OceanWhisper", "content": "I'm a big fan of Genshin Impact!", "time": "2024-02-21 18:31:17" },
@@ -110,7 +182,19 @@ group_info = [
             { "sender": "DreamCatcher", "content": "I'm in!", "time": "2024-02-21 18:31:29" },
             { "sender": "OceanWhisper", "content": "I'm in!", "time": "2024-02-21 18:31:30" },
             { "sender": "SkyWatcher", "content": "I'm in!", "time": "2024-02-21 18:31:31" },
-            { "sender": "FireFly", "content": "I'm in!", "time": "2024-02-21 18:31:32" }
+            { "sender": "FireFly", "content": "I'm in!", "time": "2024-02-21 18:31:32" },
+            { "sender": "np-hard", "content": "Wait, could *someone* help me with the `Abyss`?", "time": "2024-02-21 18:31:33" },
+            { "sender": "olzzz07", "content": "Lol, np-hard, I guess you need to finish your coding homework first.", "time": "2024-02-21 18:31:34" },
+            { "sender": "np-hard", "content": "Haha, I'm on it! If you need to see this: ```cpp\n#include <iostream>\nint main() {\n    std::cout << \"Hello, World!\" << std::endl;\n    return 0;\n}\n```", "time": "2024-02-21 18:31:35" },
+            { "sender": "olzzz07", "content": "Nice code! Now try Segment Tree.", "time": "2024-02-21 18:31:36" },
+            { "sender": "np-hard", "content": "That's **super** easy lmao. See: ```cpp\n#include <iostream>\n#include<vector>\nusing namespace std;\n\nclass SegmentTree {\npublic:\n    SegmentTree(vector<int>& nums) {\n        n = nums.size();\n        tree.resize(4 * n);\n        buildTree(nums, 0, 0, n - 1);\n    }\n\n    void buildTree(vector<int>& nums, int index, int left, int right) {\n        if (left == right) {\n            tree[index] = nums[left];\n            return;\n        }\n        int mid = left + (right - left) / 2;\n        buildTree(nums, 2 * index + 1, left, mid);\n        buildTree(nums, 2 * index + 2, mid + 1, right);\n        tree[index] = tree[2 * index + 1] + tree[2 * index + 2];\n    }\n\nprivate:\n    int n;\n    vector<int> tree;\n};\n```", "time": "2024-02-21 18:31:37" },
+            { "sender": "np-hard", "content": "Now, who can tell me the time complexity of this code?", "time": "2024-02-21 18:31:38" },
+            { "sender": "olzzz07", "content": "O(n) time complexity.", "time": "2024-02-21 18:31:39" },
+            { "sender": "np-hard", "content": "Correct! You're a good student!", "time": "2024-02-21 18:31:40" },
+            { "sender": "olzzz07", "content": "Thanks! I'm always here to help you! And for additional resources, check out this [link](https://www.geeksforgeeks.org/segment-tree-set-1-sum-of-given-range/).", "time": "2024-02-21 18:31:41" },
+            { "sender": "np-hard", "content": "Thanks! I'll check it out! ![a random image](https://cdn.iconscout.com/icon/free/png-256/avatar-370-456350.png)", "time": "2024-02-21 18:31:42" },
+            { "sender": "olzzz07", "content": "You're welcome! Have a nice day!", "time": "2024-02-21 18:31:43" },
+            { "sender": "np-hard", "content": "You too!", "time": "2024-02-21 18:31:44" }
         ]
     },
     {
@@ -176,6 +260,8 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
         print("Received message: " + message)
         print(message)
         group_info[0]["messages"].append(json.loads(message))
+        # add field `avatar` to the message
+        group_info[0]["messages"][-1]["avatar"] = "https://cdn.iconscout.com/icon/free/png-256/avatar-370-456322.png"
         # Broadcast message
         for conn in connections:
             conn.write_message(message)

@@ -55,6 +55,7 @@ onMounted(() => {
   if (token) {
     axios.defaults.headers.common["Bearer"] = token;
   }
+  updateViewingHistory(discussId);
   getRelatedDiscussions();
   document.querySelector('#comment-form').addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
@@ -72,6 +73,20 @@ onMounted(() => {
       console.error("Error fetching discussion:", error);
     });
 });
+
+const updateViewingHistory = (id) => {
+  console.log("Updating viewing history");
+  axios
+    .post(`/api/discuss/history`, {
+      discuss_id: id,
+    })
+    .then((response) => {
+      console.log(response.data);
+    })
+    .catch((error) => {
+      console.error("Error updating viewing history:", error);
+    });
+};
 
 const postComment = () => {
   console.log("Posting comment");
