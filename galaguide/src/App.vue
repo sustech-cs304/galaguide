@@ -8,7 +8,8 @@ import "v-calendar/style.css";
 
 // import HomePage from "./components/HomePage.vue";
 
-const role = ref(2); // 0 for not logged in, 1 for user, 2 for admin
+const role = ref(0); // 0 for not logged in, 1 for user, 2 for admin
+let userName = "";
 
 const hoveredOnCalendar = ref(false);
 const hoveredOnAvatar = ref(false);
@@ -84,20 +85,36 @@ const attrs = ref([
 ]);*/
 
 function getRoleFromCookie() {
+  console.log("document.cookie:", document.cookie);
   const cookie = document.cookie
     .split(";")
     .find((cookie) => cookie.trim().startsWith("userRole="));
   console.log("cookie:", cookie);
   if (cookie) {
     const roleValue = cookie.split("=")[1];
+    console.log("roleValue:", roleValue);
     role.value = parseInt(roleValue);
   } else {
     role.value = 1;
   }
 }
 
+function getUserNameFromCookie() {
+  const cookie = document.cookie
+    .split(";")
+    .find((cookie) => cookie.trim().startsWith("userName="));
+  console.log("cookie:", cookie);
+  if (cookie) {
+    userName = cookie.split("=")[1];
+    console.log("userName:", userName);
+  } else {
+    userName = "";
+  }
+}
+
 onMounted(() => {
   getRoleFromCookie();
+  getUserNameFromCookie();
 });
 
 function logout() {
@@ -271,7 +288,7 @@ function logout() {
             font-size: 1.2em;
           "
         >
-          User Name
+          {{ userName }}
         </div>
         <hr />
 

@@ -104,8 +104,13 @@ const check = (e) => {
           localStorage.setItem("token", res.data.token);
           setCookie("token", res.data.token, 1);
           setCookie("userRole", res.data.user_role, 1);
-          setCookie("username", res.data.username, 1);
+          setCookie("userName", res.data.username, 1);
           router.push("/");
+          // console.log("localStorage", localStorage)
+          // console.log("token", localStorage.token)
+          // console.log("cookie", document.cookie)
+          // let name = document.cookie.split(";")[1].split("=")[1];
+          // console.log("name", name)
           location.replace("/");
           location.reload();
           location.replace("/");

@@ -3,7 +3,7 @@
     <div class="space">
       <div class="space-header">
         <img
-          :src="user.photo"
+          :src="user.userAvatar"
           alt="user photo"
           style="
             position: absolute;
@@ -13,10 +13,10 @@
           "
         />
         <h2 class="user-name" style="position: absolute; left: 22.5%; top: 31%">
-          {{ userName }}
+          {{ user.userName }}
         </h2>
         <p class="user-bio" style="position: absolute; left: 22.5%; top: 37.5%">
-          {{ userBio }}
+          {{ user.userBio }}
         </p>
       </div>
 
@@ -28,7 +28,7 @@
           </div>
         </div>
         <div class="cards">
-          <div class="card" v-for="event in userEvents" :key="event.title">
+          <div class="card" v-for="event in user.userFavoriteEvents" :key="event.title">
             <h3>{{ event.title }}</h3>
             <p>{{ event.content }}</p>
           </div>
@@ -41,7 +41,7 @@
           </div>
         </div>
         <div class="cards">
-          <div class="card" v-for="post in userPosts" :key="post.title">
+          <div class="card" v-for="post in user.userPosts" :key="post.title">
             <img :src="post.photo" alt="post photo" />
             <h3>{{ post.name }}</h3>
             <p>{{ post.description }}</p>
@@ -55,7 +55,7 @@
           </div>
         </div>
         <div class="cards">
-          <div class="card" v-for="group in userGroups" :key="group.name">
+          <div class="card" v-for="group in user.userGroups" :key="group.name">
             <h3>{{ group.name }}</h3>
             <img :src="group.photo" alt="group photo" />
             <p>{{ group.description }}</p>
@@ -70,76 +70,69 @@
 import { ref, onMounted } from "vue";
 
 const user = ref({});
-const userName = ref("");
-const userBio = ref("");
-const userEvents = ref("");
-const userPosts = ref([]);
-const userGroups = ref([]);
 
 onMounted(async () => {
-  // const response = await axios.get("http://localhost:8080/user");
+  // const response = await axios.get("/api/user/details");
   // user.value = response.data;
-  // userName.value = response.data.name;
-  // userBio.value = response.data.bio;
-  // userEmail.value = response.data.email;
-  // userPosts.value = response.data.posts;
-  // userGroups.value = response.data.groups;
+  
   user.value = {
-    photo: "https://via.placeholder.com/100",
+    userAvatar: "https://via.placeholder.com/100",
+    userName: document.cookie.split(";")
+      .find((cookie) => cookie.trim().startsWith("userName=")).split("=")[1],
+    userEmail: "123456789@google.com",
+    userBio: "Here is a short bio about the user.",
+    userFavoriteEvents: [
+      {
+        title: "Event 1",
+        content:
+          "Lorem ipsum, dolor sit amet consectetur adipisicing elit.Distinctio pariatur iusto accusamus, placeat ea sapiente quaerateum veritatis, fugiat, obcaecati saepe itaque sequi ipsam vel. Utvoluptatem ipsa in consectetur, qui similique aliquam labore vitaeporro voluptatum distinctio, optio ipsum tempore animi corrupti,dolor non natus illo iusto repellat vero.",
+      },
+      {
+        title: "Event 2",
+        content:
+          "Lorem ipsum, dolor sit amet consectetur adipisicing elit.Distinctio pariatur iusto accusamus, placeat ea sapiente quaerateum veritatis, fugiat, obcaecati saepe itaque sequi ipsam vel. Utvoluptatem ipsa in consectetur, qui similique aliquam labore vitaeporro voluptatum distinctio, optio ipsum tempore animi corrupti,dolor non natus illo iusto repellat vero.",
+      },
+      {
+        title: "Event 3",
+        content:
+          "Lorem ipsum, dolor sit amet consectetur adipisicing elit.Distinctio pariatur iusto accusamus, placeat ea sapiente quaerateum veritatis, fugiat, obcaecati saepe itaque sequi ipsam vel. Utvoluptatem ipsa in consectetur, qui similique aliquam labore vitaeporro voluptatum distinctio, optio ipsum tempore animi corrupti,dolor non natus illo iusto repellat vero.",
+      },
+    ],
+    userPosts: [
+      {
+        photo: "https://via.placeholder.com/150",
+        name: "Post 1",
+        description: "Lorem ipsum, dolor sit amet consectetur.",
+      },
+      {
+        photo: "https://via.placeholder.com/150",
+        name: "Post 2",
+        description: "Lorem ipsum, dolor sit amet consectetur.",
+      },
+      {
+        photo: "https://via.placeholder.com/150",
+        name: "Post 3",
+        description: "Lorem ipsum, dolor sit amet consectetur.",
+      },
+    ],
+    userGroups: [
+      {
+        photo: "https://via.placeholder.com/150",
+        name: "Group 1",
+        description: "Lorem ipsum, dolor sit amet consectetur.",
+      },
+      {
+        photo: "https://via.placeholder.com/150",
+        name: "Group 2",
+        description: "Lorem ipsum, dolor sit amet consectetur.",
+      },
+      {
+        photo: "https://via.placeholder.com/150",
+        name: "Group 3",
+        description: "Lorem ipsum, dolor sit amet consectetur.",
+      },
+    ]
   };
-  userName.value = "User Name";
-  userBio.value = "Here is a short bio about the user.";
-  userEvents.value = [
-    {
-      title: "Event 1",
-      content:
-        "Lorem ipsum, dolor sit amet consectetur adipisicing elit.Distinctio pariatur iusto accusamus, placeat ea sapiente quaerateum veritatis, fugiat, obcaecati saepe itaque sequi ipsam vel. Utvoluptatem ipsa in consectetur, qui similique aliquam labore vitaeporro voluptatum distinctio, optio ipsum tempore animi corrupti,dolor non natus illo iusto repellat vero.",
-    },
-    {
-      title: "Event 2",
-      content:
-        "Lorem ipsum, dolor sit amet consectetur adipisicing elit.Distinctio pariatur iusto accusamus, placeat ea sapiente quaerateum veritatis, fugiat, obcaecati saepe itaque sequi ipsam vel. Utvoluptatem ipsa in consectetur, qui similique aliquam labore vitaeporro voluptatum distinctio, optio ipsum tempore animi corrupti,dolor non natus illo iusto repellat vero.",
-    },
-    {
-      title: "Event 3",
-      content:
-        "Lorem ipsum, dolor sit amet consectetur adipisicing elit.Distinctio pariatur iusto accusamus, placeat ea sapiente quaerateum veritatis, fugiat, obcaecati saepe itaque sequi ipsam vel. Utvoluptatem ipsa in consectetur, qui similique aliquam labore vitaeporro voluptatum distinctio, optio ipsum tempore animi corrupti,dolor non natus illo iusto repellat vero.",
-    },
-  ];
-  userPosts.value = [
-    {
-      photo: "https://via.placeholder.com/150",
-      name: "Post 1",
-      description: "Lorem ipsum, dolor sit amet consectetur.",
-    },
-    {
-      photo: "https://via.placeholder.com/150",
-      name: "Post 2",
-      description: "Lorem ipsum, dolor sit amet consectetur.",
-    },
-    {
-      photo: "https://via.placeholder.com/150",
-      name: "Post 3",
-      description: "Lorem ipsum, dolor sit amet consectetur.",
-    },
-  ];
-  userGroups.value = [
-    {
-      photo: "https://via.placeholder.com/150",
-      name: "Group 1",
-      description: "Lorem ipsum, dolor sit amet consectetur.",
-    },
-    {
-      photo: "https://via.placeholder.com/150",
-      name: "Group 2",
-      description: "Lorem ipsum, dolor sit amet consectetur.",
-    },
-    {
-      photo: "https://via.placeholder.com/150",
-      name: "Group 3",
-      description: "Lorem ipsum, dolor sit amet consectetur.",
-    },
-  ];
 });
 </script>
 
@@ -162,7 +155,7 @@ onMounted(async () => {
   margin-right: 1.5%;
   padding-left: 1%;
   display: flex;
-  justify-content: start;
+  justify-content: flex-start;
   align-items: center;
   height: max-content;
   border: solid;
@@ -180,7 +173,7 @@ onMounted(async () => {
   width: 90%;
   height: auto;
   display: flex;
-  justify-content: start;
+  justify-content: flex-start;
   align-items: center;
   border: solid;
   border-color: rgba(180, 197, 197, 0.449);
@@ -235,7 +228,7 @@ onMounted(async () => {
   height: auto;
   display: flex;
   flex-direction: column;
-  justify-content: start;
+  justify-content: flex-start;
   align-items: center;
   border: solid;
   border-color: rgba(128, 110, 118, 0.449);
