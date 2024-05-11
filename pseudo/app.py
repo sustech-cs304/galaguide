@@ -2,7 +2,7 @@ import tornado.ioloop
 import tornado.web
 import tornado.websocket
 import json
-from openai import OpenAI
+# from openai import OpenAI
 import os
 import random
 

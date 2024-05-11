@@ -12,7 +12,9 @@
                 <p>Event Time: {{ gala.event_time }}</p>
             </div>
             <div class="event-card-buttons">
-                <button @click="galaDetail">Details</button>
+                <router-link :to="'/events/' + gala.id">
+                    <button>Details</button>
+                </router-link>
                 <button @click="favoriteGala">Favorite</button>
             </div>
         </div>
@@ -22,7 +24,7 @@
 <script lang="js">
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
-
+import { router } from '../../router';
 export default {
     name: 'EventCard',
     props: {
@@ -57,7 +59,7 @@ export default {
         return {
             gala,
             galaDetail() {
-                this.$router.push({ path: '/events/' + props.eventId });
+                router.push({ path: '/events/${gala.value.id}' });
             },
             favoriteGala() {
                 console.log('Favorite event:', gala.value.title);
@@ -110,7 +112,7 @@ export default {
     padding: 5px 10px;
     margin-right: 10px;
     cursor: pointer;
-    border: 1px solid #cfe458;
+    border: 1px solid #bdd437;
     border-radius: 4px;
 }
 

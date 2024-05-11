@@ -15,7 +15,7 @@
                 </Vue3Marquee> -->
                 <div v-for="event in events" :key="event.id" class="poster"
                     :style="{ transform: `translateX(-${currentEventIndex * 100}%)` }">
-                    <router-link to="/events/{params:{eventID: event.id}}">
+                    <router-link to="/events/{{event.id}}">
                         <!-- <img src="../../assets/posters/poster.jpg" alt="poster.jpg" style="width: 100%; height: auto"/>
                          -->
                         <h1>{{ event.name }}</h1>

@@ -12,8 +12,7 @@
         <h2>My Favorite Events</h2>
       </header>
       <section class="event" v-for="event in favoriteEvents" :key="event.id">
-        <h2>{{ event.eventTitle }}</h2>
-        <p>{{ event.eventIntroduction }}</p>
+        <EventCard :eventId=event.id />
         <!-- More details can be displayed here -->
         <div class="event-actions">
           <button @click="shareEvent()" class="share-button">Share</button>
@@ -25,9 +24,12 @@
 </template>
 
 <script>
-// import EventCard from './EventCard.vue';
+import EventCard from './EventCard.vue';
 // import axios from 'axios';
 export default {
+  components: {
+    EventCard,
+  },
   data() {
     return {
       // Your event data here
@@ -181,19 +183,30 @@ export default {
 }
 
 .delete-button {
-  background-color: rgba(189, 18, 18, 0.849); /* Default background to white */
-  color: #f7f7f7; /* Default text color to dark */
-  border: 1px solid #dcdcdc; /* Light border for the button */
-  border-radius: 4px; /* Rounded corners for the button */
-  padding: 8px 16px; /* Padding inside the button */
-  margin-left: 8px; /* Margin to the left of the button */
-  transition: background-color 0.3s, color 0.3s, border-color 0.3s; /* Smooth transition for color and border */
-  cursor: pointer; /* Cursor to pointer to indicate it's clickable */
+  background-color: rgba(189, 18, 18, 0.849);
+  /* Default background to white */
+  color: #f7f7f7;
+  /* Default text color to dark */
+  border: 1px solid #dcdcdc;
+  /* Light border for the button */
+  border-radius: 4px;
+  /* Rounded corners for the button */
+  padding: 8px 16px;
+  /* Padding inside the button */
+  margin-left: 8px;
+  /* Margin to the left of the button */
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+  /* Smooth transition for color and border */
+  cursor: pointer;
+  /* Cursor to pointer to indicate it's clickable */
 }
 
 .delete-button:hover {
-  background-color: #be4f4f; /* Light red background on hover */
-  color: #b33a3a; /* Red text color on hover for emphasis */
-  border: 2px solid #b33a3a; /* Solid border to highlight the button on hover */
+  background-color: #be4f4f;
+  /* Light red background on hover */
+  color: #b33a3a;
+  /* Red text color on hover for emphasis */
+  border: 2px solid #b33a3a;
+  /* Solid border to highlight the button on hover */
 }
 </style>
