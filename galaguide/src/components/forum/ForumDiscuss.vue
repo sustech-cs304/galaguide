@@ -2,240 +2,538 @@
 import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import axios from "axios";
+import CustomAlert from "../../components/CustomAlert.vue";
 const route = useRoute();
 const discussId = route.params.id;
+const textareaInput = ref("");
 
 const comments = ref([
-  { id: 1, content: "Comment 1", sender: "User 1", time: "12:00" },
+  {
+    id: 1,
+    sender_id: 1,
+    sender_name: " ",
+    time: " ",
+    title: " ",
+    content: " ",
+  }
 ]);
+
+const filteredComments = ref([]);
+
+const relatedDiscussions = ref([
+  {
+    id: 1,
+    title: "Animal Science Major advice?",
+    content:
+    "I'm a freshman and I'm thinking about majoring in Animal Science. I'm not sure if it's the right choice for me. Can anyone give me some advice?",
+    sender: "User 1",
+    time: "12:00",
+    likes: 1,
+    tags: ["Animal Science", "Major Advice"],
+  },
+  {
+    id: 2,
+    title: "First time didi user in Shanghai",
+    content: "I will be traveling with my aunt and mom in shanghai. We will be arriving at the Hongqiao railway station and I will have two large check-in luggages with me because I will be flying out of pudong airport later that week. I think it'll be difficult for us to take the subway with the luggage so I was thinking of calling a didi cab. I read online that they only accept 2 max riders at a time. So a few questions: Is it okay if I hail the car ride, have my mom and aunt use the cab ride while I take the subway? I'll just monitor the cab ride through my phone. How do I know if the car is big enough for the two suitcases? The types of car I see are \"Discount Express\", \"Express\"..etc. Thank you!",
+    sender: "Wendy",
+    time: "12:00",
+    likes: 1,
+    tags: ["Shanghai", "Didi", "Hongqiao Railway Station", "Pudong Airport"],
+  }
+]);
+
+// const getCookie = (name) => {
+//   const value = `; ${document.cookie}`;
+//   const parts = value.split(`; ${name}=`);
+//   if (parts.length === 2) return parts.pop().split(";").shift();
+// };
 
 onMounted(() => {
   console.log(discussId);
+  const token = localStorage.getItem("token");
+  // if token exists, set the token in the axios headers
+  if (token) {
+    axios.defaults.headers.common["Bearer"] = token;
+  }
+  updateViewingHistory(discussId);
+  getRelatedDiscussions();
+  document.querySelector('#comment-form').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      postComment();
+    }
+  });
   axios
     .get(`/api/discuss/${discussId}`)
     .then((response) => {
       console.log(response.data);
+      comments.value = response.data;
+      filteredComments.value = comments.value.slice(1);
     })
     .catch((error) => {
       console.error("Error fetching discussion:", error);
     });
 });
+
+const updateViewingHistory = (id) => {
+  console.log("Updating viewing history");
+  axios
+    .post(`/api/discuss/history`, {
+      discuss_id: id,
+    })
+    .then((response) => {
+      console.log(response.data);
+    })
+    .catch((error) => {
+      console.error("Error updating viewing history:", error);
+    });
+};
+
+const postComment = () => {
+  console.log("Posting comment");
+  axios
+    .post(`/api/discuss/${discussId}`, {
+      title: " ",
+      content: textareaInput.value,
+      sender_name: "admin",
+      time: new Date().toLocaleString()
+    })
+    .then((response) => {
+      console.log(response.data);
+      window.location.reload();
+    })
+    .catch((error) => {
+      console.error("Error posting comment:", error);
+    });
+};
+
+const likeComment = (id) => {
+  console.log("Liking post");
+  axios
+    .post(`/api/discuss/${discussId}/like/${id}`)
+    .then((response) => {
+      console.log(response.data);
+      // window.location.reload();
+      if (response.data.message === "Liked") {
+        comments.value[id].likes = response.data.likes;
+        filteredComments.value = comments.value.slice(1);
+      }
+      else {
+        comments.value[id].likes = response.data.likes;
+        filteredComments.value = comments.value.slice(1);
+      }
+    })
+    .catch((error) => {
+      console.error("Error liking post:", error);
+    });
+};
+
+const replyComment = (name) => {
+  document.querySelector("#comment-form textarea").focus();
+  textareaInput.value = `@${name} `;
+};
+
+const sortBy = (criteria) => {
+  if (criteria === 'time') {
+    sortedByTime.value *= -1;
+    document.querySelector('#sort-buttons button:nth-child(1)').style.backgroundColor = 'rgb(254, 121, 73)';
+    document.querySelector('#sort-buttons button:nth-child(2)').style.backgroundColor = 'grey';
+  } else if (criteria === 'likes') {
+    sortedByLikes.value *= -1;
+    document.querySelector('#sort-buttons button:nth-child(2)').style.backgroundColor = 'rgb(254, 121, 73)';
+    document.querySelector('#sort-buttons button:nth-child(1)').style.backgroundColor = 'grey';
+  }
+  filteredComments.value.sort((a, b) => {
+    if (criteria === 'time') {
+      if (sortedByTime.value === 1) {
+        return new Date(a.time) - new Date(b.time);
+      } else {
+        return new Date(b.time) - new Date(a.time);
+      }
+    } else if (criteria === 'likes') {
+      if (sortedByLikes.value === 1) {
+        return (a.likes || 0) - (b.likes || 0);
+      } else {
+        return (b.likes || 0) - (a.likes || 0);
+      }
+    }
+  });
+};
+
+const sortedByLikes = ref(1); // 1 for ascending, -1 for descending
+const sortedByTime = ref(1); // 1 for ascending, -1 for descending
+
+const getRelatedDiscussions = () => {
+  console.log("Getting related discussions");
+  axios
+    .get(`/api/discuss/${discussId}/related`)
+    .then((response) => {
+      console.log(response.data);
+      relatedDiscussions.value = response.data;
+    })
+    .catch((error) => {
+      console.error("Error fetching related discussions:", error);
+    });
+};
+
+const sharePost = () => {
+  console.log("Sharing post");
+  navigator.clipboard.writeText(window.location.href);
+  showAlert.value = true;
+  //alert("Link copied to clipboard!");
+};
+
+const showAlert = ref(false);
+
 </script>
 
 <template>
   <div id="forum-discuss">
-    <div id="discuss-title-top-bar">
-      <div style="margin-right: 8%">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="54"
-          height="54"
-          fill="currentColor"
-          class="bi bi-chat-left-text"
-          viewBox="0 0 16 16"
-        >
-          <path
-            d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4.414A2 2 0 0 0 3 11.586l-2 2V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"
-          />
-          <path
-            d="M3 3.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zM3 6a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9A.5.5 0 0 1 3 6zm0 2.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5z"
-          />
-        </svg>
+    <div id="discuss-header">
+      <router-link to="/forum" id="back-button"></router-link>
+      <div id="op-info">
+        <img :src="`/api/user/${comments[0].sender_id}/avatar`" />
+        <p id="op-name">{{ comments[0].sender_name }}</p>
+        <p id="op-time">&nbsp;at&nbsp;{{ comments[0].time }}</p>
       </div>
-      <div id="discuss-title">
-        <h2>Discuss Title</h2>
+      <div class="actions"> 
+        <button style="background-color: rgb(253, 135, 155);" @click="likeComment(0)">
+          Liked by {{ comments[0].likes }}
+        </button>
+        <button style="background-color: rgb(254, 121, 73);" @click="replyComment(comments[0].sender_name)">
+          Comment
+        </button>
+        <button style="background-color: darkmagenta;" @click="sharePost">
+          Share
+        </button>
       </div>
     </div>
-    <div id="discuss-body">
-      <div id="discuss-content">
-        <div id="header-poster-time">
-          <p id="header-poster">Poster</p>
-          <p id="header-time">Time</p>
+    <div id="discuss-content">
+      <h1>{{ comments[0].title }}</h1>
+      <p>{{ comments[0].content }}</p>
+    </div>
+    <div id="comments-holder">
+      <div id="sort-buttons">
+        <button @click="sortBy('time')">
+          Sort by Time
+          <span v-if="sortedByTime === 1">▲</span>
+          <span v-else>▼</span>
+        </button>
+        <button @click="sortBy('likes')">
+          Sort by Likes
+          <span v-if="sortedByLikes == 1">▲</span>
+          <span v-else>▼</span>
+        </button>
+      </div>
+      <div v-for="comment in filteredComments" :key="comment.id" class="comment">
+        <div class="comment-info">
+          <img :src="`/api/user/${comment.sender_id}/avatar`" />
+          <p class="comment-sender">{{ comment.sender_name }}</p>
+          <p class="comment-time">{{ comment.time }}</p>
         </div>
-        <p id="discuss-content">Content</p>
-      </div>
-      <div id="discuss-comments">
-        <div v-for="comment in comments" :key="comment.id" class="comment">
-          <div class="comment-sender-time">
-            <p class="comment-sender">{{ comment.sender }}</p>
-            <p class="comment-time">{{ comment.time }}</p>
-          </div>
-          <p class="comment-content">{{ comment.content }}</p>
+        <p class="comment-content">{{ comment.content }}</p>
+        <div class="actions">
+          <button @click="likeComment(comment.id)">
+            Liked by {{ comment.likes }}
+          </button>
+          <button style="background-color: rgb(254, 121, 73);" @click="replyComment(comment.sender_name)">
+            Reply
+          </button>
         </div>
       </div>
     </div>
-    <div id="discuss-reply">
-      <textarea
-        id="reply-textarea"
-        placeholder="Reply to this discussion"
-      ></textarea>
-      <button id="reply-button">Reply</button>
+    <div id="comment-form">
+      <textarea placeholder="Write a comment" v-model="textareaInput" rows="4" cols="50"></textarea>
+      <button @click="postComment">
+        Post Comment
+      </button>
     </div>
+    <div id="discuss-right-bar">
+      <h2>Community Guidelines</h2>
+      <p>
+        Please be respectful and courteous to others. Do not post any inappropriate content. If you see any inappropriate content, please report it.
+      </p>
+      <p>
+        For full guidelines, please visit our <router-link to="/guidelines" style="color: rgb(0, 179, 255);">Community Guidelines</router-link>.
+      </p>
+      <h2>Tags</h2>
+      <div class="discuss-tags">
+        <span v-for="tag in comments[0].tags" :key="tag" class="discuss-tag">{{ tag }}</span>
+      </div>
+      <h2>Related Discussions</h2>
+      <div class="related-discussions">
+        <div v-for="discussion in relatedDiscussions" :key="discussion.id" class="related-discussion">
+          <h3>{{ discussion.title }}</h3>
+          <p>{{ discussion.content }}</p>
+          <h4>{{ discussion.sender }} at {{ discussion.time }}</h4>
+        </div>
+      </div>
+      <button @click="getRelatedDiscussions" id="check-others">
+        Check Others
+      </button>
+    </div>
+    <CustomAlert 
+      :visible="showAlert" 
+      title="Congrats!" 
+      message="Link copied to clipboard!" 
+      @close="showAlert = false"
+    />
   </div>
 </template>
 
 <style>
 #forum-discuss {
-  display: flex;
-  flex-direction: column;
-  margin-left: 11%;
-
-  align-items: center;
-  width: 88%;
-  height: 100%;
-  background-color: white;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+  position: absolute;
+  top: 3%;
+  left: 10%;
+  width: 90%;
+  overflow: visible;
 }
 
-#discuss-title-top-bar {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding-left: 1%;
-  width: 100%;
-  height: 10%;
-  background-color: #23b375;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-}
-
-#discuss-title {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 80%;
-  height: 100%;
-  background-color: white;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-}
-
-#discuss-body {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  height: 80%;
-  background-color: white;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  overflow: auto;
-}
-
-#header-poster-time {
+#discuss-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
-  height: 10%;
+  padding: 10px;
+  /* background-color: rgb(251, 251, 251); */
+}
+
+#back-button {
+  width: 50px;
+  height: 50px;
+  background-color: rgb(229, 229, 229);
+  border-radius: 10%;
+}
+
+#back-button::before {
+  content: "<";
+  font-size: 30px;
+}
+
+#back-button:hover {
+  cursor: pointer;
+  background-color: rgb(234, 234, 234);
+}
+
+#op-info {
+  display: flex;
+  align-items: center;
+}
+
+#op-info img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+
+#op-name {
+  margin-left: 10px;
+  font-size: 200%;
+}
+
+#op-time {
+  margin-left: 10px;
+}
+
+.actions button {
+  margin-left: 10px;
+  background-color: #4CAF50;
+  border: none;
+  color: white;
+  padding: 10px 24px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+  border-radius: 10px;
+}
+
+.actions button:hover {
   background-color: white;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-}
-
-#header-poster {
-  font-size: 0.9em;
-}
-
-#header-time {
-  font-size: 0.9em;
+  color: rgb(151, 185, 252);
+  border: 2px solid #fafcfa;
 }
 
 #discuss-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 80%;
-  height: 40%;
-  background-color: white;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+  padding: 10px;
+  background-color: rgb(251, 251, 251);
+  position: relative;
+  width: 60%;
+  /*margin: auto;*/
+  border-radius: 10px;
+  left: 5%;
 }
 
-#discuss-comments {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 80%;
-  height: 50%;
+#comments-holder {
   background-color: white;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+  position: relative;
+  left: 5%;
+  width: 60%;
+  /*margin: auto;*/
+  border-radius: 10px;
+  padding: 10px;
+  margin-top: 10px;
 }
 
 .comment {
+  padding: 10px;
+  background-color: rgb(251, 251, 251);
+  margin-top: 10px;
+  border-radius: 10px;
+}
+
+.comment-info {
   display: flex;
-  justify-content: center;
   align-items: center;
-  width: 100%;
-  height: 50%;
-  background-color: white;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
 }
 
-#discuss-reply {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 10%;
-  background-color: white;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-}
-
-#reply-textarea {
-  width: 80%;
-  height: 100%;
-  background-color: white;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-}
-
-#reply-button {
-  width: 10%;
-  height: 100%;
-  background-color: #23b375;
-  color: white;
-  cursor: pointer;
-  font-family: "Montserrat", sans-serif;
-  border: none;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-}
-
-#reply-button:hover {
-  background-color: #1f9e64;
-}
-
-.comment-sender-time {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  height: 10%;
-  background-color: white;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+.comment-info img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
 }
 
 .comment-sender {
-  font-size: 0.9em;
+  margin-left: 10px;
+  font-size: 150%;
 }
 
 .comment-time {
-  font-size: 0.9em;
+  margin-left: 10px;
 }
 
 .comment-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 80%;
-  height: 40%;
+  padding: 10px;
+  background-color: rgb(251, 251, 251);
+}
+
+#comment-form {
+  background-color: rgb(251, 251, 251);
+  position: relative;
+  left: 5%;
+  width: 60%;
+  /* margin: auto; */
+  border-radius: 10px;
+  padding: 10px;
+  margin-top: 10px;
+}
+
+#comment-form textarea {
+  width: 90%;
+  height: 100px;
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 10px;
+  font-family: Monteserrat;
+}
+
+#comment-form button {
+  background-color: #4ca2af;
+  border: none;
+  color: white;
+  padding: 10px 24px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+  border-radius: 10px;
+}
+
+#comment-form button:hover {
   background-color: white;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+  color: rgb(151, 185, 252);
+  border: 2px solid #fafcfa;
+}
+
+#sort-buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+#sort-buttons button {
+  background-color: #4CAF50;
+  border: none;
+  color: white;
+  padding: 10px 24px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+  border-radius: 10px;
+}
+
+#sort-buttons button:hover {
+  background-color: white;
+  color: rgb(151, 185, 252);
+  /*border: 2px solid #fafcfa;*/
+}
+
+#discuss-right-bar {
+  position: absolute;
+  top: 15%;
+  right: 10px;
+  width: 30%;
+  background-color: rgb(251, 251, 251);
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.related-discussion {
+  padding: 10px;
+  background-color: rgb(235, 235, 235);
+  margin-top: 10px;
+  border-radius: 10px;
+}
+
+.related-discussion:hover {
+  background-color: rgb(245, 245, 245);
+  border: 1px solid rgb(235, 235, 235);
+}
+
+.discuss-tags {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.discuss-tag {
+  padding: 5px;
+  background-color: rgb(159, 199, 90);
+  margin: 5px;
+  border-radius: 10px;
+}
+
+.discuss-tag:hover {
+  background-color: rgb(92, 218, 132);
+  border: 1px solid rgb(66, 176, 86);
+}
+
+#check-others {
+  background-color: #479fb3;
+  border: none;
+  color: white;
+  padding: 10px 24px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 8px 4px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+  border-radius: 10px;
+}
+
+#check-others:hover {
+  background-color: white;
+  color: rgb(151, 185, 252);
+  border: 2px solid #fafcfa;
 }
 </style>

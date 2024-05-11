@@ -95,7 +95,7 @@ const routes = [
       ),
   },
   {
-    path: "/forum/discuss",
+    path: "/forum/discuss/:id",
     name: "ForumDiscuss",
     component: () =>
       import(
@@ -108,6 +108,12 @@ const routes = [
     component: () =>
       import(/* webpackChunkName: "help" */ "./components/help/HelpCenter.vue"),
   },
+  {
+    path: "/space/:userId",
+    name: "UserSpaceWithId",
+    component: () =>
+      import(/* webpackChunkName: "space" */ "./components/user/UserSpace.vue"),
+  }
 ];
 
 const router = createRouter({

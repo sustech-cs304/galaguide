@@ -3,7 +3,7 @@
         <h1>Help Center</h1>
         <p>GalaGuide is an MIT-licensed open-source cross-platform software application</p>
         <p>as your personal manager for campus events & reservations based on Electron, Vue, and Ktor.</p>
-        <p>For help, please contact us at <a href="mailto:12211634@mail.sustech.edu.cn">this email</a>.</p>
+        <p>For help, please contact us at <a href="mailto:charleyxiao057@gmail.com">this email</a>: charleyxiao057@gmail.com </p>
         <div class="fireworks-container" id="fireworks-container"></div>
     </div>
 </template>

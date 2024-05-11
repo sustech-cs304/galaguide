@@ -1,6 +1,6 @@
 <script setup>
 import axios from "axios";
-import { ref, onMounted } from "vue";
+import { ref, onMounted} from "vue";
 
 const inputText = ref("");
 const groups = ref([]);
@@ -46,12 +46,20 @@ const initWebsocket = async () => {
             //         <p>${jsonData.content}</p>
             //     </div>
             // `;
+            // document.querySelector("#chat-box").innerHTML += `<div class="message">
+            //     <div class="user-info">
+            //         <img src="${jsonData.avatar}" alt="User Avatar" class="avatar">
+            //         <div class="msg-username">${jsonData.sender} : <span class="message-time">${jsonData.time}&emsp;</span></div>
+            //     </div>
+            //     <p>${jsonData.content}</p>
+            // </div>
+            // `;
             document.querySelector("#chat-box").innerHTML += `<div class="message">
                 <div class="user-info">
                     <img src="${jsonData.avatar}" alt="User Avatar" class="avatar">
-                    <div class="msg-username">${jsonData.sender} : <span class="message-time">${jsonData.time}&emsp;</span></div>
+                    <div class="msg-username">${jsonData.sender} <span class="message-time" style="color: grey;">&emsp;${jsonData.time}&emsp;</span></div>
                 </div>
-                <p>${jsonData.content}</p>
+                <p>${easyMarkdownConversion(jsonData.content)}</p>
             </div>
             `;
             document.querySelectorAll(".message").forEach(msg => {
@@ -94,6 +102,36 @@ const sendMessage = (g_id) => {
     inputText.value = "";
 };
 
+const easyMarkdownConversion = (text) => {
+    let newText = text;
+    // text inside ``` ``` is protected from markdown conversion
+    let codeBlocks = newText.match(/```(.*?)```/g);
+    if (codeBlocks) {
+        codeBlocks.forEach(block => {
+            newText = newText.replace(block, `<code>${block}</code>`);
+        });
+    }
+    // bold text
+    newText = newText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    // italic text
+    newText = newText.replace(/\*(.*?)\*/g, '<em>$1</em>');
+    // strikethrough text
+    newText = newText.replace(/~~(.*?)~~/g, '<del>$1</del>');
+    // inline code
+    newText = newText.replace(/`(.*?)`/g, '<code>$1</code>');
+    // images
+    newText = newText.replace(/!\[(.*?)\]\((.*?)\)/g, '<img src="$2" alt="$1">');
+    // links
+    newText = newText.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" style="color: blue;">$1</a>');
+    // blockquotes
+    newText = newText.replace(/>(.*)/g, '<blockquote>$1</blockquote>');
+    // unordered lists
+    newText = newText.replace(/^\s*\*\s(.*)/gm, '<ul><li>$1</li></ul>');
+    // ordered lists
+    newText = newText.replace(/^\s*\d\.\s(.*)/gm, '<ol><li>$1</li></ol>');
+    return newText;
+};
+
 onMounted(() => {
     document.querySelector("#footer").style.display = "none";
 
@@ -124,11 +162,27 @@ const showGroup = (id) => {
         .then(response => {
             console.log(response.data);
             document.querySelector("#group-details").innerHTML = `
-                <div id="group-avatar">
-                <h1>${response.data.name}</h1></div>
+                <div id="group-avatar" style="background-image: url(${response.data.avatar})">
+                    <h3 style="position: absolute; 
+                    top: 10%; 
+                    left: 50%; 
+                    transform: translateX(-50%); 
+                    width: 90%;
+                    text-align: center;
+                    color: white;
+                    text-shadow: 2px 2px 2px black;
+                    ">${response.data.name}</h3>
+                </div>
                 <div class="group-members">
                     <h3>Members</h3>
-                       ${response.data.members.map(member => `<p class="one-group-member">${member}</p>`).join("")}
+                       ${response.data.members.map(member => `
+                       <router-link to="/space/${member.id}">
+                            <div class="one-group-member">
+                                <img src="${member.avatar}" alt="User Avatar" class="avatar">
+                                <p>${member.name}</p>
+                            </div>
+                        </router-link>
+                       `).join("")}
                 </div>
                 <button id="leave-group">Leave Group</button>
             `;
@@ -139,15 +193,20 @@ const showGroup = (id) => {
             //         <p>${message.content}</p>
             // </div>
             // `).join("");
+
             document.querySelector("#chat-box").innerHTML = response.data.messages.map(message => `
                 <div class="message">
                     <div class="user-info">
-                        <img src="${message.avatar}" alt="User Avatar" class="avatar">
-                        <div class="msg-username">${message.sender} : <span class="message-time">${message.time}&emsp;</span></div>
+                        <img src="${response.data.members.find(member => member.name === message.sender).avatar}" alt="User Avatar" class="avatar">
+                        <div class="msg-username">${message.sender} <span class="message-time" style="color: grey;">&emsp;${message.time}&emsp;</span></div>
                     </div>
-                    <p>${message.content}</p>
+                    <p>${easyMarkdownConversion(message.content)}</p>
                 </div>
             `).join("");
+
+            document.querySelector("#pinned").innerHTML = `
+                <p><strong>Pinned Message:</strong> ${response.data.pinned.content}<br/>${response.data.pinned.sender} <span style="color: grey;">${response.data.pinned.time}</span></p>
+            `;
 
             document.querySelector("#chat-box").scrollTop = document.querySelector("#chat-box").scrollHeight;
             cur_g_id.value = id;
@@ -156,6 +215,14 @@ const showGroup = (id) => {
                 if (msg.querySelector(".msg-username").textContent.includes(getCookie("username"))) {
                     msg.classList.add("my-message");
                 }
+            });
+
+            // enable replying to messages
+            document.querySelectorAll(".message").forEach(msg => {
+                msg.addEventListener("click", () => {
+                    inputText.value = `> ${msg.querySelector(".msg-username").textContent.split(" ")[0]}\n> \n> ${msg.querySelector("p").textContent}\n\n`;
+                    document.querySelector("#input-box").focus();
+                });
             });
         })
         .catch(error => {
@@ -173,6 +240,14 @@ const showGroup = (id) => {
                 </p>
             </div>
         </div>
+        <div id="char-room-tip" style="display: block;
+            position: absolute;
+            top: 50%;
+            left: 60%;
+            transform: translate(-50%, -50%);
+            text-align: center;">
+            <h1>Click on a group to start chatting</h1>
+        </div>
         <div id="main-chat-room" style="display: none;">
             <div id="group-details">
                 <div id="group-avatar"></div>
@@ -181,7 +256,8 @@ const showGroup = (id) => {
             </div>
             <div id="group-chat">
                 <div id="pinned"></div>
-                <div id="chat-box"></div>
+                <div id="chat-box">
+                </div>
                 <div id="bottom-input">
                     <textarea v-model="inputText" rows="4" id="input-box"></textarea>
                     <button id="send-button" @click="sendMessage(cur_g_id)">
@@ -253,7 +329,7 @@ const showGroup = (id) => {
     height: 10%;
     background-color: white;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
+    overflow: auto;
 }
 
 #chat-box {
@@ -313,7 +389,7 @@ const showGroup = (id) => {
     padding: 10px;
     background-color: #f9f9f9;
     margin-bottom: 10px;
-    border-radius: 5px;
+    border-radius: 20px;
     cursor: pointer;
 }
 
@@ -340,16 +416,6 @@ const showGroup = (id) => {
     border-radius: 8px;
     margin-bottom: 10px;
 } */
-
-#group-avatar {
-    position: absolute;
-    top: 0%;
-    left: 50%;
-    width: 100%;
-    height: 20%;
-    background-color: #ccc;
-    transform: translateX(-50%);
-}
 
 #members-holder {
     position: absolute;
@@ -472,6 +538,15 @@ const showGroup = (id) => {
 
 .user-info {
     display: flex;
+    align-items: center;
+}
+
+#group-avatar {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 20%;
+    width: 100%;
     align-items: center;
 }
 </style>
