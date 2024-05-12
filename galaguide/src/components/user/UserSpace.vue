@@ -27,6 +27,7 @@
             <router-link to="/favorite"> <h4>View All</h4></router-link>
           </div>
         </div>
+
         <div class="cards">
           <div class="card" v-for="event in user.userFavoriteEvents" :key="event.title">
             <h3>{{ event.title }}</h3>
@@ -40,6 +41,7 @@
             <h4>View All</h4>
           </div>
         </div>
+
         <div class="cards">
           <div class="card" v-for="post in user.userPosts" :key="post.title">
             <img :src="post.photo" alt="post photo" />
@@ -54,6 +56,7 @@
             <h4>View All</h4>
           </div>
         </div>
+        
         <div class="cards">
           <div class="card" v-for="group in user.userGroups" :key="group.name">
             <h3>{{ group.name }}</h3>
@@ -61,6 +64,15 @@
             <p>{{ group.description }}</p>
           </div>
         </div>
+
+        <el-button @click="add">Add Item</el-button>
+        <el-button @click="onDelete">Delete Item</el-button>
+        <el-scrollbar max-height="400px">
+          <p v-for="item in count" :key="item" class="scrollbar-demo-item">
+            {{ item }}
+          </p>
+        </el-scrollbar>
+
       </div>
     </div>
   </div>
@@ -71,6 +83,17 @@ import { ref, onMounted } from "vue";
 
 const user = ref({});
 
+const count = ref(3)
+
+const add = () => {
+  count.value++
+}
+const onDelete = () => {
+  if (count.value > 0) {
+    count.value--
+  }
+}
+
 onMounted(async () => {
   // const response = await axios.get("/api/user/details");
   // user.value = response.data;
@@ -78,6 +101,8 @@ onMounted(async () => {
   user.value = {
     userAvatar: "https://via.placeholder.com/100",
     userName: document.cookie.split(";")
+      .find((cookie) => cookie.trim().startsWith("userName=")) === undefined ? "User Name" :
+      document.cookie.split(";")
       .find((cookie) => cookie.trim().startsWith("userName=")).split("=")[1],
     userEmail: "123456789@google.com",
     userBio: "Here is a short bio about the user.",
@@ -137,6 +162,19 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+.scrollbar-demo-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 500px;
+  height: 50px;
+  margin: 10px;
+  text-align: center;
+  border-radius: 4px;
+  background-color: black;
+  color: var(--el-color-primary);
+}
+
 .space-header {
   height: 280px;
   margin-left: 12%;
