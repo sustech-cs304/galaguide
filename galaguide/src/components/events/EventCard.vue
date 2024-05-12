@@ -1,6 +1,6 @@
 <!-- This component represent a small event card that offers brief info to user -->
 <template>
-    <div class="event-card">
+    <div class="event-card" @mouseover="showButtons = true" @mouseleave="showButtons = false">
         <div class="event-card-poster">
             <img :src="gala.posterUrl" alt="Event Poster" />
         </div>
@@ -11,27 +11,22 @@
                 <p>Registration Time: {{ gala.registration_time }}</p>
                 <p>Event Time: {{ gala.event_time }}</p>
             </div>
-            <div class="event-card-buttons">
-                <router-link :to="'/events/' + gala.id">
-                    <button>Details</button>
-                </router-link>
-                <button @click="favoriteGala">Favorite</button>
-            </div>
+        </div>
+        <div class="event-card-buttons" v-show="showButtons">
+            <button @click="favoriteGala">Favorite</button>
+            <button @click="reserveGala">Reserve</button>
         </div>
     </div>
 </template>
 
-<script lang="js">
+<script>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
-import { router } from '../../router';
+
 export default {
     name: 'EventCard',
     props: {
-        eventId: {
-            type: Number,
-            required: true,
-        },
+        eventId: Number,
     },
     setup(props) {
         const gala = ref({
@@ -45,26 +40,26 @@ export default {
             description: 'This is a sample introduction of the event that gives users insight into what to expect.',
             posterUrl: 'https://via.placeholder.com/400x300?text=Event+Poster',
         });
+        const showButtons = ref(false);
 
-        onMounted(() => {
-            axios.post('/api/event', { id: props.eventId })
-                .then(response => {
-                    gala.value = response.data;
-                })
-                .catch(error => {
-                    console.error('Error fetching gala details:', error);
-                });
+        onMounted(async () => {
+            try {
+                const response = await axios.get(`/api/event/${props.eventId}`);
+                gala.value = response.data;
+            } catch (error) {
+                console.error('Error fetching gala details:', error);
+            }
         });
 
-        return {
-            gala,
-            galaDetail() {
-                router.push({ path: '/events/${gala.value.id}' });
-            },
-            favoriteGala() {
-                console.log('Favorite event:', gala.value.title);
-            },
+        const favoriteGala = () => {
+            console.log('Favorite event:', gala.value.title);
         };
+
+        const reserveGala = () => {
+            console.log('Reserve event:', gala.value.title);
+        };
+
+        return { gala, showButtons, favoriteGala, reserveGala };
     },
 };
 </script>
@@ -74,49 +69,49 @@ export default {
 .event-card {
     display: flex;
     flex-direction: row;
-    height: 40%;
     margin: 10px;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    /* Light grey border */
 }
 
-.event-card-poster {
-    height: auto;
-    width: 30%;
-    margin-right: 10px;
+.event-card:hover .event-card-buttons {
+    display: flex;
+    flex-direction: colomn;
+    align-items: center;
 }
 
 .event-card-poster img {
-    width: 100%;
-    height: 100%;
+    width: 70%;
+    height: 80%;
+    align-self: center;
 }
 
 .event-card-content {
-    text-align: left;
     flex-grow: 1;
 }
 
-.event-card-content h3 {
-    align-self: flex-start;
-    margin: 0;
-}
-
-.event-card-details {
-    margin-top: 5px;
-    margin-bottom: 5px;
+.event-card-buttons {
+    display: none;
+    flex-direction: colomn;
 }
 
 .event-card-buttons button {
     padding: 5px 10px;
-    margin-right: 10px;
     cursor: pointer;
-    border: 1px solid #bdd437;
-    border-radius: 4px;
+    margin: 5px 0;
+    margin-right: 10px;
+    width: auto;
+    height: 40%;
+    border-radius: 15;
+    border: none;
+    background-color: #91a792;
+    color: #000;
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s;
 }
 
-.event-card-buttons button:last-child {
-    margin-right: 0;
+.event-card-buttons button:hover {
+    background-color: #3d9b74;
 }
 </style>

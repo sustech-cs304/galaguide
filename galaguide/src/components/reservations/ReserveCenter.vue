@@ -10,8 +10,9 @@
         <div style="width: 80%; justify-content: flex-end;">
             <!-- <EventDetail></EventDetail> -->
             <!-- <EventSearch></EventSearch> -->
-            <EventCard></EventCard>
+            <!-- <EventCard></EventCard> -->
             <!-- <FavoriteEvent></FavoriteEvent> -->
+            <SearchCenter></SearchCenter>
         </div>
     </div>
 
@@ -24,7 +25,8 @@
 //import EventSearch from '../events/EventSearch.vue'
 //import FavoriteEvent from '../events/FavoriteEvent.vue'
 // import { defineStore } from 'pinia';
-import EventCard from '../events/EventCard.vue';
+//import EventCard from '../events/EventCard.vue';
+import SearchCenter from '../events/SearchHomePage/SearchCenter.vue';
 export default {
     name: 'ReserveCenter',
     components: {
@@ -32,7 +34,8 @@ export default {
         //EventDetail,
         // EventSearch,
         //FavoriteEvent,
-        EventCard,
+        //EventCard,
+        SearchCenter,
     }
 }
 </script>
