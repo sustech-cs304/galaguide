@@ -6,6 +6,7 @@ import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.LongIdTable
+import org.jetbrains.exposed.sql.Table
 
 object GroupTable : LongIdTable() {
     val name = varchar("name", 128)
@@ -16,6 +17,7 @@ class Group(id: EntityID<Long>) : LongEntity(id) {
 
     var name by GroupTable.name
     val members by GroupMember referrersOn GroupMemberTable.group
+    val pinnedMessages by GroupMessage via PinnedMessageTable
 }
 
 object GroupMemberTable : LongIdTable() {
@@ -28,4 +30,9 @@ class GroupMember(id: EntityID<Long>) : LongEntity(id) {
 
     val group by Group referencedOn GroupMemberTable.group
     val user by User referencedOn GroupMemberTable.user
+}
+
+object PinnedMessageTable : Table() {
+    val group = reference("group", GroupTable)
+    val message = reference("message", GroupMessageTable)
 }
