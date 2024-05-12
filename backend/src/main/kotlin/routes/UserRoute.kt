@@ -107,7 +107,7 @@ fun Route.routeUser() {
             }
         }.id.value
 
-        call.respond(mapOf("token" to generateToken(id)).asRestResponse())
+        call.respond(Unit.asRestResponse())
     }
 
     post<UserRoute.Login> {
@@ -132,7 +132,13 @@ fun Route.routeUser() {
             return@post
         }
 
-        call.respond(mapOf("token" to generateToken(user.id.value)).asRestResponse())
+        call.respond(
+            mapOf(
+                "token" to generateToken(user.id.value),
+                "userRole" to 1,
+                "userName" to user.name,
+            ).asRestResponse()
+        )
     }
 }
 
