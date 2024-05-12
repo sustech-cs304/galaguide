@@ -135,13 +135,16 @@ fun Route.routeUser() {
 
         @Serializable
         data class LoginData(
-            val token: String = generateToken(user.id.value),
+            val token: String,
+            val userName: String,
             val userRole: Int = 1,
-            val userName: String = user.name,
         )
 
         call.respond(
-            LoginData().asRestResponse()
+            LoginData(
+                generateToken(user.id.value),
+                user.name,
+            ).asRestResponse()
         )
     }
 }
