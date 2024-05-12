@@ -19,10 +19,15 @@ fun <T> T.asRestResponse(): RestResponse<T> {
     return RestResponse.success(this)
 }
 
+fun emptyRestResponse() = EmptyData.asRestResponse()
+
 fun <T> failRestResponse(code: Int, message: String): RestResponse<T?> {
     return RestResponse.error(code, message)
 }
 
-fun failRestResponseDefault(code: Int, message: String): RestResponse<Unit?> {
+@Serializable
+object EmptyData
+
+fun failRestResponseDefault(code: Int, message: String): RestResponse<EmptyData?> {
     return RestResponse.error(code, message)
 }

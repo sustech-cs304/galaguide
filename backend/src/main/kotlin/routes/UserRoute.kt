@@ -3,6 +3,7 @@ package galaGuide.resources
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import galaGuide.data.asRestResponse
+import galaGuide.data.emptyRestResponse
 import galaGuide.data.failRestResponseDefault
 import galaGuide.table.user.User
 import galaGuide.table.user.UserTable
@@ -107,7 +108,7 @@ fun Route.routeUser() {
             }
         }.id.value
 
-        call.respond(Unit.asRestResponse())
+        call.respond(emptyRestResponse())
     }
 
     post<UserRoute.Login> {
