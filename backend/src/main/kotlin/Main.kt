@@ -25,6 +25,7 @@ fun Application.init() {
     @OptIn(ExperimentalSerializationApi::class)
     val json = Json {
         ignoreUnknownKeys = true
+        encodeDefaults = true
         prettyPrint = true
         isLenient = true
         allowStructuredMapKeys = true
