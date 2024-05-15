@@ -21,8 +21,8 @@ onUnmounted(() => {
 
 <template>
     <HomeAnnouncements/>
-    <HomeFunctions :role="propss.role"/>
     <HomeERHolder :role="propss.role"/>
+    <HomeFunctions :role="propss.role"/>
 </template>
 
 <style scoped>

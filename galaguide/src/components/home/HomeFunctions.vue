@@ -148,9 +148,14 @@ const candidates = [
     '🥞 Crepe',
     '🍲 Goulash',
     '🥗 Tuna Nicoise',
+    '🥘 Spanakopita Egg Muffins',
+    '🍞 Garlic Bread',
+    '🍜 Pad Thai'
 ];
 
 const chosenFood = ref('');
+const chosenPremium = ref('');
+const chooseCount = ref(0);
 
 const whatToEat = () => {
     chosenFood.value = '';
@@ -181,12 +186,45 @@ const startChoose = () => {
         if (delay <= 100) {
             setTimeout(chooseFood, delay);
         } else {
+            chooseCount.value++;
             document.getElementById('start-choose').disabled = false;
+            if (chooseCount.value >= 10) {
+                chooseCount.value = 0;
+                chosenFood.value = '😡 You are so picky! You got nothing!';
+                const popUpSurprise = document.getElementById('pop-up-surprise')
+                popUpSurprise.style.display = 'block';
+                popUpSurprise.innerHTML = '😡 You are so picky! You got nothing!';
+                popUpSurprise.style.fontSize = '50px';
+                popUpSurprise.style.color = 'red';
+                setTimeout(() => {
+                    popUpSurprise.style.display = 'none';
+                }, 3000);
+            }
+            if (candidates[index1] === '🥗 Tuna Nicoise' || candidates[index2] === '🥗 Tuna Nicoise' || candidates[index3] === '🥗 Tuna Nicoise') {
+                const popUpSurprise = document.getElementById('pop-up-surprise');
+                popUpImgs.value = "https://www.themediterraneandish.com/wp-content/uploads/2023/06/TMD-Nicoise-WEB-19.jpg";
+                popUpSurprise.style.display = 'block';
+                chosenPremium.value = '🥗 Tuna Nicoise';
+                setTimeout(() => {
+                    popUpSurprise.style.display = 'none';
+                }, 3000);
+            }
+            else if (candidates[index1] === '🥘 Spanakopita Egg Muffins' || candidates[index2] === '🥘 Spanakopita Egg Muffins' || candidates[index3] === '🥘 Spanakopita Egg Muffins') {
+                const popUpSurprise = document.getElementById('pop-up-surprise');
+                popUpImgs.value = "https://www.themediterraneandish.com/wp-content/uploads/2023/12/Spanakopita-Egg-Muffins-Leads-03-Vertical.jpg";
+                popUpSurprise.style.display = 'block';
+                chosenPremium.value = '🥘 Spanakopita Egg Muffins';
+                setTimeout(() => {
+                    popUpSurprise.style.display = 'none';
+                }, 3000);
+            }
         }
     };
 
     chooseFood();
 };
+
+const popUpImgs = ref();
 
 </script>
 
@@ -217,6 +255,11 @@ const startChoose = () => {
         <h3 style="text-align: center; margin-top: 20px;" >
             {{ chosenFood }}
         </h3>
+    </div>
+    <div id="pop-up-surprise" style="display: none;">
+        <h1 style="text-align: center; margin-bottom: 20px;">Surprise!</h1>
+        <p style="text-align: center; margin-bottom: 20px;">You got a {{ chosenPremium }}</p>
+        <img :src="popUpImgs" alt="Surprise!" style="width: 50%; height: 50%;"/>
     </div>
 </template>
 
@@ -301,6 +344,30 @@ const startChoose = () => {
     align-items: center;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     overflow: hidden;
+}
+
+#pop-up-surprise {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    transition-duration: 0.3s;
+    animation: pop-up 1s;
+    z-index: 100;
+}
+
+@keyframes pop-up {
+    0% {
+        transform: scale(0) translate(-50%, -50%);
+    }
+    100% {
+        transform: scale(1) translate(-50%, -50%);
+    }
 }
 </style>
   
