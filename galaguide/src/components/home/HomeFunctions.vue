@@ -193,9 +193,8 @@ const startChoose = () => {
                 chosenFood.value = '😡 You are so picky! You got nothing!';
                 const popUpSurprise = document.getElementById('pop-up-surprise')
                 popUpSurprise.style.display = 'block';
-                popUpSurprise.innerHTML = '😡 You are so picky! You got nothing!';
-                popUpSurprise.style.fontSize = '50px';
-                popUpSurprise.style.color = 'red';
+                popUpImgs.value = "https://www.sustech.edu.cn";
+                chosenPremium.value = 'nothing!';
                 setTimeout(() => {
                     popUpSurprise.style.display = 'none';
                 }, 3000);
@@ -258,8 +257,8 @@ const popUpImgs = ref();
     </div>
     <div id="pop-up-surprise" style="display: none;">
         <h1 style="text-align: center; margin-bottom: 20px;">Surprise!</h1>
-        <p style="text-align: center; margin-bottom: 20px;">You got a {{ chosenPremium }}</p>
-        <img :src="popUpImgs" alt="Surprise!" style="width: 50%; height: 50%;"/>
+        <p style="text-align: center; margin-bottom: 20px;">You got {{ chosenPremium }}</p>
+        <img :src="popUpImgs" alt="You are so picky!" style="width: 50%; height: 50%;"/>
     </div>
 </template>
 
