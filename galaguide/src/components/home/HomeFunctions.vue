@@ -1,6 +1,6 @@
 <script setup>
 
-import { defineProps } from 'vue'
+import { defineProps, ref } from 'vue'
 
 const props = defineProps({
     role: Number
@@ -13,6 +13,181 @@ const createEvent = () => {
 const makeReservation = () => {
     console.log('Make a reservation');
 };
+
+const candidates = [
+    '🍔 Cheeseburger',
+    '🍕 Pizza',
+    '🍣 Sushi',
+    '🍜 Ramen',
+    '🍝 Spaghetti',
+    '🍲 Hotpot',
+    '🍛 Curry Rice',
+    '🍙 Onigiri',
+    '🍚 Rice',
+    '🍞 Toast',
+    '🥞 Pancake',
+    '🥪 Sandwich',
+    '🥗 Salad',
+    '🍦 Ice Cream',
+    '🍧 Shaved Ice',
+    '🍨 Sundae',
+    '🍩 Donut',
+    '🍪 Cookie',
+    '🎂 Cake',
+    '🍰 Cheesecake',
+    '🧁 Cupcake',
+    '🥧 Pie',
+    '🍫 Chocolate',
+    '🍬 Candy',
+    '🍭 Lollipop',
+    '🍮 Pudding',
+    '🍯 Honey',
+    '🍼 Milk',
+    '🥛 Milkshake',
+    '☕ Coffee',
+    '🍵 Tea',
+    '🍶 Sake',
+    '🍺 Beer',
+    '🍸 Cocktail',
+    '🍹 Tropical Drink',
+    '🍾 Champagne',
+    '🍷 Wine',
+    '🍔 Big Mac',
+    '🍟 French Fries',
+    '🍕 Pepperoni Pizza',
+    '🌭 Hot Dog',
+    '🥪 Club Sandwich',
+    '🌮 Taco',
+    '🌯 Burrito',
+    '🥙 Falafel',
+    '🍳 Fried Egg',
+    '🥞 Pancakes',
+    '🥓 Bacon',
+    '🥩 T-Bone Steak',
+    '🍗 Chicken Drumstick',
+    '🍖 Meat on Bone',
+    '🌽 Ear of Corn',
+    '🥦 Broccoli',
+    '🍅 Tomato',
+    '🥒 Cucumber',
+    '🥬 Leafy Green',
+    '🥕 Carrot',
+    '🌶️ Hot Pepper',
+    '🥔 Potato',
+    '🍠 Sweet Potato',
+    '🥐 Croissant',
+    '🥖 Baguette',
+    '🥨 Pretzel',
+    '🥯 Bagel',
+    '🥚 Omelette',
+    '🧀 Cheese Wedge',
+    '🍝 Macaroni',
+    '🍜 Hunan Noodles',
+    '🍲 Borshch',
+    '🍛 Pilaf',
+    '🍞 Bread',
+    '🥞 Quiche',
+    '🍲 Boeuf Bourguignon',
+    '🍛 Paella',
+    '🍜 Pho',
+    '🍝 Lasagna',
+    '🍕 Margherita Pizza',
+    '🦞 Lobster Thermidor',
+    '🍰 Gruyere Souffle',
+    '🍮 Creme Brulee',
+    '🍧 Tiramisu',
+    '🍨 Panna Cotta',
+    '🍦 Affogato',
+    '🍩 Beignet',
+    '🍪 Macaron',
+    '🍫 Truffle',
+    '🍬 Marshmallow',
+    '🍭 Rock Candy',
+    '🍯 Baklava',
+    '🍼 Bubble Tea',
+    '☕ Matcha Latte',
+    '🍵 Chai',
+    '🍶 Horchata',
+    '🍺 IPA',
+    '🍸 Martini',
+    '🍹 Mojito',
+    '🍾 Prosecco',
+    '🍷 Merlot',
+    '🍔 Whopper',
+    '🍟 Curly Fries',
+    '🍕 Hawaiian Pizza',
+    '🌭 Corn Dog',
+    '🥪 BLT Sandwich',
+    '🌮 Quesadilla',
+    '🌯 Gyro',
+    '🥙 Shawarma',
+    '🍳 Scrambled Eggs',
+    '🥞 Waffles',
+    '🥓 Sausage',
+    '🥩 Filet Mignon',
+    '🍗 Chicken Wing',
+    '🍖 Ribs',
+    '🌽 Popcorn',
+    '🥦 Cauliflower',
+    '🍅 Eggplant',
+    '🥒 Pickles',
+    '🥬 Cabbage',
+    '🥕 Radish',
+    '🌶️ Bell Pepper',
+    '🥔 Sweet Potato',
+    '🍠 Yam',
+    '🥐 Danish',
+    '🥖 Sourdough',
+    '🥨 Brioche',
+    '🥯 English Muffin',
+    '🥚 Frittata',
+    '🧀 Fondue',
+    '🍝 Ravioli',
+    '🍜 Udon',
+    '🍛 Korma',
+    '🥞 Crepe',
+    '🍲 Goulash',
+    '🥗 Tuna Nicoise',
+];
+
+const chosenFood = ref('');
+
+const whatToEat = () => {
+    chosenFood.value = '';
+    const whatToEat = document.getElementById('lottery-what-to-eat');
+    whatToEat.style.display = 'block';
+};
+
+const closeWhatToEat = () => {
+    const whatToEat = document.getElementById('lottery-what-to-eat');
+    whatToEat.style.display = 'none';
+};
+
+const startChoose = () => {
+    document.getElementById('start-choose').disabled = true;
+    let index1 = 0;
+    let index2 = 0;
+    let index3 = 0;
+    let delay = 10;
+
+    const chooseFood = () => {
+        index1 = Math.floor(Math.random() * candidates.length);
+        index2 = Math.floor(Math.random() * candidates.length);
+        index3 = Math.floor(Math.random() * candidates.length);
+        chosenFood.value = candidates[index1] + ' ' + candidates[index2] + ' ' + candidates[index3];
+        
+        delay += 8; 
+        
+        if (delay <= 100) {
+            setTimeout(chooseFood, delay);
+        } else {
+            document.getElementById('start-choose').disabled = false;
+        }
+    };
+
+    chooseFood();
+};
+
 </script>
 
 <template>
@@ -25,9 +200,23 @@ const makeReservation = () => {
         <button class="make-res" @click="makeReservation">
             <a href="/make-res" style="color: aliceblue;">Make a reservation</a>
         </button>
+        <button class="what-to-eat" @click="whatToEat">
+            What to eat
+        </button>
     </div>
     <div class="home-functions" v-if="props.role === 0">
         <p style="text-align: center; margin-top: 20px;position: absolute;top:50%;">Please log in to use quick functions</p>
+    </div>
+    <div id="lottery-what-to-eat" style="display: none;">
+        <span class="close" @click="closeWhatToEat">&times; </span>
+        <h1 style="text-align: center; margin-bottom: 20px;">What to eat</h1>
+        <p style="text-align: center; margin-bottom: 20px;">Let's decide what to eat today!</p>
+        <button class="make-res" @click="startChoose" id="start-choose">
+            Decide for me
+        </button>
+        <h3 style="text-align: center; margin-top: 20px;" >
+            {{ chosenFood }}
+        </h3>
     </div>
 </template>
 
@@ -81,6 +270,37 @@ const makeReservation = () => {
 
 .make-res:hover {
     background-color: #2467c4;
+}
+
+.what-to-eat {
+    width: 80%;
+    height: 30px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: none;
+    color: white;
+    cursor: pointer;
+    background-color: #f7b500;
+}
+
+.what-to-eat:hover {
+    background-color: #f5a800;
+}
+
+#lottery-what-to-eat {
+    position: absolute;
+    top: 7%;
+    right: 2%;
+    width: 35%;
+    height: 270px;
+    background-color: white;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    /* justify-content: center; */
+    align-items: center;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
 }
 </style>
   
