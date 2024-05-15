@@ -94,7 +94,7 @@ const postComment = () => {
     .post(`/api/discuss/${discussId}`, {
       title: " ",
       content: textareaInput.value,
-      sender_name: "admin",
+      sender_name: "admin", // TODO: get sender name from cookie
       time: new Date().toLocaleString()
     })
     .then((response) => {
@@ -262,7 +262,9 @@ const showAlert = ref(false);
       <h2>Related Discussions</h2>
       <div class="related-discussions">
         <div v-for="discussion in relatedDiscussions" :key="discussion.id" class="related-discussion">
-          <h3>{{ discussion.title }}</h3>
+          <router-link :to="`/forum/discuss/${discussion.id}`">
+            <h3>{{ discussion.title }}</h3>
+          </router-link>
           <p>{{ discussion.content }}</p>
           <h4>{{ discussion.sender }} at {{ discussion.time }}</h4>
         </div>

@@ -113,7 +113,7 @@ const validateAndSubmit = (e) => {
         password: user.value.password,
       })
       .then((response) => {
-        if (response.data.success) {
+        if (response.status === 200 || response.data.code === 0) {
           // setCookie('userRole', response.data.role, 1)
           // window.location.href = '/home'
           document.querySelector("#main-reg").style.display = "none";
@@ -144,10 +144,10 @@ const verifyEmail = (e) => {
         verificationCode: user.value.verificationCode,
       })
       .then((response) => {
-        if (response.data.success) {
-          setCookie("userRole", response.data.role, 7);
-          setCookie("username", response.data.username, 7);
-          setCookie("token", response.data.token, 7);
+        if (response.status === 200 && response.data.code === 0) {
+          setCookie("userRole", response.data.data.user_role, 7);
+          setCookie("username", response.data.data.username, 7);
+          setCookie("token", response.data.data.token, 7);
           // window.location.href = '/home'
           router.push("/login");
         } else {

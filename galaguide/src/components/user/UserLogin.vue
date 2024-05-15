@@ -92,19 +92,18 @@ const check = (e) => {
   if (!user.value.name || !user.value.password) {
     errors.value.push("Enter valid values");
   } else {
-    // use jwt scheme
     axios
       .post("/api/user/login", {
         nameOrEmail: user.value.name,
         password: user.value.password,
       })
       .then((res) => {
-        if (res.data.status === 200) {
+        if (res.status === 200 && res.data.code === 0) {
           console.log("success")
-          localStorage.setItem("token", res.data.token);
-          setCookie("token", res.data.token, 1);
-          setCookie("userRole", res.data.user_role, 1);
-          setCookie("userName", res.data.username, 1);
+          localStorage.setItem("token", res.data.data.token);
+          setCookie("token", res.data.data.token, 1);
+          setCookie("userRole", res.data.data.userRole, 1);
+          setCookie("userName", res.data.data.userName, 1);
           router.push("/");
           // console.log("localStorage", localStorage)
           // console.log("token", localStorage.token)

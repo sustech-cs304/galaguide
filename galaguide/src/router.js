@@ -121,7 +121,13 @@ const routes = [
     name: "UserSpaceWithId",
     component: () =>
       import(/* webpackChunkName: "space" */ "./components/user/UserSpace.vue"),
-  }
+  },
+  {
+    path: "/map",
+    name: "MapCenter",
+    component: () =>
+      import(/* webpackChunkName: "map" */ "./components/map/MapCenter.vue"),
+  },
 ];
 
 const router = createRouter({

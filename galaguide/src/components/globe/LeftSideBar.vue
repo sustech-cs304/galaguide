@@ -53,6 +53,16 @@ defineProps({
         <h1>Chat Room</h1>
       </router-link>
     </div>
+    <div class="bar-options" style="top: 690px">
+      <router-link to="/map" v-if="role > 0"><img src="../../assets/map.png" alt="map.png"
+          style="width: 30%; height: auto" />
+        <h1>Map</h1>
+      </router-link>
+      <router-link to="/login" v-else><img src="../../assets/map.png" alt="map.png"
+          style="width: 30%; height: auto" />
+        <h1>Login</h1>
+      </router-link>
+    </div>
   </div>
 </template>
 
