@@ -150,3 +150,8 @@ fun Route.routeUser() {
 }
 
 val ApplicationCall.userId get() = principal<JWTPrincipal>()?.payload?.getClaim("id")?.asLong()
+
+val ApplicationCall.user
+    get() = transaction {
+        userId?.let { User.findById(it) }
+    }
