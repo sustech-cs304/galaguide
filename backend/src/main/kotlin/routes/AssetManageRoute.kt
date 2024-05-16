@@ -1,10 +1,13 @@
 package galaGuide.routes
 
 import galaGuide.data.asRestResponse
+import galaGuide.data.emptyRestResponse
 import galaGuide.data.failRestResponseDefault
 import galaGuide.resources.user
+import galaGuide.table.StaticAsset
 import galaGuide.table.StaticAssetTable
 import galaGuide.util.StaticAssetManager
+import io.ktor.http.*
 import io.ktor.http.content.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -23,22 +26,60 @@ fun Route.routeAssetManage() = authenticate("user") {
             SchemaUtils.createMissingTablesAndColumns(StaticAssetTable)
         }
 
+        @Serializable
+        data class StaticAssetResponse(
+            val uuid: String,
+            val fileName: String,
+        )
+
+        fun StaticAsset.asSerializable() = StaticAssetResponse(
+            id.value.toString(),
+            fileName
+        )
+
+        fun StaticAsset.asRestResponse() = asSerializable().asRestResponse()
+
         post("upload") {
-            val uploader = call.user ?: run {
-                call.respond(failRestResponseDefault(-1, "Login required"))
-                return@post
-            }
+            val uploader = call.user!!
             var fileName: String? = null
             var fileStream: InputStream? = null
-            var fileUuid: UUID? = null
             call.receiveMultipart().forEachPart {
                 when (it) {
-                    is PartData.FormItem -> {
-                        when (it.name) {
-                            "uuid" -> fileUuid = UUID.fromString(it.value)
-                        }
+                    is PartData.FileItem -> {
+                        fileName = it.originalFileName
+                        fileStream = it.streamProvider()
                     }
 
+                    else -> {}
+                }
+                it.dispose()
+            }
+
+            if (fileStream == null) {
+                call.respond(failRestResponseDefault(-2, "No file uploaded"))
+                return@post
+            }
+
+            kotlin.runCatching {
+                call.respond(
+                    StaticAssetManager.new(fileStream!!, uploader, fileName)
+                        .asRestResponse()
+                )
+            }.getOrElse {
+                call.respond(failRestResponseDefault(-3, it.message ?: "Unknown error"))
+            }
+        }
+
+        post("{uuid}") {
+            val uploader = call.user!!
+            val uuid = UUID.fromString(call.parameters["uuid"] ?: run {
+                call.respond(failRestResponseDefault(-1, "UUID not provided"))
+                return@post
+            })
+            var fileName: String? = null
+            var fileStream: InputStream? = null
+            call.receiveMultipart().forEachPart {
+                when (it) {
                     is PartData.FileItem -> {
                         fileName = it.originalFileName
                         fileStream = it.streamProvider()
@@ -50,22 +91,55 @@ fun Route.routeAssetManage() = authenticate("user") {
             }
 
             kotlin.runCatching {
-                val asset = StaticAssetManager.upload(uploader, fileStream, fileName, fileUuid)
-
-                @Serializable
-                data class StaticAssetResponse(
-                    val uuid: String,
-                    val fileName: String,
-                )
-
                 call.respond(
-                    StaticAssetResponse(
-                        asset.id.value.toString(),
-                        asset.fileName
-                    ).asRestResponse()
+                    StaticAssetManager.change(uuid, uploader, fileStream, fileName)
+                        .asRestResponse()
                 )
             }.getOrElse {
-                call.respond(failRestResponseDefault(-2, it.message ?: "Unknown error"))
+                call.respond(failRestResponseDefault(-3, it.message ?: "Unknown error"))
+            }
+        }
+
+        get("{uuid}") {
+            val uuid = UUID.fromString(call.parameters["uuid"] ?: run {
+                call.respond(failRestResponseDefault(-1, "UUID not provided"))
+                return@get
+            })
+
+            val asset = StaticAssetManager.query(uuid) ?: run {
+                call.respond(failRestResponseDefault(-4, "Asset not found"))
+                return@get
+            }
+            val file = StaticAssetManager.get(uuid) ?: run {
+                call.respond(failRestResponseDefault(-5, "File not found"))
+                return@get
+            }
+
+            kotlin.runCatching {
+                call.response.header(
+                    HttpHeaders.ContentDisposition,
+                    ContentDisposition.Attachment
+                        .withParameter(ContentDisposition.Parameters.FileName, asset.fileName)
+                        .toString()
+                )
+                call.respondFile(file)
+            }.getOrElse {
+                call.respond(failRestResponseDefault(-3, it.message ?: "Unknown error"))
+            }
+        }
+
+        delete("{uuid}") {
+            val uploader = call.user!!
+            val uuid = UUID.fromString(call.parameters["uuid"] ?: run {
+                call.respond(failRestResponseDefault(-1, "UUID not provided"))
+                return@delete
+            })
+
+            kotlin.runCatching {
+                StaticAssetManager.delete(uuid, uploader)
+                call.respond(emptyRestResponse())
+            }.getOrElse {
+                call.respond(failRestResponseDefault(-3, it.message ?: "Unknown error"))
             }
         }
     }
