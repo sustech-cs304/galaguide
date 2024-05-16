@@ -128,6 +128,12 @@ const routes = [
     component: () =>
       import(/* webpackChunkName: "map" */ "./components/map/MapCenter.vue"),
   },
+  {
+    path: "/image-host",
+    name: "ImageHost",
+    component: () =>
+      import(/* webpackChunkName: "image-host" */ "./components/image/ImageHost.vue"),
+  }
 ];
 
 const router = createRouter({
