@@ -6,6 +6,7 @@ import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.LongIdTable
+import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.javatime.datetime
 
 object EventTable : LongIdTable() {
@@ -20,10 +21,10 @@ class Event(id: EntityID<Long>) : LongEntity(id) {
 
     var title by EventTable.title
     var host by User referencedOn EventTable.host
-    var poster by EventTable.poster
+    var poster by StaticAsset referencedOn EventTable.poster
     var description by EventTable.description
 
-    val assets by StaticAsset referrersOn StaticAssetTable.event
+    val assets by StaticAsset via EventAssetTable
     val periods by EventPeriod referrersOn EventPeriodTable.event
 }
 
@@ -39,5 +40,11 @@ class EventPeriod(id: EntityID<Long>) : LongEntity(id) {
     var event by Event referencedOn EventPeriodTable.event
     var start by EventPeriodTable.start
     var end by EventPeriodTable.end
+}
+
+object EventAssetTable : Table() {
+    val event = reference("event", EventTable)
+    val asset = reference("asset", StaticAssetTable)
+    override val primaryKey = PrimaryKey(event, asset)
 }
 

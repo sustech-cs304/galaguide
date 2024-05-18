@@ -16,31 +16,14 @@ DATABASE = "real.db"
 def sha256_encode(s):
     return hashlib.sha256(s.encode()).hexdigest()
 
-class LoginHandler(tornado.web.RequestHandler):
-    """
-    POST /user/login
-    
-    Request:
-    {
-        "nameOrEmail": "username",
-        "password": "password"
+def make_rest_response(success, message, data={}):
+    return {
+        "code": 0 if success else 1,
+        "message": message,
+        "data": data
     }
 
-    Response:
-    If success:
-        {
-            "success": true,
-            "token": "token"
-            "username": "username",
-            "userRole": 1,
-            "message": "message"
-        }
-    If failed:
-        {
-            "success": false,
-            "message": "message"
-        }
-    """
+class LoginHandler(tornado.web.RequestHandler):
     def post(self):
         data = json.loads(self.request.body)
         nameOrEmail = data["nameOrEmail"]
@@ -51,62 +34,30 @@ class LoginHandler(tornado.web.RequestHandler):
         cursor.execute("SELECT * FROM users WHERE (username=? OR email=?) AND password=?", (nameOrEmail, nameOrEmail, password))
         user = cursor.fetchone()
         if user:
-            self.write({
-                "success": True,
-                "token": user[0],
-                "username": user[1],
-                "userRole": user[4],
-                "message": "Login success"
-            })
+            self.write(make_rest_response(True, "Login success", {
+                "userName": user[1],
+                "email": user[2],
+                "userRole": user[4]
+            }))
         else:
-            self.write({
-                "success": False,
-                "message": "Login failed"
-            })
+            self.write(make_rest_response(False, "Login failed"))
         conn.close()
 
 class ShowcaseHandler(tornado.web.RequestHandler):
-    """
-    GET /showcase
-
-    Response:
-    [
-        {
-            "title": "title",
-            "description": "description",
-            "date": "date",
-            "link": "link"
-        },
-        ...
-    ]
-    """
     def get(self):
         conn = sqlite3.connect(DATABASE)
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM showcase")
         showcase = cursor.fetchall()
-        self.write([{
+        self.write(make_rest_response(True, "Get showcase success", [{
             "title": item[1],
             "description": item[2],
             "date": item[3],
             "link": item[4]
-        } for item in showcase])
+        } for item in showcase]))
         conn.close()
 
 class InboxHandler(tornado.web.RequestHandler):
-    """
-    GET /user/inbox
-
-    Response:
-    [
-        {
-            "from": "from",
-            "message": "message",
-            "date": "date"
-        },
-        ...
-    ]
-    """
     def get(self):
         token = self.request.headers.get("Bearer")
         if not token:
@@ -119,39 +70,17 @@ class InboxHandler(tornado.web.RequestHandler):
             raise tornado.web.HTTPError(401, "Unauthorized")
         cursor.execute("SELECT * FROM inbox WHERE to_user=?", (user[1],))
         inbox = cursor.fetchall()
-        self.write([{
+        self.write(make_rest_response(True, "Get inbox success", [{
             "from": item[1],
             "message": item[2],
             "date": item[3]
-        } for item in inbox])
+        } for item in inbox]))
         conn.close()
 
 class GroupsHandler(tornado.web.RequestHandler):
     pass
 
 class RegisterHandler(tornado.web.RequestHandler):
-    """
-    POST /user/register
-
-    Request:
-    {
-        "name": "username",
-        "email": "email",
-        "password": "password"
-    }
-
-    Response:
-    If success:
-        {
-            "success": true,
-            "message": "message"
-        }
-    If failed:
-        {
-            "success": false,
-            "message": "message"
-        }
-    """
     def post(self):
         data = json.loads(self.request.body)
         name = data["name"]
@@ -162,44 +91,16 @@ class RegisterHandler(tornado.web.RequestHandler):
         cursor.execute("SELECT * FROM users WHERE username=? OR email=?", (name, email))
         user = cursor.fetchone()
         if user:
-            self.write({
-                "success": False,
-                "message": "User already exists"
-            })
+            self.write(make_rest_response(False, "User already exists"))
         else:
             password = sha256_encode(password)
             ver_code = random.randint(100000, 999999)
             cursor.execute("INSERT INTO unverified_users (username, email, password, role, code) VALUES (?, ?, ?, 0)", (name, email, password, ver_code))
             conn.commit()
-            self.write({
-                "success": True,
-                "message": "Register success, awaiting email verification"
-            })
+            self.write(make_rest_response(True, "Register success, please verify your email"))
         conn.close()
 
 class VerifyEmailHandler(tornado.web.RequestHandler):
-    """
-    POST /user/verify-email
-
-    Request:
-    {
-        "email": "email",
-        "verificationCode": "code"
-    }
-
-    Response:
-    If success:
-        {
-            "success": true,
-            "message": "message",
-            "token": "token"
-        }
-    If failed:
-        {
-            "success": false,
-            "message": "message"
-        }
-    """
     def post(self):
         data = json.loads(self.request.body)
         email = data["email"]
@@ -214,16 +115,11 @@ class VerifyEmailHandler(tornado.web.RequestHandler):
             token = sha256_encode(user[1] + str(time.time()))
             cursor.execute("INSERT INTO tokens (token, username) VALUES (?, ?)", (token, user[1]))
             conn.commit()
-            self.write({
-                "success": True,
-                "message": "Email verification success",
+            self.write(make_rest_response(True, "Email verification success",{
                 "token": token
-            })
+            }))
         else:
-            self.write({
-                "success": False,
-                "message": "Email verification failed"
-            })
+            self.write(make_rest_response(False, "Email verification failed"))
         conn.close()
 
 

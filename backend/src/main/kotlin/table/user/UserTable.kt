@@ -1,6 +1,7 @@
 package galaGuide.table.user
 
 import galaGuide.table.Event
+import io.ktor.server.auth.*
 import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
@@ -12,7 +13,7 @@ object UserTable : LongIdTable() {
     val email = varchar("email", 128)
 }
 
-class User(id: EntityID<Long>) : LongEntity(id) {
+class User(id: EntityID<Long>) : Principal, LongEntity(id) {
     companion object : LongEntityClass<User>(UserTable)
 
     var name by UserTable.name

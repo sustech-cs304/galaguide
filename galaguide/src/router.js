@@ -121,6 +121,18 @@ const routes = [
     name: "UserSpaceWithId",
     component: () =>
       import(/* webpackChunkName: "space" */ "./components/user/UserSpace.vue"),
+  },
+  {
+    path: "/map",
+    name: "MapCenter",
+    component: () =>
+      import(/* webpackChunkName: "map" */ "./components/map/MapCenter.vue"),
+  },
+  {
+    path: "/image-host",
+    name: "ImageHost",
+    component: () =>
+      import(/* webpackChunkName: "image-host" */ "./components/image/ImageHost.vue"),
   }
 ];
 

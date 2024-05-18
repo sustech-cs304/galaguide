@@ -19,10 +19,12 @@ fun <T> T.asRestResponse(): RestResponse<T> {
     return RestResponse.success(this)
 }
 
+fun emptyRestResponse() = Unit.asRestResponse()
+
 fun <T> failRestResponse(code: Int, message: String): RestResponse<T?> {
     return RestResponse.error(code, message)
 }
 
-fun failRestResponseDefault(code: Int, message: String): RestResponse<String?> {
+fun failRestResponseDefault(code: Int, message: String): RestResponse<Unit?> {
     return RestResponse.error(code, message)
 }

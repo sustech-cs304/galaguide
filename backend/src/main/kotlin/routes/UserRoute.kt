@@ -3,6 +3,7 @@ package galaGuide.resources
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import galaGuide.data.asRestResponse
+import galaGuide.data.emptyRestResponse
 import galaGuide.data.failRestResponseDefault
 import galaGuide.table.user.User
 import galaGuide.table.user.UserTable
@@ -107,7 +108,7 @@ fun Route.routeUser() {
             }
         }.id.value
 
-        call.respond(mapOf("token" to generateToken(id)).asRestResponse())
+        call.respond(emptyRestResponse())
     }
 
     post<UserRoute.Login> {
@@ -132,8 +133,25 @@ fun Route.routeUser() {
             return@post
         }
 
-        call.respond(mapOf("token" to generateToken(user.id.value)).asRestResponse())
+        @Serializable
+        data class LoginData(
+            val token: String,
+            val userName: String,
+            val userRole: Int = 1,
+        )
+
+        call.respond(
+            LoginData(
+                generateToken(user.id.value),
+                user.name,
+            ).asRestResponse()
+        )
     }
 }
 
 val ApplicationCall.userId get() = principal<JWTPrincipal>()?.payload?.getClaim("id")?.asLong()
+
+val ApplicationCall.user
+    get() = transaction {
+        userId?.let { User.findById(it) }
+    }

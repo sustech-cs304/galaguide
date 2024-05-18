@@ -13,7 +13,7 @@ defineProps({
         <h1 style="color: white">GalaGuide</h1>
       </router-link>
     </div>
-    <div class="bar-options" style="top: 210px">
+    <div class="bar-options" style="top: 200px">
       <router-link to="/events" v-if="role > 0"><img src="../../assets/events.png" alt="events.png"
           style="width: 30%; height: auto" />
         <h1>Events</h1>
@@ -23,7 +23,7 @@ defineProps({
         <h1>Events</h1>
       </router-link>
     </div>
-    <div class="bar-options" style="top: 330px">
+    <div class="bar-options" style="top: 300px">
       <router-link to="/events/search" v-if="role > 0">
         <img src="../../assets/reservations.png" alt="reservations.png" style="width: 30%; height: auto" />
         <h1>Gala Search</h1>
@@ -33,7 +33,7 @@ defineProps({
         <img src="../../assets/reservations.png" alt="reservations.png" style="width: 30%; height: auto" />
       </router-link>
     </div>
-    <div class="bar-options" style="top: 450px">
+    <div class="bar-options" style="top: 400px">
       <router-link to="/forum" v-if="role > 0"><img src="../../assets/forum.png" alt="forum.png"
           style="width: 30%; height: auto" />
         <h1>Forum</h1>
@@ -43,7 +43,7 @@ defineProps({
         <h1>Forum</h1>
       </router-link>
     </div>
-    <div class="bar-options" style="top: 570px">
+    <div class="bar-options" style="top: 500px">
       <router-link to="/chatroom" v-if="role > 0"><img src="../../assets/chat.png" alt="chat.png"
           style="width: 30%; height: auto" />
         <h1>Chat Room</h1>
@@ -51,6 +51,26 @@ defineProps({
       <router-link to="/login" v-else><img src="../../assets/chat.png" alt="chat.png"
           style="width: 30%; height: auto" />
         <h1>Chat Room</h1>
+      </router-link>
+    </div>
+    <div class="bar-options" style="top: 600px">
+      <router-link to="/map" v-if="role > 0"><img src="../../assets/map.png" alt="map.png"
+          style="width: 30%; height: auto" />
+        <h1>Map</h1>
+      </router-link>
+      <router-link to="/login" v-else><img src="../../assets/map.png" alt="map.png"
+          style="width: 30%; height: auto" />
+        <h1>Login</h1>
+      </router-link>
+    </div>
+    <div class="bar-options" style="top: 700px">
+      <router-link to="/image-host" v-if="role > 0"><img src="../../assets/image-host.png" alt="image.png"
+          style="width: 30%; height: auto" />
+        <h1>Image Host</h1>
+      </router-link>
+      <router-link to="/login" v-else><img src="../../assets/image-host.png" alt="image.png"
+          style="width: 30%; height: auto" />
+        <h1>Login</h1>
       </router-link>
     </div>
   </div>
