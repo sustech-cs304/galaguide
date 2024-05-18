@@ -5,19 +5,24 @@
         </button>
         <div :class="filters" v-show="showFilters">
             <div class="dropdown">
-                <label class="label">Placeholder</label>
+                <label class="label">Category</label>
+                <img class="chevronDownIcon" alt="Expand" src="@/assets/chevron-down.svg" />
+
+            </div>
+            <div class="dropdown">
+                <label class="label">Event Time</label>
                 <img class="chevronDownIcon" alt="Expand" src="@/assets/chevron-down.svg" />
             </div>
             <div class="dropdown">
-                <label class="label">Placeholder</label>
+                <label class="label">
+                    Registration Time
+                </label>
                 <img class="chevronDownIcon" alt="Expand" src="@/assets/chevron-down.svg" />
             </div>
             <div class="dropdown">
-                <label class="label">Placeholder</label>
-                <img class="chevronDownIcon" alt="Expand" src="@/assets/chevron-down.svg" />
-            </div>
-            <div class="dropdown">
-                <label class="label">Placeholder</label>
+                <label class="label">
+                    Price
+                </label>
                 <img class="chevronDownIcon" alt="Expand" src="@/assets/chevron-down.svg" />
             </div>
             <!-- Repeat dropdown structure for each filter as needed -->
@@ -38,6 +43,10 @@ export default {
         return { showFilters, toggleFilters };
     }
 };
+
+// 
+
+
 </script>
 
 <style scoped>
