@@ -11,6 +11,7 @@ object UserTable : LongIdTable() {
     val name = varchar("name", 32)
     val password = varchar("password", 128)
     val email = varchar("email", 128)
+    val guiro = long("guiro").default(0)
 }
 
 class User(id: EntityID<Long>) : Principal, LongEntity(id) {
@@ -19,6 +20,7 @@ class User(id: EntityID<Long>) : Principal, LongEntity(id) {
     var name by UserTable.name
     var password by UserTable.password
     var email by UserTable.email
+    var guiro by UserTable.guiro
 
     val favoriteEvents by Event via UserFavoriteEventTable
 }
