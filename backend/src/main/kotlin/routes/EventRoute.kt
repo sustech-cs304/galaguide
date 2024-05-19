@@ -8,6 +8,7 @@ import galaGuide.table.Event
 import galaGuide.table.EventAssetTable
 import galaGuide.table.EventPeriod
 import galaGuide.table.StaticAsset
+import galaGuide.util.GroupManager
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.response.*
@@ -137,6 +138,12 @@ fun Route.routeEvent() {
                             end = Instant.ofEpochSecond(it.end)
                         }
                     }
+
+                    GroupManager.createGroup(
+                        GroupManager.GroupCreateOption(
+                            name = it.title,
+                        )
+                    )
                 }
 
                 call.respond(emptyRestResponse("Event created"))
