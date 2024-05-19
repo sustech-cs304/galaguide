@@ -43,6 +43,7 @@ fun Route.routeEvent() {
         val cost: Long? = null,
         val assetIds: List<String>? = null,
         val periods: List<EventPeriodDetail>? = null,
+        val category: String? = null,
     )
 
     fun Event.asDetail() = EventDetail(
@@ -54,6 +55,7 @@ fun Route.routeEvent() {
         cost,
         assets.map { it.id.value.toString() },
         periods.map { it.asDetail() },
+        category,
     )
 
     fun Event.asRestResponse() = asDetail().asRestResponse()
@@ -118,6 +120,7 @@ fun Route.routeEvent() {
                         this.poster = poster
                         description = it.description
                         cost = it.cost ?: 0
+                        category = it.category ?: "other"
                     }
 
                     it.assetIds?.forEach { uuid ->

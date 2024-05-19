@@ -15,6 +15,7 @@ object EventTable : LongIdTable() {
     val poster = reference("poster", StaticAssetTable)
     val description = text("description").nullable()
     val cost = long("cost").default(0)
+    val category = varchar("category", 32).default("other")
 }
 
 class Event(id: EntityID<Long>) : LongEntity(id) {
@@ -25,6 +26,7 @@ class Event(id: EntityID<Long>) : LongEntity(id) {
     var poster by StaticAsset referencedOn EventTable.poster
     var description by EventTable.description
     var cost by EventTable.cost
+    var category by EventTable.category
 
     val assets by StaticAsset via EventAssetTable
     val periods by EventPeriod referrersOn EventPeriodTable.event
