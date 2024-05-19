@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class RestResponse<out T>(val code: Int, val message: String, val data: T? = null) {
     companion object {
-        fun <T> success(data: T): RestResponse<T> {
+        fun <T> success(data: T, message: String = ""): RestResponse<T> {
             return RestResponse(0, "success", data)
         }
 
@@ -15,11 +15,11 @@ data class RestResponse<out T>(val code: Int, val message: String, val data: T? 
     }
 }
 
-fun <T> T.asRestResponse(): RestResponse<T> {
-    return RestResponse.success(this)
+fun <T> T.asRestResponse(message: String = ""): RestResponse<T> {
+    return RestResponse.success(this, message)
 }
 
-fun emptyRestResponse() = Unit.asRestResponse()
+fun emptyRestResponse(message: String = "") = Unit.asRestResponse(message)
 
 fun <T> failRestResponse(code: Int, message: String): RestResponse<T?> {
     return RestResponse.error(code, message)

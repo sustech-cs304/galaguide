@@ -7,13 +7,14 @@ import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.LongIdTable
 import org.jetbrains.exposed.sql.Table
-import org.jetbrains.exposed.sql.javatime.datetime
+import org.jetbrains.exposed.sql.javatime.timestamp
 
 object EventTable : LongIdTable() {
     val title = varchar("title", 128)
     val host = reference("host", UserTable)
     val poster = reference("poster", StaticAssetTable)
-    val description = text("description")
+    val description = text("description").nullable()
+    val cost = long("cost").default(0)
 }
 
 class Event(id: EntityID<Long>) : LongEntity(id) {
@@ -23,6 +24,7 @@ class Event(id: EntityID<Long>) : LongEntity(id) {
     var host by User referencedOn EventTable.host
     var poster by StaticAsset referencedOn EventTable.poster
     var description by EventTable.description
+    var cost by EventTable.cost
 
     val assets by StaticAsset via EventAssetTable
     val periods by EventPeriod referrersOn EventPeriodTable.event
@@ -30,8 +32,8 @@ class Event(id: EntityID<Long>) : LongEntity(id) {
 
 object EventPeriodTable : LongIdTable() {
     val event = reference("event", EventTable)
-    val start = datetime("start")
-    val end = datetime("end")
+    val start = timestamp("start")
+    val end = timestamp("end")
 }
 
 class EventPeriod(id: EntityID<Long>) : LongEntity(id) {
