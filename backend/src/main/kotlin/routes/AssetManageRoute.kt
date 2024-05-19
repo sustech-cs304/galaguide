@@ -4,6 +4,7 @@ import galaGuide.data.asRestResponse
 import galaGuide.data.emptyRestResponse
 import galaGuide.data.failRestResponseDefault
 import galaGuide.resources.user
+import galaGuide.resources.userId
 import galaGuide.table.StaticAsset
 import galaGuide.table.StaticAssetTable
 import galaGuide.util.StaticAssetManager
@@ -141,6 +142,11 @@ fun Route.routeAssetManage() = authenticate("user") {
             }.getOrElse {
                 call.respond(failRestResponseDefault(-3, it.message ?: "Unknown error"))
             }
+        }
+
+        get("allocation") {
+            val userId = call.userId!!
+            call.respond(StaticAssetManager.getAllocation(userId).asRestResponse())
         }
     }
 }

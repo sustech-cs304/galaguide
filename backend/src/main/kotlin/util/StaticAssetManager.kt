@@ -1,6 +1,8 @@
 package galaGuide.util
 
 import galaGuide.table.StaticAsset
+import galaGuide.table.StaticAssetTable
+import galaGuide.table.StaticAssetTable.uploader
 import galaGuide.table.user.User
 import io.ktor.util.logging.*
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -87,6 +89,14 @@ object StaticAssetManager {
 
             deleteFile(uuid.toString())
             asset.delete()
+        }
+    }
+
+    fun getAllocation(uploaderId: Long) = transaction {
+        StaticAsset.find {
+            StaticAssetTable.uploader eq uploader
+        }.sumOf {
+            get(it.id.value)?.length() ?: 0
         }
     }
 }
