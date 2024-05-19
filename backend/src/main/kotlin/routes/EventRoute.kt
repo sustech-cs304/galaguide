@@ -1,66 +1,32 @@
 package galaGuide.routes
 
+import galaGuide.data.EventDetail
 import galaGuide.data.asRestResponse
 import galaGuide.data.emptyRestResponse
 import galaGuide.data.failRestResponseDefault
 import galaGuide.resources.user
+import galaGuide.resources.userId
 import galaGuide.table.Event
 import galaGuide.table.EventAssetTable
 import galaGuide.table.EventPeriod
 import galaGuide.table.StaticAsset
+import galaGuide.table.user.UserFavoriteEventTable
 import galaGuide.util.GroupManager
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import kotlinx.serialization.Serializable
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.Instant
 import java.util.*
 
 fun Route.routeEvent() {
-    @Serializable
-    data class EventPeriodDetail(
-        val id: Long,
-        val start: Long,
-        val end: Long,
-    )
-
-    fun EventPeriod.asDetail() = EventPeriodDetail(
-        id.value,
-        start.epochSecond,
-        end.epochSecond,
-    )
-
-    @Serializable
-    data class EventDetail(
-        val id: Long? = null,
-        val title: String? = null,
-        val hostId: Long? = null,
-        val posterId: String? = null,
-        val description: String? = null,
-        val cost: Long? = null,
-        val assetIds: List<String>? = null,
-        val periods: List<EventPeriodDetail>? = null,
-        val category: String? = null,
-    )
-
-    fun Event.asDetail() = EventDetail(
-        id.value,
-        title,
-        host.id.value,
-        poster.id.value.toString(),
-        description,
-        cost,
-        assets.map { it.id.value.toString() },
-        periods.map { it.asDetail() },
-        category,
-    )
-
-    fun Event.asRestResponse() = asDetail().asRestResponse()
-
     route("/event") {
         get {
             call.respond(transaction {
@@ -68,20 +34,46 @@ fun Route.routeEvent() {
             })
         }
 
-        get("/{id}") {
-            val id = call.parameters["id"]?.toLongOrNull() ?: run {
-                call.respond(failRestResponseDefault(-1, "Invalid ID"))
-                return@get
+        route("/{id}") {
+            get {
+                val id = call.parameters["id"]?.toLongOrNull() ?: run {
+                    call.respond(failRestResponseDefault(-1, "Invalid ID"))
+                    return@get
+                }
+
+                val event = transaction {
+                    Event.findById(id)?.asRestResponse()
+                } ?: run {
+                    call.respond(failRestResponseDefault(-2, "Event not found"))
+                    return@get
+                }
+
+                call.respond(event)
             }
 
-            val event = transaction {
-                Event.findById(id)?.asRestResponse()
-            } ?: run {
-                call.respond(failRestResponseDefault(-2, "Event not found"))
-                return@get
-            }
+            authenticate("user") {
+                post("/favorite") {
+                    val userId = call.userId!!
+                    val eventId = call.parameters["id"]?.toLongOrNull() ?: run {
+                        call.respond(failRestResponseDefault(-1, "Invalid ID"))
+                        return@post
+                    }
 
-            call.respond(event)
+                    transaction {
+                        if (UserFavoriteEventTable.select { (UserFavoriteEventTable.user eq userId) and (UserFavoriteEventTable.event eq eventId) }
+                                .any()) {
+                            UserFavoriteEventTable.deleteWhere { (user eq userId) and (event eq eventId) }
+                        } else {
+                            UserFavoriteEventTable.insert {
+                                it[user] = userId
+                                it[event] = eventId
+                            }
+                        }
+                    }
+
+                    call.respond(emptyRestResponse("Favorite toggled"))
+                }
+            }
         }
 
         authenticate("user") {

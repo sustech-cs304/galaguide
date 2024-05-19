@@ -2,10 +2,13 @@ package galaGuide.resources
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
+import galaGuide.data.asDetail
 import galaGuide.data.asRestResponse
 import galaGuide.data.emptyRestResponse
 import galaGuide.data.failRestResponseDefault
+import galaGuide.table.Event
 import galaGuide.table.user.User
+import galaGuide.table.user.UserFavoriteEventTable
 import galaGuide.table.user.UserTable
 import io.ktor.resources.*
 import io.ktor.server.application.*
@@ -19,6 +22,7 @@ import io.ktor.server.routing.*
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.or
+import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.security.MessageDigest
 import java.time.Instant
@@ -146,6 +150,17 @@ fun Route.routeUser() {
                 user.name,
             ).asRestResponse()
         )
+    }
+
+    authenticate("user") {
+        get("/favorite") {
+            val userId = call.userId!!
+            val list = transaction {
+                UserFavoriteEventTable.select { UserFavoriteEventTable.user eq userId }
+                    .mapNotNull { Event.findById(it[UserFavoriteEventTable.event])?.asDetail() }
+            }
+            call.respond(list.asRestResponse())
+        }
     }
 }
 
