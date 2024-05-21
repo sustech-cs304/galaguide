@@ -68,6 +68,7 @@ fun Route.routeUser() {
     }
 
     post<UserRoute.Register> {
+
         val obj = call.receive<UserRoute.Register.Object>()
         transaction {
             User.find {
