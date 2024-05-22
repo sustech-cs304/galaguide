@@ -244,7 +244,9 @@ fun Route.routeUser() {
                     return@post
                 }
 
-                user.emailVerified = true
+                transaction {
+                    user.emailVerified = true
+                }
                 emailVerifyMap.remove(call.userId)
                 call.respond(emptyRestResponse("email verified"))
             }
