@@ -82,7 +82,7 @@ onMounted(() => {
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     axios.get("/api/image/host").then((res) => {
         console.log(res.data);
-        spaceUsed.value = res.data.data.spaceUsed;
+        spaceUsed.value = res.data.data;
     }).catch((err) => {
         console.log(err);
     });
