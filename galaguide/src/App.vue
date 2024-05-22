@@ -124,7 +124,7 @@ function logout() {
 </script>
 
 <template>
-  <router-view :role="role" />
+  
 
   <!--  Top Bar  -->
   <div id="top-bar">
@@ -471,6 +471,7 @@ function logout() {
       </router-link>
     </div>
   </div>
+  <router-view :role="role" />
 
   <LeftSideBar :role="role" />
 

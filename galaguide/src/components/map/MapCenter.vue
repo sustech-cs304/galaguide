@@ -17,8 +17,11 @@
 import { ref, onMounted } from "vue";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import axios from "axios";
+import { useRouter } from "vue-router";
 const mapContainer = ref(null);
 const mode = ref(true);
+const router = useRouter();
 
 let pos = 0;
 
@@ -115,6 +118,23 @@ const nextEvent = () => {
 };
 
 onMounted(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+        router.push("/login");
+    }
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    axios.get("/api/event-center/list/all").then((res) => {
+        console.log(res.data);
+        allevents.value = res.data.data;
+    }).catch((err) => {
+        console.log(err);
+    });
+    axios.get("/api/event-center/list/my").then((res) => {
+        console.log(res.data);
+        myevents.value = res.data.data;
+    }).catch((err) => {
+        console.log(err);
+    });
     delete L.Icon.Default.prototype._getIconUrl;
     L.Icon.Default.mergeOptions({
         iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png"),
@@ -141,6 +161,7 @@ onMounted(() => {
     left: 10%;
     height: 100%;
     width: 90%;
+    z-index: 1;
 }
 .map-container {
     position: absolute;
