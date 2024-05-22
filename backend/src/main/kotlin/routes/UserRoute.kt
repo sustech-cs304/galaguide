@@ -6,6 +6,8 @@ import galaGuide.data.asDetail
 import galaGuide.data.asRestResponse
 import galaGuide.data.emptyRestResponse
 import galaGuide.data.failRestResponseDefault
+import galaGuide.data.user.asPrivateResponse
+import galaGuide.data.user.asPublicResponse
 import galaGuide.table.Event
 import galaGuide.table.user.User
 import galaGuide.table.user.UserFavoriteEventTable
@@ -51,10 +53,6 @@ fun Route.routeUser() {
     }
 
     route("/user") {
-        get {
-            call.respondRedirect("/user/login")
-        }
-
         @Serializable
         data class RegisterRequest(val name: String = "", val password: String = "", val email: String = "")
         post<RegisterRequest>("/register") {
@@ -241,6 +239,23 @@ fun Route.routeUser() {
                 user.emailVerified = true
                 emailVerifyMap.remove(call.userId)
                 call.respond(emptyRestResponse("email verified"))
+            }
+
+            get {
+                call.respond(call.user!!.asPrivateResponse())
+            }
+
+            get("{uid}") {
+                val user = call.parameters["uid"]?.toLongOrNull()?.let {
+                    transaction {
+                        User.findById(it)
+                    }
+                } ?: run {
+                    call.respond(failRestResponseDefault(-1, "user not found"))
+                    return@get
+                }
+
+                call.respond(user.asPublicResponse())
             }
 
             get("/favorite") {
