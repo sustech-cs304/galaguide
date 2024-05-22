@@ -7,7 +7,6 @@ import galaGuide.data.emptyRestResponse
 import galaGuide.data.failRestResponseDefault
 import galaGuide.table.forum.*
 import galaGuide.table.user.User
-import io.ktor.resources.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.response.*
@@ -18,16 +17,16 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.Instant
 
-fun Route.forum() = authenticate("user") {
+fun Route.routeForum() = authenticate("user") {
     route("/discuss") {
         transaction {
             SchemaUtils.createMissingTablesAndColumns(DiscussTable, TagTable, DiscussTagTable, LikeTable)
         }
         createDiscuss()
-        deleteDiscuss()
+//        deleteDiscuss()
         getDiscussList()
         getReplyList()
-        updateDiscussAccessHistory()
+//        updateDiscussAccessHistory()
         uploadDiscussReply()
         getSimilarDiscuss()
         updateDiscussLikes()
@@ -221,9 +220,7 @@ fun Route.updateDiscussLikes() {
     }
 }
 
-@Resource("/reserve")
 class ForumRoute {
-    @Resource("replyRequest")
     class Reply(val parent: ForumRoute = ForumRoute()) {
         @Serializable
         data class Object(

@@ -38,11 +38,12 @@ class Discuss(id: EntityID<Long>) : LongEntity(id) {
 
     var title by DiscussTable.title
     var content by DiscussTable.content
+    var posterId by DiscussTable.posterId
     var poster by User referencedOn DiscussTable.posterId
     var belongsToId by DiscussTable.belongsToId
     var createTime by DiscussTable.createTime
     var likes by DiscussTable.likes
-    val tags by Tag via DiscussTagTable
+    var tags by Tag via DiscussTagTable
 }
 
 // 标签实体类
