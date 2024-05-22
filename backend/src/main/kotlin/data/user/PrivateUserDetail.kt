@@ -6,6 +6,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class PrivateUserDetail(
+    val id: Long,
     val name: String,
     val email: String,
     val guiro: Long,
@@ -13,6 +14,7 @@ data class PrivateUserDetail(
 )
 
 fun User.asPrivateDetail() = PrivateUserDetail(
+    id.value,
     name,
     email,
     guiro,
@@ -22,10 +24,12 @@ fun User.asPrivateDetail() = PrivateUserDetail(
 fun User.asPrivateResponse() = asPrivateDetail().asRestResponse()
 
 data class PublicUserDetail(
+    val id: Long,
     val name: String,
 )
 
 fun User.asPublicDetail() = PublicUserDetail(
+    id.value,
     name,
 )
 
