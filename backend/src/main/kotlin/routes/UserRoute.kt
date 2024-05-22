@@ -17,6 +17,7 @@ import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import io.ktor.util.logging.*
 import kotlinx.datetime.Clock
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.SchemaUtils
@@ -187,6 +188,7 @@ fun Route.routeUser() {
             )
 
             val emailVerifyMap = mutableMapOf<Long, EmailVerifyInfo>()
+            val emailLogger = KtorSimpleLogger(smtpServer::class.qualifiedName!!)
 
             post("/request-email") {
                 val user = call.user!!
@@ -215,6 +217,7 @@ fun Route.routeUser() {
 
                     smtpServer.sendMail(email)
                 }.onFailure {
+                    emailLogger.error(it)
                     call.respond(failRestResponseDefault(-3, "send email failed"))
                 }.onSuccess {
                     emailVerifyMap[call.userId!!] = EmailVerifyInfo(code)
