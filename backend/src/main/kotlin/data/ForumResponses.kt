@@ -1,9 +1,7 @@
 package galaGuide.data
 
 import galaGuide.table.forum.Discuss
-import galaGuide.table.forum.DiscussTagTable
 import kotlinx.serialization.Serializable
-import java.time.Instant
 
 @Serializable
 data class DiscussDetail(
