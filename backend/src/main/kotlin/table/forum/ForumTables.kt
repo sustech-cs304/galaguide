@@ -39,7 +39,7 @@ class Discuss(id: EntityID<Long>) : LongEntity(id) {
     var title by DiscussTable.title
     var content by DiscussTable.content
     var poster by User referencedOn DiscussTable.posterId
-    var belongsTo by User referencedOn DiscussTable.belongsToId
+    var belongsToId by DiscussTable.belongsToId
     var createTime by DiscussTable.createTime
     var likes by DiscussTable.likes
     val tags by Tag via DiscussTagTable
