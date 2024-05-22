@@ -51,11 +51,19 @@ const routes = [
       ),
   },
   {
-    path: "/favorite",
+    path: "/favoriteEvent",
     name: "FavoriteEvent",
     component: () =>
       import(
         /* webpackChunkName: "events" */ "./components/events/FavoriteEvent.vue"
+      ),
+  },
+  {
+    path: "/browsedEvent",
+    name: "BrowsedEvent",
+    component: () =>
+      import(
+        /* webpackChunkName: "events" */ "./components/events/BrowsedEvent.vue"
       ),
   },
   {
@@ -133,7 +141,8 @@ const routes = [
     name: "ImageHost",
     component: () =>
       import(/* webpackChunkName: "image-host" */ "./components/image/ImageHost.vue"),
-  }
+  },
+  
 ];
 
 const router = createRouter({
