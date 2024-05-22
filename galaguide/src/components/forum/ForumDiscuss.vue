@@ -26,19 +26,10 @@ const relatedDiscussions = ref([
     title: "Animal Science Major advice?",
     content:
     "I'm a freshman and I'm thinking about majoring in Animal Science. I'm not sure if it's the right choice for me. Can anyone give me some advice?",
-    sender: "User 1",
-    time: "12:00",
+    posterName: "User 1",
+    createTime: "12:00",
     likes: 1,
     tags: ["Animal Science", "Major Advice"],
-  },
-  {
-    id: 2,
-    title: "First time didi user in Shanghai",
-    content: "I will be traveling with my aunt and mom in shanghai. We will be arriving at the Hongqiao railway station and I will have two large check-in luggages with me because I will be flying out of pudong airport later that week. I think it'll be difficult for us to take the subway with the luggage so I was thinking of calling a didi cab. I read online that they only accept 2 max riders at a time. So a few questions: Is it okay if I hail the car ride, have my mom and aunt use the cab ride while I take the subway? I'll just monitor the cab ride through my phone. How do I know if the car is big enough for the two suitcases? The types of car I see are \"Discount Express\", \"Express\"..etc. Thank you!",
-    sender: "Wendy",
-    time: "12:00",
-    likes: 1,
-    tags: ["Shanghai", "Didi", "Hongqiao Railway Station", "Pudong Airport"],
   }
 ]);
 
@@ -66,7 +57,7 @@ onMounted(() => {
     .get(`/api/discuss/${discussId}`)
     .then((response) => {
       console.log(response.data);
-      comments.value = response.data;
+      comments.value = response.data.data;
       filteredComments.value = comments.value.slice(1);
     })
     .catch((error) => {
@@ -88,13 +79,19 @@ const updateViewingHistory = (id) => {
     });
 };
 
+const getCookie = (name) => {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(";").shift();
+};
+
 const postComment = () => {
   console.log("Posting comment");
   axios
-    .post(`/api/discuss/${discussId}`, {
+    .post(`/api/discuss/${discussId}/upload-reply`, {
       title: " ",
       content: textareaInput.value,
-      sender_name: "admin", // TODO: get sender name from cookie
+      posterId: getCookie("user_id"),
       time: new Date().toLocaleString()
     })
     .then((response) => {
@@ -113,12 +110,8 @@ const likeComment = (id) => {
     .then((response) => {
       console.log(response.data);
       // window.location.reload();
-      if (response.data.message === "Liked") {
-        comments.value[id].likes = response.data.likes;
-        filteredComments.value = comments.value.slice(1);
-      }
-      else {
-        comments.value[id].likes = response.data.likes;
+      if (response.status === 200 && response.data.code === 0) {
+        comments.value[id].likes = response.data.data.likes;
         filteredComments.value = comments.value.slice(1);
       }
     })
@@ -168,7 +161,7 @@ const getRelatedDiscussions = () => {
     .get(`/api/discuss/${discussId}/related`)
     .then((response) => {
       console.log(response.data);
-      relatedDiscussions.value = response.data;
+      relatedDiscussions.value = response.data.data;
     })
     .catch((error) => {
       console.error("Error fetching related discussions:", error);
@@ -266,7 +259,7 @@ const showAlert = ref(false);
             <h3>{{ discussion.title }}</h3>
           </router-link>
           <p>{{ discussion.content }}</p>
-          <h4>{{ discussion.sender }} at {{ discussion.time }}</h4>
+          <h4>{{ discussion.posterName }} at {{ discussion.createTime }}</h4>
         </div>
       </div>
       <button @click="getRelatedDiscussions" id="check-others">

@@ -45,6 +45,7 @@ const uploadImage = () => {
     console.log("Image uploaded");
     src.value = "";
     document.getElementById("upload").value = "";
+    window.location.reload();
 }
 </script>
 
