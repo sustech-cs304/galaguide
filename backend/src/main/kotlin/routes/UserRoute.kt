@@ -54,6 +54,13 @@ fun Route.routeUser() {
 
     route("/user") {
         @Serializable
+        data class LoginData(
+            val token: String,
+            val userName: String,
+            val userRole: Int = 1,
+        )
+
+        @Serializable
         data class RegisterRequest(val name: String = "", val password: String = "", val email: String = "")
         post<RegisterRequest>("/register") {
             transaction {
@@ -91,15 +98,20 @@ fun Route.routeUser() {
                     "%02x".format(byte)
                 }
 
-            val id = transaction {
+            val user = transaction {
                 User.new {
                     name = it.name
                     password = passwordEncrypted
                     email = it.email
                 }
-            }.id.value
+            }
 
-            call.respond(emptyRestResponse())
+            call.respond(
+                LoginData(
+                    generateToken(user.id.value),
+                    user.name,
+                ).asRestResponse()
+            )
         }
 
         @Serializable
@@ -124,13 +136,6 @@ fun Route.routeUser() {
                 call.respond(failRestResponseDefault(-1, "password incorrect"))
                 return@post
             }
-
-            @Serializable
-            data class LoginData(
-                val token: String,
-                val userName: String,
-                val userRole: Int = 1,
-            )
 
             call.respond(
                 LoginData(
