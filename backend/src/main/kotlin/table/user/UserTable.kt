@@ -1,6 +1,8 @@
 package galaGuide.table.user
 
 import galaGuide.table.Event
+import galaGuide.table.StaticAsset
+import galaGuide.table.StaticAssetTable
 import io.ktor.server.auth.*
 import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
@@ -14,6 +16,7 @@ object UserTable : LongIdTable() {
     val email = varchar("email", 128)
     val guiro = long("guiro").default(0)
     val emailVerified = bool("emailVerified").default(false)
+    val avatar = reference("avatar", StaticAssetTable).nullable()
 }
 
 class User(id: EntityID<Long>) : Principal, LongEntity(id) {
@@ -24,6 +27,7 @@ class User(id: EntityID<Long>) : Principal, LongEntity(id) {
     var email by UserTable.email
     var guiro by UserTable.guiro
     var emailVerified by UserTable.emailVerified
+    var avatar by StaticAsset optionalReferencedOn UserTable.avatar
 
     val favoriteEvents by Event via UserFavoriteEventTable
 
