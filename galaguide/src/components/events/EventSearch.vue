@@ -1,27 +1,29 @@
 <template>
-	<div style="width: 15%;">
-
-	</div>
-	<div class="event-center">
-		<div class="search-container">
-			<SearchBox></SearchBox>
+	<div style="display: flex; flex-direction: row;">
+		<div style="width: 15%; display: flex;">
+			<h2>This is side bar</h2>
 		</div>
-		<div class="filter-container">
-			<div class="filter-category" v-for="category in selectedFilters" :key="category.name">
-				<label>{{ category.name }}</label>
-				<div class="filter-options">
-					<button v-for="option in category.options" :key="option"
-						:class="{ 'selected': isSelected(category.name, option) }" @click="toggleFilter(category.name, option)">
-						{{ option }}
-					</button>
-				</div>
+		<div class="event-center">
+			<div class="search-container">
+				<SearchBox></SearchBox>
 			</div>
-			<button @click="applyFilters" style="width: 10%; align-self: center;">Filter</button>
+			<div class="filter-container">
+				<div class="filter-category" v-for="category in selectedFilters" :key="category.name">
+					<label>{{ category.name }}</label>
+					<div class="filter-options">
+						<button v-for="option in category.options" :key="option"
+							:class="{ 'selected': isSelected(category.name, option) }" @click="toggleFilter(category.name, option)">
+							{{ option }}
+						</button>
+					</div>
+				</div>
+				<button @click="applyFilters" style="width: 10%; align-self: center;">Filter</button>
+			</div>
+			<div class="events-list">
+				<EventCard v-for="event in searchResults" :key="event.id" :event="event" />
+			</div>
+
 		</div>
-		<div class="events-list">
-			<EventCard v-for="event in searchResults" :key="event.id" :event="event" />
-		</div>
-		
 	</div>
 </template>
 
@@ -31,16 +33,16 @@ import axios from 'axios';
 import SearchBox from './SearchBox.vue';
 import EventCard from './EventCard.vue';
 // TODO: implement the search query and filter logic
-const searchQuery = ref('');
+// const searchQuery = ref('');
 const selectedFilters = reactive([
-	{ name: 'Category', options: ['Sport', 'Music', 'Lecture'], selected: []},
-	{ name: 'Time', options: ['Morning', 'Afternoon', 'Evening'], selected: []},
-	{ name: 'Price', options: ['Free', 'Paid'], selected: []},
-	{ name: 'Status', options: ['Upcoming', 'Ongoing', 'Past'], selected: []}
+	{ name: 'Category', options: ['Sport', 'Music', 'Lecture'], selected: [] },
+	{ name: 'Time', options: ['Morning', 'Afternoon', 'Evening'], selected: [] },
+	{ name: 'Price', options: ['Free', 'Paid'], selected: [] },
+	{ name: 'Status', options: ['Upcoming', 'Ongoing', 'Past'], selected: [] }
 ]);
 
 const searchResults = ref([]);
-const filteredResults = ref([]);
+// const filteredResults = ref([]);
 onMounted(() => {
 	fetchEvents();
 });
@@ -68,7 +70,7 @@ const toggleFilter = (category, option) => {
 };
 
 const isSelected = (category, option) => {
-	console.log(category, option);
+	return selectedFilters.find((filter) => filter.name === category)?.selected.includes(option);
 };
 
 </script>
@@ -81,6 +83,7 @@ const isSelected = (category, option) => {
 	padding: 20px;
 	display: flex;
 	flex-direction: column;
+	width: 80%;
 
 }
 

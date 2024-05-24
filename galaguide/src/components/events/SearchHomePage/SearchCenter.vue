@@ -1,84 +1,94 @@
 <template>
-	<div class="search-center">
-		<main class="main-container">
-			<div class="main-content">
-				<div class="header">
-					<div class="logo-wrapper">
-						<img class="logo-icon" src="@/assets/logo.png" alt="Gala Logo" />
+	<div style="display: flex; flex-direction: row;">
+		<div style="display: flex; width: 8%;"></div>
+		<div class="search-center">
+			<main class="main-container">
+				<div class="main-content">
+					<div class="header">
+						<div class="logo-wrapper">
+							<img class="logo-icon" src="@/assets/logo.png" alt="Gala Logo" />
+						</div>
+						<div class="search-bar">
+							<input class="input-field" placeholder="Search for any Gala you like" type="text" />
+							<button class="search-button">Search</button>
+						</div>
 					</div>
-					<div class="search-bar">
-						<input class="input-field" placeholder="Search for any Gala you like" type="text" />
-						<button class="search-button">Search</button>
-					</div>
-				</div>
 
-				<div class="content">
+					<div class="content">
+						<div :class="filterBox">
+							<button class="filterBoxButton" @click="toggleFilters">
+								Filter Box
+							</button>
 
-					<div :class="filterBox">
-						<button class="filterBoxButton" @click="toggleFilters">
-							Filter Box
-						</button>
+							<div :class="filters" v-show="showFilters">
+								<div class="dropdown">
+									<label class="label">Category</label>
+									<select v-model="category" style="display: block;">
+										<option v-for="option in category_options" :key="option.value" :value="option.value">
+											{{ option.label }}
+										</option>
+									</select>
+								</div>
 
-						<div :class="filters" v-show="showFilters">
-							<div class="dropdown">
-								<label class="label">C</label>
-								<img class="chevronDownIcon" alt="Expand" src="@/assets/chevron-down.svg" />
-								<select v-model="category" style="display: block;">
-									<option v-for="option in category_options" :key="option.value" :value="option.value">
-										{{ option.label }}
-									</option>
-								</select>
-							</div>
+								<div class="dropdown">
+									<label class="label">Start Date</label>
+									<input type="date" v-model="start_date" style="display: block;">
 
-							<div class="dropdown">
-								<label class="label">Event Time</label>
-								<img class="chevronDownIcon" alt="Expand" src="@/assets/chevron-down.svg" />
-								<select v-model="event_time" style="display: block;">
-									<option v-for="option in event_time_options" :key="option" :value="option">
-										{{ option }}
-									</option>
-								</select>
+								</div>
+
+								<div class="dropdown">
+									<label class="label">End Date</label>
+									<input type="date" v-model="end_date" style="display: block;">
+								</div>
+
+								<div class="dropdown">
+									<label class="label">Event Status</label>
+									<select v-model="event_status" style="display: block;">
+										<option v-for="option in event_status_options" :key="option" :value="option">
+											{{ option }}
+										</option>
+									</select>
+								</div>
+
+								<div class="dropdown">
+									<label class="label">Min Price</label>
+									<input type="number" v-model="min_price" style="display: block;">
+								</div>
+
+								<div class="dropdown">
+									<label class="label">Max Price</label>
+									<input type="number" v-model="max_price" style="display: block;">
+								</div>
 							</div>
-							<div class="dropdown">
-								<label class="label">
-									Registration Time
-								</label>
-								<img class="chevronDownIcon" alt="Expand" src="@/assets/chevron-down.svg" />
-								<select v-model="event_status" style="display: block;">
-									<option v-for="option in event_status_options" :key="option" :value="option">
-										{{ option }}
-									</option>
-								</select>
+							<div>
+								<span v-if="(min_price > max_price) && showFilters" class="error">The max price must be greater than the
+									min
+									price.</span>
+								<br>
+								<span v-if="(start_date > end_date) && showFilters" class="error">"The end date must be later than the
+									start
+									date."</span>
 							</div>
-							<div class="dropdown">
-								<label class="label">
-									Price
-								</label>
-								<img class="chevronDownIcon" alt="Expand" src="@/assets/chevron-down.svg" />
-								<select v-model="price" style="display: block;">
-									<option v-for="option in price_options" :key="option" :value="option">
-										{{ option }}
-									</option>
-								</select>
-							</div>
-							<!-- Repeat dropdown structure for each filter as needed -->
 						</div>
 					</div>
 				</div>
-			</div>
-		</main>
+			</main>
+		</div>
 	</div>
 </template>
 
 
 
 <script lang="js" setup>
-import { ref } from "vue";
-//import FilterBox from "./FilterBox.vue";
+import { ref, } from "vue";
 const category = ref("")
-const event_time = ref("")
+//initialize start date and end date with the current date
+const start_date = ref(new Date().toISOString().substr(0, 10))
+const end_date = ref(new Date().toISOString().substr(0, 10))
 const event_status = ref("")
-const price = ref("")
+const min_price = ref(0)
+const max_price = ref(0)
+
 
 const category_options = [
 	{
@@ -103,26 +113,12 @@ const category_options = [
 	},
 ];
 
-const event_time_options = ref([
-	"Morning",
-	"Afternoon",
-	"Evening",
-	"Night",
-]);
-
 const event_status_options = ref([
 	"Upcoming",
 	"Ongoing",
 	"Past",
 ]);
 
-const price_options = ref([
-	"Free",
-	"0 - 50",
-	"50 - 100",
-	"100 - 200",
-	"200+",
-]);
 
 
 const showFilters = ref(false);
@@ -268,5 +264,6 @@ const toggleFilters = () => {
 	width: 20px;
 	/* Size of the chevron icon */
 	float: right;
+	align-self: center;
 }
 </style>

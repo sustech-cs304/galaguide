@@ -6,24 +6,19 @@
         <div :class="filters" v-show="showFilters">
             <div class="dropdown">
                 <label class="label">Category</label>
-                <img class="chevronDownIcon" alt="Expand" src="@/assets/chevron-down.svg" />
-
             </div>
             <div class="dropdown">
                 <label class="label">Event Time</label>
-                <img class="chevronDownIcon" alt="Expand" src="@/assets/chevron-down.svg" />
             </div>
             <div class="dropdown">
                 <label class="label">
                     Registration Time
                 </label>
-                <img class="chevronDownIcon" alt="Expand" src="@/assets/chevron-down.svg" />
             </div>
             <div class="dropdown">
                 <label class="label">
                     Price
                 </label>
-                <img class="chevronDownIcon" alt="Expand" src="@/assets/chevron-down.svg" />
             </div>
             <!-- Repeat dropdown structure for each filter as needed -->
         </div>
@@ -69,7 +64,7 @@ export default {
 }
 
 .filters {
-    
+
     background-color: #f0f0f0;
     /* Light background for dropdown items */
     padding: 10px;
