@@ -3,7 +3,7 @@
     <div class="space">
       <div class="space-header">
         <img
-          :src="user.userAvatar"
+          :src="user.userAvatarId"
           alt="user photo"
           style="
             position: absolute;
@@ -14,17 +14,21 @@
         />
         <h2 class="user-name" style="position: absolute; left: 22.5%; top: 28%">
           {{ user.userName }}
-          <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-pencil-square" viewBox="-6 -6 22 22">
-            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
-          </svg>
+          
         </h2>
         <h4 class="user-email" style="position: absolute; left: 22.5%; top: 33%">
           {{ user.userEmail }}
         </h4>
-        <p class="user-bio" style="position: absolute; left: 22.5%; top: 38%">
-          {{ user.userBio }}
+        <p class="user-intro" style="position: absolute; left: 22.5%; top: 38%">
+          {{ user.userIntro }}
         </p>
+      </div>
+
+      <div class="revise-button" @click="revise" style="position: absolute; top: 36%; left: 91%;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+          <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+          <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+        </svg>
       </div>
 
       <div class="space-main" style="display: flex; flex-direction: column">
@@ -60,107 +64,72 @@
           </div>
         </div>
 
+        <div class="space-main-event">
+          <div class="space-main-bar">
+            <h2>Subscribed Events</h2>
+            <router-link to="/subscribedEvent"> 
+              <h4>View All</h4>
+            </router-link>
+          </div>
+        </div>
+
+        <div class="cards">
+          <div class="card" v-for="event in user.userSubscribedEvents" :key="event.title">
+            <h3>{{ event.title }}</h3>
+            <p>{{ event.content }}</p>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { onMounted, ref } from "vue";
+import axios from "axios";
 
-const user = ref({});
+const user = ref({
+  userAvatarId: "",
+  userName: "",
+  userEmail: "",
+  userIntro: "",
+  userFavoriteEvents: [],
+  userBrowsedEvents: [],
+  userSubscribedEvents: [],
+  userGuiro: -1,
+  userBackgroundId: "",
+});
 
 onMounted(async () => {
-  // const response = await axios.get("/api/user/details");
-  // user.value = response.data;
-  
-  user.value = {
-    userAvatar: "https://via.placeholder.com/100",
-    userName: document.cookie.split(";")
-      .find((cookie) => cookie.trim().startsWith("userName=")) === undefined ? "User Name" :
-      document.cookie.split(";")
-      .find((cookie) => cookie.trim().startsWith("userName=")).split("=")[1],
-    userEmail: "123456789@google.com",
-    userBio: "Here is a short bio about the user.",
-    userFavoriteEvents: [
-      {
-        title: "Event 1",
-        content: "Lorem ipsum, dolor sit amet consectetur.",
-        link: "https://www.google.com",
-        date: "2022-10-10 08:00",
-      },
-      {
-        title: "Event 2",
-        content: "Lorem ipsum, dolor sit amet consectetur.",
-        link: "https://www.google.com",
-        date: "2022-10-10 08:00",
-      },
-      {
-        title: "Event 3",
-        content: "Lorem ipsum, dolor sit amet consectetur.",
-        link: "https://www.google.com",
-        date: "2022-10-10 08:00",
-      },
-    ],
-    userBrowsedEvents: [
-      {
-        title: "Event 1",
-        content: "Lorem ipsum, dolor sit amet consectetur.",
-        link: "https://www.google.com",
-        date: "2022-10-10 08:00",
-      },
-      {
-        title: "Event 2",
-        content: "Lorem ipsum, dolor sit amet consectetur.",
-        link: "https://www.google.com",
-        date: "2022-10-10 08:00",
-      },
-      {
-        title: "Event 3",
-        content: "Lorem ipsum, dolor sit amet consectetur.",
-        link: "https://www.google.com",
-        date: "2022-10-10 08:00",
-      },
-    ],
-    userPosts: [
-      {
-        photo: "https://via.placeholder.com/150",
-        name: "Post 1",
-        description: "Lorem ipsum, dolor sit amet consectetur.",
-      },
-      {
-        photo: "https://via.placeholder.com/150",
-        name: "Post 2",
-        description: "Lorem ipsum, dolor sit amet consectetur.",
-      },
-      {
-        photo: "https://via.placeholder.com/150",
-        name: "Post 3",
-        description: "Lorem ipsum, dolor sit amet consectetur.",
-      },
-    ],
-    userGroups: [
-      {
-        id: 1,
-        photo: "https://via.placeholder.com/150",
-        name: "Group 1",
-        description: "Lorem ipsum, dolor sit amet consectetur.",
-      },
-      {
-        id: 2,
-        photo: "https://via.placeholder.com/150",
-        name: "Group 2",
-        description: "Lorem ipsum, dolor sit amet consectetur.",
-      },
-      {
-        id: 3,
-        photo: "https://via.placeholder.com/150",
-        name: "Group 3",
-        description: "Lorem ipsum, dolor sit amet consectetur.",
-      },
-    ]
-  };
+  axios
+  .get('/api/user', {
+      headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+  })
+  .then((response) => {
+    console.log("response:", response);
+    if (response.status === 200 && response.data.code === 0) {
+      user.value.userName = response.data.data.name === "" ? "User" : response.data.data.name;
+      user.value.userAvatarId = response.data.data.avatarId === null ? "https://via.placeholder.com/100" : response.data.data.avatarId;
+      user.value.userBackgroundId = response.data.data.backgroundId === "" ? "https://placehold.co/600x400?text=Background+Image" : response.data.data.backgroundId;
+      user.value.userEmail = response.data.data.email === "" ? "123@gmail.com" : response.data.data.email;
+      user.value.userGuiro = response.data.data.guiro;
+      user.value.userIntro = response.data.data.intro === "" ? "This is a user intro." : response.data.data.intro;
+      user.value.userFavoriteEvents = response.data.data.favoriteEvents;
+      user.value.userSubscribedEvents = response.data.data.subscribedEvents;
+      user.value.userBrowsedEvents = response.data.data.browsedEvents;
+    }
+  })
+  .catch((error) => {
+    console.log("error:", error);
+  });
 });
+
+const revise = () => {
+  console.log("revise");
+};
 </script>
 
 <style scoped>
@@ -273,6 +242,14 @@ onMounted(async () => {
   border: solid;
   border-color: rgba(128, 110, 118, 0.449);
   border-radius: 10px;
+  background-color: #d5bfa148;
+}
+
+.revise-button {
+  cursor: pointer;
+}
+
+.revise-button:hover {
   background-color: #d5bfa148;
 }
 </style>

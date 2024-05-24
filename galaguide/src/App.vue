@@ -111,26 +111,29 @@ function getRoleFromCookie() {
 }
 
 function getUserInfo() {
-  if (role.value === 1) {
+  console.log("document.cookie:", document.cookie);
+  const cookie = document.cookie
+    .split(";")
+    .find((cookie) => cookie.trim().startsWith("userRole="));
+  console.log("cookie:", cookie);
+  if (cookie && cookie.split("=")[1] !== "0") {
+    console.log("cookie:", cookie);
     axios
-      .get(`/api/user`)
-      .then((response) => {
-        console.log("response:", response);
-        if (response.status === 200 && response.data.code === 0) {
-          user.userName = response.data.data.name;
-          user.userAvatar = response.data.data.avatar;
-          user.userBackground = response.data.data.background;
-          user.userEmail = response.data.data.email;
-          user.userGuiro = response.data.data.guiro;
-          user.userBio = response.data.data.bio;
-          user.userFavoriteEvents = response.data.data.favoriteEvents;
-          user.userSubscribedEvents = response.data.data.subscribedEvents;
-          user.userBrowsedEvents = response.data.data.browsedEvents;
+    .get('/api/user', {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
         }
-      })
-      .catch((error) => {
-        console.log("error:", error);
-      });
+    })
+    .then((response) => {
+      console.log("response:", response);
+      if (response.status === 200 && response.data.code === 0) {
+        user.userName = response.data.data.name;
+        user.userGuiro = response.data.data.guiro;
+      }
+    })
+    .catch((error) => {
+      console.log("error:", error);
+    });
   }
 }
 
@@ -290,7 +293,7 @@ function logout() {
             margin-top:10px;
           "
         >
-          {{ userName }}
+          {{ user.userName }}
         </div>
 
         <hr />
@@ -329,9 +332,9 @@ function logout() {
               />
             </svg>
           </div>
-          <span style="color: black; display: inline; justify-content: center"
-            >Guiro: 300.0</span
-          >
+          <span style="color: black; display: inline; justify-content: center; margin-left: 10px;">
+            Guiro: {{ user.userGuiro }}
+          </span>
         </div>
 
         <div

@@ -7,3 +7,4 @@
 pseudo/pseudo_init.bat
 
 *.httpbackend/.idea
+*.http
