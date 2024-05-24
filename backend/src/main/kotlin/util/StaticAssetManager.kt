@@ -52,7 +52,7 @@ object StaticAssetManager {
     fun change(uuid: UUID, uploader: User? = null, stream: InputStream? = null, fileName: String? = null) =
         transaction {
             val asset = StaticAsset.findById(uuid) ?: error("Asset $uuid not found")
-            asset.takeUnless { uploader != null && asset.uploader != uploader } ?: error("Uploader mismatch")
+            asset.takeUnless { uploader != null && asset.uploader.id != uploader.id } ?: error("Uploader mismatch")
 
             stream?.let {
                 putFile(stream, uuid.toString())
@@ -88,7 +88,7 @@ object StaticAssetManager {
     fun delete(uuid: UUID, uploader: User? = null) {
         transaction {
             val asset = StaticAsset.findById(uuid) ?: error("Asset $uuid not found")
-            asset.takeUnless { uploader != null && asset.uploader != uploader } ?: error("Uploader mismatch")
+            asset.takeUnless { uploader != null && asset.uploader.id != uploader.id } ?: error("Uploader mismatch")
 
             logger.info("[StaticAsset] Delete asset $uuid by ${uploader?.name}")
 
