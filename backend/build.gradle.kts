@@ -44,7 +44,7 @@ dependencies {
     //logging
     val log4jVersion = "2.23.0"
     implementation("org.apache.logging.log4j:log4j-core:$log4jVersion")
-    implementation("org.apache.logging.log4j:log4j-slf4j-impl:$log4jVersion")
+    implementation("org.apache.logging.log4j:log4j-slf4j2-impl:$log4jVersion")
 
     //database
     val exposedVersion = "0.41.1"
@@ -56,6 +56,8 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-java-time:$exposedVersion")
     implementation("com.h2database:h2:$h2Version")
     implementation("com.zaxxer:HikariCP:$hikaricpVersion")
+
+    implementation("org.simplejavamail:simple-java-mail:8.10.1")
 }
 
 tasks.test {

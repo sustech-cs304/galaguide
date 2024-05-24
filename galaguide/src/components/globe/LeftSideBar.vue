@@ -31,6 +31,7 @@ defineProps({
       
       <router-link to="/login" v-else>
         <img src="../../assets/reservations.png" alt="reservations.png" style="width: 30%; height: auto" />
+        <h1>Gala Search</h1>
       </router-link>
     </div>
     <div class="bar-options" style="top: 400px">
@@ -60,7 +61,7 @@ defineProps({
       </router-link>
       <router-link to="/login" v-else><img src="../../assets/map.png" alt="map.png"
           style="width: 30%; height: auto" />
-        <h1>Login</h1>
+        <h1>Map</h1>
       </router-link>
     </div>
     <div class="bar-options" style="top: 700px">
@@ -70,7 +71,7 @@ defineProps({
       </router-link>
       <router-link to="/login" v-else><img src="../../assets/image-host.png" alt="image.png"
           style="width: 30%; height: auto" />
-        <h1>Login</h1>
+        <h1>Image Host</h1>
       </router-link>
     </div>
   </div>

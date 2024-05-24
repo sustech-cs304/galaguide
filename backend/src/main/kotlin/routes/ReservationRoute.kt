@@ -7,6 +7,7 @@ import galaGuide.table.user.User
 import galaGuide.table.Event
 import galaGuide.table.EventPeriod
 import io.ktor.http.*
+import io.ktor.resources.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.request.*
@@ -38,7 +39,7 @@ fun Route.routeReservation() = authenticate("user") {
 
 fun Route.createOrderRoute() {
     post("/create-order") {
-        val orderRequest = kotlin.runCatching { call.receiveNullable<OrderRequest>() }.getOrNull()
+        val orderRequest = kotlin.runCatching { call.receiveNullable<ReservationRoute.Order.Object>() }.getOrNull()
         if (orderRequest == null) {
             call.respond(HttpStatusCode.BadRequest, "Invalid JSON format")
             return@post
@@ -111,7 +112,7 @@ fun Route.createOrderRoute() {
 
 fun Route.orderNextRoute() {
     post("/order-next") {
-        val (orderId, action) = call.receive<OrderNextRequest>()
+        val (orderId, action) = call.receive<ReservationRoute.OrderNext.Object>()
 
         // 获取当前用户信息
         val currentUser = call.authentication.principal<User>()
@@ -176,14 +177,24 @@ fun Route.orderNextRoute() {
     }
 }
 
-@Serializable
-data class OrderRequest(
-    val initiatorId: Long,
-    val recipientId: Long,
-    val eventId: Long,
-    val periodId: Long,
-    @Contextual val price: BigDecimal
-)
+@Resource("/reserve")
+class ReservationRoute {
+    @Resource("order")
+    class Order(val parent: ReservationRoute = ReservationRoute()) {
+        @Serializable
+        data class Object(
+            val initiatorId: Long,
+            val recipientId: Long,
+            val eventId: Long,
+            val periodId: Long,
+            @Contextual val price: BigDecimal
+        )
+    }
 
-data class OrderNextRequest(val orderId: Long, val action: Int)
+    @Resource("orderNest")
+    class OrderNext(val parent: ReservationRoute = ReservationRoute()) {
+        @Serializable
+        data class Object(val orderId: Long, val action: Int)
+    }
+}
 

@@ -1,8 +1,7 @@
 package galaGuide.table.reservation
 
 import galaGuide.table.EventTable
-import galaGuide.table.user.UserTable // 引入 UserTable 类
-
+import galaGuide.table.user.UserTable
 import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID

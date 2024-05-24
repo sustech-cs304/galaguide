@@ -12,10 +12,13 @@
             border-radius: 50px;
           "
         />
-        <h2 class="user-name" style="position: absolute; left: 22.5%; top: 31%">
+        <h2 class="user-name" style="position: absolute; left: 22.5%; top: 28%">
           {{ user.userName }}
         </h2>
-        <p class="user-bio" style="position: absolute; left: 22.5%; top: 37.5%">
+        <h4 class="user-email" style="position: absolute; left: 22.5%; top: 33%">
+          {{ user.userEmail }}
+        </h4>
+        <p class="user-bio" style="position: absolute; left: 22.5%; top: 38%">
           {{ user.userBio }}
         </p>
       </div>
@@ -24,7 +27,25 @@
         <div class="space-main-event">
           <div class="space-main-bar">
             <h2>Favorite Events</h2>
-            <router-link to="/favorite"> <h4>View All</h4></router-link>
+            <router-link to="/favoriteEvent"> <h4>View All</h4></router-link>
+          </div>
+        </div>
+
+        <div class="cards">
+          <div class="card" v-for="event in user.userBrowsedEvents" :key="event.title">
+            <router-link :to="event.link"> 
+              <h3>{{ event.title }}</h3>
+            </router-link>
+            <p>{{ event.content }}</p>
+          </div>
+        </div>
+
+        <div class="space-main-event">
+          <div class="space-main-bar">
+            <h2>Browsed Events</h2>
+            <router-link to="/browsedEvent"> 
+              <h4>View All</h4>
+            </router-link>
           </div>
         </div>
 
@@ -35,44 +56,6 @@
           </div>
         </div>
 
-        <div class="space-main-forum">
-          <div class="space-main-bar">
-            <h2>Liked Posts</h2>
-            <h4>View All</h4>
-          </div>
-        </div>
-
-        <div class="cards">
-          <div class="card" v-for="post in user.userPosts" :key="post.title">
-            <img :src="post.photo" alt="post photo" />
-            <h3>{{ post.name }}</h3>
-            <p>{{ post.description }}</p>
-          </div>
-        </div>
-
-        <div class="space-main-chat">
-          <div class="space-main-bar">
-            <h2>Chat</h2>
-            <h4>View All</h4>
-          </div>
-        </div>
-        
-        <div class="cards">
-          <div class="card" v-for="group in user.userGroups" :key="group.name">
-            <h3>{{ group.name }}</h3>
-            <img :src="group.photo" alt="group photo" />
-            <p>{{ group.description }}</p>
-          </div>
-        </div>
-
-        <el-button @click="add">Add Item</el-button>
-        <el-button @click="onDelete">Delete Item</el-button>
-        <el-scrollbar max-height="400px">
-          <p v-for="item in count" :key="item" class="scrollbar-demo-item">
-            {{ item }}
-          </p>
-        </el-scrollbar>
-
       </div>
     </div>
   </div>
@@ -82,17 +65,6 @@
 import { ref, onMounted } from "vue";
 
 const user = ref({});
-
-const count = ref(3)
-
-const add = () => {
-  count.value++
-}
-const onDelete = () => {
-  if (count.value > 0) {
-    count.value--
-  }
-}
 
 onMounted(async () => {
   // const response = await axios.get("/api/user/details");
@@ -109,18 +81,41 @@ onMounted(async () => {
     userFavoriteEvents: [
       {
         title: "Event 1",
-        content:
-          "Lorem ipsum, dolor sit amet consectetur adipisicing elit.Distinctio pariatur iusto accusamus, placeat ea sapiente quaerateum veritatis, fugiat, obcaecati saepe itaque sequi ipsam vel. Utvoluptatem ipsa in consectetur, qui similique aliquam labore vitaeporro voluptatum distinctio, optio ipsum tempore animi corrupti,dolor non natus illo iusto repellat vero.",
+        content: "Lorem ipsum, dolor sit amet consectetur.",
+        link: "https://www.google.com",
+        date: "2022-10-10 08:00",
       },
       {
         title: "Event 2",
-        content:
-          "Lorem ipsum, dolor sit amet consectetur adipisicing elit.Distinctio pariatur iusto accusamus, placeat ea sapiente quaerateum veritatis, fugiat, obcaecati saepe itaque sequi ipsam vel. Utvoluptatem ipsa in consectetur, qui similique aliquam labore vitaeporro voluptatum distinctio, optio ipsum tempore animi corrupti,dolor non natus illo iusto repellat vero.",
+        content: "Lorem ipsum, dolor sit amet consectetur.",
+        link: "https://www.google.com",
+        date: "2022-10-10 08:00",
       },
       {
         title: "Event 3",
-        content:
-          "Lorem ipsum, dolor sit amet consectetur adipisicing elit.Distinctio pariatur iusto accusamus, placeat ea sapiente quaerateum veritatis, fugiat, obcaecati saepe itaque sequi ipsam vel. Utvoluptatem ipsa in consectetur, qui similique aliquam labore vitaeporro voluptatum distinctio, optio ipsum tempore animi corrupti,dolor non natus illo iusto repellat vero.",
+        content: "Lorem ipsum, dolor sit amet consectetur.",
+        link: "https://www.google.com",
+        date: "2022-10-10 08:00",
+      },
+    ],
+    userBrowsedEvents: [
+      {
+        title: "Event 1",
+        content: "Lorem ipsum, dolor sit amet consectetur.",
+        link: "https://www.google.com",
+        date: "2022-10-10 08:00",
+      },
+      {
+        title: "Event 2",
+        content: "Lorem ipsum, dolor sit amet consectetur.",
+        link: "https://www.google.com",
+        date: "2022-10-10 08:00",
+      },
+      {
+        title: "Event 3",
+        content: "Lorem ipsum, dolor sit amet consectetur.",
+        link: "https://www.google.com",
+        date: "2022-10-10 08:00",
       },
     ],
     userPosts: [
@@ -142,16 +137,19 @@ onMounted(async () => {
     ],
     userGroups: [
       {
+        id: 1,
         photo: "https://via.placeholder.com/150",
         name: "Group 1",
         description: "Lorem ipsum, dolor sit amet consectetur.",
       },
       {
+        id: 2,
         photo: "https://via.placeholder.com/150",
         name: "Group 2",
         description: "Lorem ipsum, dolor sit amet consectetur.",
       },
       {
+        id: 3,
         photo: "https://via.placeholder.com/150",
         name: "Group 3",
         description: "Lorem ipsum, dolor sit amet consectetur.",

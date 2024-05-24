@@ -9,3 +9,15 @@ user-jwt:
   issuer: localhost
   audience: localhost/user
   realm: 'Access to user'
+user:
+  email-verify:
+    host: smtp.qq.com
+    port: 587
+    username: 1218133157@qq.com
+    password: sugvreayvwhrjafc
+    title: 'Galaguide Email Verification'
+    sender: 'GalaGuide'
+    sender-email: '1218133157@qq.com'
+    template: 'Welcome to Galaguide! Your email verification code is: %s'
+    request-interval: 60
+    expire-time: 3600

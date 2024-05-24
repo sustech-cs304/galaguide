@@ -116,8 +116,18 @@ const validateAndSubmit = (e) => {
         if (response.status === 200 || response.data.code === 0) {
           // setCookie('userRole', response.data.role, 1)
           // window.location.href = '/home'
-          document.querySelector("#main-reg").style.display = "none";
-          document.querySelector("#verify-email").style.display = "block";
+          localStorage.setItem("token", response.data.data.token);
+          axios.defaults.headers.common["Authorization"] = "Bearer " + response.data.data.token;
+          axios.post("/api/user/request-email").then((response) => {
+            if (response.status === 200 && response.data.code === 0) {
+              console.log("Email sent");
+              document.querySelector("#main-reg").style.display = "none";
+              document.querySelector("#verify-email").style.display = "block";
+            } else {
+              errors.value.push(response.data.message);
+              document.getElementById("errors").innerHTML = errors.value.join("<br>");
+            }
+          });
         } else {
           errors.value.push(response.data.message);
           document.getElementById("errors").innerHTML =
@@ -140,8 +150,11 @@ const verifyEmail = (e) => {
   } else {
     axios
       .post("/api/user/verify-email", {
-        email: user.value.email,
-        verificationCode: user.value.verificationCode,
+        code: user.value.verificationCode
+      }, {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
       })
       .then((response) => {
         if (response.status === 200 && response.data.code === 0) {

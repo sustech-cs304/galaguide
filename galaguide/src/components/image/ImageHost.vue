@@ -2,6 +2,9 @@
 import { onMounted, ref } from 'vue';
 import ImageUploader from './ImageUploader.vue';
 import CustomAlert from "../../components/CustomAlert.vue";
+import { useRoute } from "vue-router";
+import axios from 'axios';
+const router = useRoute();
 
 const spaceUsed = ref(0);
 const spaceTotal = ref(1000);
@@ -72,6 +75,17 @@ const showAlert = ref(false);
 
 onMounted(() => {
     console.log('ImageHost component is mounted');
+    const token = localStorage.getItem("token");
+    if (!token) {
+        router.push("/login");
+    }
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    axios.get("/api/image/host").then((res) => {
+        console.log(res.data);
+        spaceUsed.value = res.data.data;
+    }).catch((err) => {
+        console.log(err);
+    });
 });
 
 const copyToClickBoard = (src) => {
