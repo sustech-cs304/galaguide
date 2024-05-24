@@ -15,6 +15,10 @@ import kotlin.io.path.outputStream
 object StaticAssetManager {
     const val fileStorePath = "user-static"
 
+    init {
+        Paths.get(fileStorePath).toFile().mkdirs()
+    }
+
     private val logger = KtorSimpleLogger(StaticAssetManager::class.qualifiedName!!)
 
     private fun putFile(stream: InputStream, fileName: String) {
