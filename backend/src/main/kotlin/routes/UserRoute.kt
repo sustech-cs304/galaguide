@@ -255,7 +255,7 @@ fun Route.routeUser() {
                 call.respond(call.user!!.asPrivateResponse())
             }
 
-            get("{uid}") {
+            get("/{uid}") {
                 val user = call.parameters["uid"]?.toLongOrNull()?.let {
                     transaction {
                         User.findById(it)
