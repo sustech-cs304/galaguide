@@ -101,9 +101,16 @@ const check = (e) => {
         if (res.status === 200 && res.data.code === 0) {
           console.log("success")
           localStorage.setItem("token", res.data.data.token);
+          // decode token, which is encoded in hs256 jwt form, and set user info
+          const token = localStorage.getItem("token");
+          const payload = token.split(".")[1];
+          const user = JSON.parse(atob(payload));
+          localStorage.setItem("id", user.id);
           setCookie("token", res.data.data.token, 1);
+          setCookie("userId", user.id, 1);
           setCookie("userRole", res.data.data.userRole, 1);
           setCookie("userName", res.data.data.userName, 1);
+          console.log("cookie", document.cookie)
           router.push("/");
           // console.log("localStorage", localStorage)
           // console.log("token", localStorage.token)
