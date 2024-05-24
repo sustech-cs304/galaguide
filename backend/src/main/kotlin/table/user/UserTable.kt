@@ -6,6 +6,7 @@ import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.LongIdTable
+import java.security.MessageDigest
 
 object UserTable : LongIdTable() {
     val name = varchar("name", 32)
@@ -25,4 +26,18 @@ class User(id: EntityID<Long>) : Principal, LongEntity(id) {
     var emailVerified by UserTable.emailVerified
 
     val favoriteEvents by Event via UserFavoriteEventTable
+
+    fun checkPassword(pwd: String) = MessageDigest.getInstance("SHA-256")
+        .digest(pwd.toByteArray())
+        .joinToString("") { byte ->
+            "%02x".format(byte)
+        } == password
+
+    fun changePassword(newPwd: String) {
+        password = MessageDigest.getInstance("SHA-256")
+            .digest(newPwd.toByteArray())
+            .joinToString("") { byte ->
+                "%02x".format(byte)
+            }
+    }
 }

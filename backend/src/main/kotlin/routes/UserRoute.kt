@@ -26,7 +26,6 @@ import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.simplejavamail.email.EmailBuilder
 import org.simplejavamail.mailer.MailerBuilder
-import java.security.MessageDigest
 import java.time.Instant
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
@@ -93,16 +92,10 @@ fun Route.routeUser() {
                 return@post
             }
 
-            val passwordEncrypted = MessageDigest.getInstance("SHA-256")
-                .digest(it.password.toByteArray())
-                .joinToString("") { byte ->
-                    "%02x".format(byte)
-                }
-
             val user = transaction {
                 User.new {
                     name = it.name
-                    password = passwordEncrypted
+                    changePassword(it.password)
                     email = it.email
                 }
             }
@@ -118,12 +111,6 @@ fun Route.routeUser() {
         @Serializable
         data class LoginRequest(val nameOrEmail: String = "", val password: String = "")
         post<LoginRequest>("/login") {
-            val passwordEncrypted = MessageDigest.getInstance("SHA-256")
-                .digest(it.password.toByteArray())
-                .joinToString("") { byte ->
-                    "%02x".format(byte)
-                }
-
             val user = transaction {
                 User.find {
                     (UserTable.name eq it.nameOrEmail) or (UserTable.email eq it.nameOrEmail)
@@ -133,7 +120,7 @@ fun Route.routeUser() {
                 return@post
             }
 
-            if (user.password != passwordEncrypted) {
+            if (!user.checkPassword(it.password)) {
                 call.respond(failRestResponseDefault(-1, "password incorrect"))
                 return@post
             }
@@ -253,6 +240,22 @@ fun Route.routeUser() {
 
             get {
                 call.respond(call.user!!.asPrivateResponse())
+            }
+
+            @Serializable
+            data class ChangePasswordRequest(
+                val old: String,
+                val new: String,
+            )
+            post<ChangePasswordRequest>("/change-password") {
+                val user = call.user!!
+                if (!user.checkPassword(it.old)) {
+                    call.respond(failRestResponseDefault(-1, "incorrect password"))
+                    return@post
+                }
+
+                user.changePassword(it.new)
+                call.respond(emptyRestResponse("password changed"))
             }
 
             get("/{uid}") {
