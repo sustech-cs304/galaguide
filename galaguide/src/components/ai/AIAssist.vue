@@ -15,6 +15,7 @@
             <span class="close" @click="closeModal">&times;</span>
             <h1>Chat</h1>
             <p>Hello! I'm <strong>Gal</strong>, your personal AI assistant. What can I help you with today?</p>
+            <div id="chat-holder"></div>
             <input type="text" placeholder="Type your message here" id="help-holder" />
             <button id="ai-send-button" @click="sendmsg">
                 Send
@@ -61,23 +62,54 @@ const closeModal = () => {
     showModal.value = false;
 };
 
+const chatHistory = ref("");
+
+const getUserEvents = () => {
+    axios.get('/api/event-center/list/my', {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+    }).then((response) => {
+        return response.data.data;
+    }).catch((error) => {
+        console.error(error);
+    });
+};
+
+const getAllEvents = () => {
+    axios.get('/api/event-center/list/all', {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+    }).then((response) => {
+        return response.data.data;
+    }).catch((error) => {
+        console.error(error);
+    });
+};
+
 const sendmsg = () => {
-    axios.post('/api/ai', {
-        message: document.getElementById('help-holder').value,
+    axios.get('/api2/ai', {
+        question: document.getElementById('help-holder').value,
+        userEvents: getUserEvents(),
+        allEvents: getAllEvents(),
+        history: chatHistory.value
     }).then((response) => {
         console.log(response.data);
 
         const mymessage = document.createElement('p');
         mymessage.innerHTML = '<strong>Me:</strong><br/>' + document.getElementById('help-holder').value;
         mymessage.classList.add('query-my-message');
-        document.querySelector('#modal-content').appendChild(mymessage);
+        document.querySelector('#chat-holder').appendChild(mymessage);
+        chatHistory.value += document.getElementById('help-holder').value + '\n';
 
         document.getElementById('help-holder').value = '';
 
         const message = document.createElement('p');
-        message.innerHTML = '<strong>Gal:</strong><br/>' + JSON.parse(response.data).message;
+        message.innerHTML = '<strong>Gal:</strong><br/>' + JSON.parse(response.data).data.answer;
         message.classList.add('query-ai-message');
-        document.querySelector('#modal-content').appendChild(message);
+        document.querySelector('#chat-holder').appendChild(message);
+        chatHistory.value += JSON.parse(response.data).data.answer + '\n';
     }).catch((error) => {
         console.error(error);
     });

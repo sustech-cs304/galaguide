@@ -9,6 +9,13 @@ module.exports = defineConfig({
         pathRewrite: {
           '^/api': ''
         }
+      },
+      '/api2': {
+        target: 'http://localhost:9262',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/api2': ''
+        }
       }
     }
   },
