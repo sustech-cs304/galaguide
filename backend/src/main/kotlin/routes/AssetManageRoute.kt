@@ -15,6 +15,7 @@ import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import io.ktor.util.logging.*
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -26,6 +27,8 @@ fun Route.routeAssetManage() = authenticate("user") {
         transaction {
             SchemaUtils.createMissingTablesAndColumns(StaticAssetTable)
         }
+
+        val logger = KtorSimpleLogger(StaticAssetManager::class.qualifiedName!!)
 
         @Serializable
         data class StaticAssetResponse(
@@ -107,7 +110,8 @@ fun Route.routeAssetManage() = authenticate("user") {
                         StaticAssetManager.new(fileStream!!, uploader, fileName)
                             .asRestResponse()
                     )
-                }.getOrElse {
+                }.onFailure {
+                    logger.error(it)
                     call.respond(failRestResponseDefault(-3, it.message ?: "Unknown error"))
                 }
             }
@@ -137,7 +141,8 @@ fun Route.routeAssetManage() = authenticate("user") {
                         StaticAssetManager.change(uuid, uploader, fileStream, fileName)
                             .asRestResponse()
                     )
-                }.getOrElse {
+                }.onFailure {
+                    logger.error(it)
                     call.respond(failRestResponseDefault(-3, it.message ?: "Unknown error"))
                 }
             }
@@ -152,7 +157,8 @@ fun Route.routeAssetManage() = authenticate("user") {
                 kotlin.runCatching {
                     StaticAssetManager.delete(uuid, uploader)
                     call.respond(emptyRestResponse())
-                }.getOrElse {
+                }.onFailure {
+                    logger.error(it)
                     call.respond(failRestResponseDefault(-3, it.message ?: "Unknown error"))
                 }
             }
