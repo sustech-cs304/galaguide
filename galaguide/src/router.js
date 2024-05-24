@@ -35,11 +35,19 @@ const routes = [
       ),
   },
   {
-    path: "/events/search",
+    path: "/search",
     name: "SearchCenter",
     component: () =>
       import(
         /* webpackChunkName: "search" */ "./components/events/SearchHomePage/SearchCenter.vue"
+      ),
+  },
+  {
+    path: "/events/search/:keyword",
+    name: "SearchResult",
+    component: () =>
+      import(
+        /* webpackChunkName: "search" */ "./components/events/EventSearch.vue"
       ),
   },
   {
