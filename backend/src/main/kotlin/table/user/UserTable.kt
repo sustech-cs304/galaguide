@@ -17,6 +17,8 @@ object UserTable : LongIdTable() {
     val guiro = long("guiro").default(0)
     val emailVerified = bool("emailVerified").default(false)
     val avatar = reference("avatar", StaticAssetTable).nullable()
+    val background = reference("background", StaticAssetTable).nullable()
+    val intro = text("intro").default("This user is too lazy to write an introduction.")
 }
 
 class User(id: EntityID<Long>) : Principal, LongEntity(id) {
@@ -28,6 +30,8 @@ class User(id: EntityID<Long>) : Principal, LongEntity(id) {
     var guiro by UserTable.guiro
     var emailVerified by UserTable.emailVerified
     var avatar by StaticAsset optionalReferencedOn UserTable.avatar
+    var background by StaticAsset optionalReferencedOn UserTable.background
+    var intro by UserTable.intro
 
     val favoriteEvents by Event via UserFavoriteEventTable
 

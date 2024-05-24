@@ -12,6 +12,8 @@ data class PrivateUserDetail(
     val guiro: Long,
     val emailVerified: Boolean,
     val avatarId: String?,
+    val backgroundId: String?,
+    val intro: String,
 )
 
 fun User.asPrivateDetail() = PrivateUserDetail(
@@ -20,7 +22,9 @@ fun User.asPrivateDetail() = PrivateUserDetail(
     email,
     guiro,
     emailVerified,
-    avatar?.id?.value?.toString()
+    avatar?.id?.value?.toString(),
+    background?.id?.value?.toString(),
+    intro,
 )
 
 fun User.asPrivateResponse() = asPrivateDetail().asRestResponse()
@@ -29,12 +33,16 @@ data class PublicUserDetail(
     val id: Long,
     val name: String,
     val avatarId: String?,
+    val backgroundId: String?,
+    val intro: String,
 )
 
 fun User.asPublicDetail() = PublicUserDetail(
     id.value,
     name,
     avatar?.id?.value?.toString(),
+    background?.id?.value?.toString(),
+    intro,
 )
 
 fun User.asPublicResponse() = asPublicDetail().asRestResponse()
