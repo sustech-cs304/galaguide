@@ -1,7 +1,6 @@
 package galaGuide.util
 
 import galaGuide.table.StaticAsset
-import galaGuide.table.StaticAssetTable
 import galaGuide.table.StaticAssetTable.uploader
 import galaGuide.table.user.User
 import io.ktor.util.logging.*
@@ -76,6 +75,8 @@ object StaticAssetManager {
         StaticAsset.findById(uuid)
     }
 
+    fun queryAll(uploader: User) = uploader.uploadedAssets
+
     fun get(uuid: UUID) = kotlin.runCatching {
         Path.of(fileStorePath, uuid.toString()).toFile()
     }.getOrNull()
@@ -94,7 +95,7 @@ object StaticAssetManager {
 
     fun getAllocation(uploaderId: Long) = transaction {
         StaticAsset.find {
-            StaticAssetTable.uploader eq uploader
+            uploader eq uploaderId
         }.sumOf {
             get(it.id.value)?.length() ?: 0
         }
