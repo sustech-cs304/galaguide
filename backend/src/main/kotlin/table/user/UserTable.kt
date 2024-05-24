@@ -20,7 +20,7 @@ class User(id: EntityID<Long>) : Principal, LongEntity(id) {
     companion object : LongEntityClass<User>(UserTable)
 
     var name by UserTable.name
-    var password by UserTable.password
+    private var password by UserTable.password
     var email by UserTable.email
     var guiro by UserTable.guiro
     var emailVerified by UserTable.emailVerified
