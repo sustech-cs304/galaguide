@@ -35,6 +35,8 @@ class User(id: EntityID<Long>) : Principal, LongEntity(id) {
 
     val favoriteEvents by Event via UserFavoriteEventTable
 
+    val uploadedAssets by StaticAsset referrersOn StaticAssetTable.uploader
+
     fun checkPassword(pwd: String) = MessageDigest.getInstance("SHA-256")
         .digest(pwd.toByteArray())
         .joinToString("") { byte ->
