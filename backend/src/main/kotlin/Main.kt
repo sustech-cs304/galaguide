@@ -2,6 +2,7 @@ package galaGuide
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
+import galaGuide.data.failRestResponseDefault
 import galaGuide.table.user.User
 import io.ktor.serialization.kotlinx.*
 import io.ktor.serialization.kotlinx.json.*
@@ -68,7 +69,7 @@ fun Application.init() {
                 }
             }
             challenge { _, _ ->
-                call.respondRedirect("/login")
+                call.respond(failRestResponseDefault(-403, "Forbidden"))
             }
         }
     }

@@ -1,7 +1,6 @@
 package galaGuide.util
 
 import galaGuide.table.StaticAsset
-import galaGuide.table.StaticAssetTable
 import galaGuide.table.StaticAssetTable.uploader
 import galaGuide.table.user.User
 import io.ktor.util.logging.*
@@ -15,6 +14,10 @@ import kotlin.io.path.outputStream
 
 object StaticAssetManager {
     const val fileStorePath = "user-static"
+
+    init {
+        Paths.get(fileStorePath).toFile().mkdirs()
+    }
 
     private val logger = KtorSimpleLogger(StaticAssetManager::class.qualifiedName!!)
 
@@ -49,7 +52,7 @@ object StaticAssetManager {
     fun change(uuid: UUID, uploader: User? = null, stream: InputStream? = null, fileName: String? = null) =
         transaction {
             val asset = StaticAsset.findById(uuid) ?: error("Asset $uuid not found")
-            asset.takeUnless { uploader != null && asset.uploader != uploader } ?: error("Uploader mismatch")
+            asset.takeUnless { uploader != null && asset.uploader.id != uploader.id } ?: error("Uploader mismatch")
 
             stream?.let {
                 putFile(stream, uuid.toString())
@@ -76,6 +79,8 @@ object StaticAssetManager {
         StaticAsset.findById(uuid)
     }
 
+    fun queryAll(uploader: User) = uploader.uploadedAssets
+
     fun get(uuid: UUID) = kotlin.runCatching {
         Path.of(fileStorePath, uuid.toString()).toFile()
     }.getOrNull()
@@ -83,7 +88,7 @@ object StaticAssetManager {
     fun delete(uuid: UUID, uploader: User? = null) {
         transaction {
             val asset = StaticAsset.findById(uuid) ?: error("Asset $uuid not found")
-            asset.takeUnless { uploader != null && asset.uploader != uploader } ?: error("Uploader mismatch")
+            asset.takeUnless { uploader != null && asset.uploader.id != uploader.id } ?: error("Uploader mismatch")
 
             logger.info("[StaticAsset] Delete asset $uuid by ${uploader?.name}")
 
@@ -94,7 +99,7 @@ object StaticAssetManager {
 
     fun getAllocation(uploaderId: Long) = transaction {
         StaticAsset.find {
-            StaticAssetTable.uploader eq uploader
+            uploader eq uploaderId
         }.sumOf {
             get(it.id.value)?.length() ?: 0
         }

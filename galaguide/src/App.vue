@@ -1,5 +1,6 @@
 <script setup>
 import { onMounted, ref, computed } from "vue";
+import axios from "axios";
 import LeftSideBar from "./components/globe/LeftSideBar.vue";
 import GlobeFooter from "./components/globe/GlobeFooter.vue";
 import AIAssist from "./components/ai/AIAssist.vue";
@@ -9,7 +10,17 @@ import "v-calendar/style.css";
 // import HomePage from "./components/HomePage.vue";
 
 const role = ref(0); // 0 for not logged in, 1 for user, 2 for admin
-let userName = "";
+let user = {
+  userName: "",
+  userAvatar: "",
+  userBackground: "",
+  userEmail: "",
+  userGuiro: 0,
+  userBio: "",
+  userFavoriteEvents: [],
+  userSubscribedEvents: [],
+  userBrowsedEvents: [],
+};
 
 const hoveredOnCalendar = ref(false);
 const hoveredOnAvatar = ref(false);
@@ -95,26 +106,37 @@ function getRoleFromCookie() {
     console.log("roleValue:", roleValue);
     role.value = parseInt(roleValue);
   } else {
-    role.value = 1;
+    role.value = 0;
   }
 }
 
-function getUserNameFromCookie() {
-  const cookie = document.cookie
-    .split(";")
-    .find((cookie) => cookie.trim().startsWith("userName="));
-  console.log("cookie:", cookie);
-  if (cookie) {
-    userName = cookie.split("=")[1];
-    console.log("userName:", userName);
-  } else {
-    userName = "placeholder";
+function getUserInfo() {
+  if (role.value === 1) {
+    axios
+      .get(`/api/user`)
+      .then((response) => {
+        console.log("response:", response);
+        if (response.status === 200 && response.data.code === 0) {
+          user.userName = response.data.data.name;
+          user.userAvatar = response.data.data.avatar;
+          user.userBackground = response.data.data.background;
+          user.userEmail = response.data.data.email;
+          user.userGuiro = response.data.data.guiro;
+          user.userBio = response.data.data.bio;
+          user.userFavoriteEvents = response.data.data.favoriteEvents;
+          user.userSubscribedEvents = response.data.data.subscribedEvents;
+          user.userBrowsedEvents = response.data.data.browsedEvents;
+        }
+      })
+      .catch((error) => {
+        console.log("error:", error);
+      });
   }
 }
 
 onMounted(() => {
   getRoleFromCookie();
-  getUserNameFromCookie();
+  getUserInfo();
 });
 
 function logout() {
@@ -220,20 +242,22 @@ function logout() {
           justify-content: flex-start;
         "
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="35"
-          height="35"
-          fill="currentColor"
-          class="bi bi-person-circle"
-          viewBox="-2 -2 20 20"
-        >
-          <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
-          <path
-            fill-rule="evenodd"
-            d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"
-          />
-        </svg>
+        <router-link to="/space">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="35"
+            height="35"
+            fill="currentColor"
+            class="bi bi-person-circle"
+            viewBox="-2 -2 20 20"
+          >
+            <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
+            <path
+              fill-rule="evenodd"
+              d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"
+            />
+          </svg>
+        </router-link>
       </a>
       <div
         v-if="hoveredOnAvatar"
@@ -246,38 +270,15 @@ function logout() {
           left: 92%;
           transform: translate(-50%, 0);
           width: 12%;
-          height: 200px;
+          height: 160px;
           box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
           border: 1px solid #ccc !important;
           padding: 14px;
           border-radius: 16px !important;
           z-index: 100;
         "
+        id="pop-up"
       >
-        <div
-          class="avatar"
-          style="display: flex; justify-content: center; align-items: center; position: relative;"
-        >
-          <!-- Avatar code here -->
-          <router-link
-            to="/space"
-            style="
-              color: black;
-              display: inline;
-              margin-left: 5px;
-              justify-content: center;
-            "
-            ><img
-              src="https://www.w3schools.com/howto/img_avatar.png"
-              alt="Avatar"
-              style="
-                width: 45px;
-                height: 45px;
-                border-radius: 50%;
-                margin-bottom: 10px;
-              "
-          /></router-link>
-        </div>
         <div
           style="
             display: flex;
@@ -286,10 +287,12 @@ function logout() {
             margin-left: 10px;
             font-weight: bold;
             font-size: 1.2em;
+            margin-top:10px;
           "
         >
           {{ userName }}
         </div>
+
         <hr />
 
         <div
@@ -599,5 +602,24 @@ body {
 
 ::-webkit-scrollbar {
   display: none;
+}
+
+#pop-up {
+  animation: fadeIn 0.5s;
+  animation-fill-mode: forwards;
+  animation-timing-function: ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    overflow: hidden;
+    scale: 0;
+  }
+  to {
+    opacity: 1;
+    overflow: hidden;
+    scale: 1;
+  }
 }
 </style>

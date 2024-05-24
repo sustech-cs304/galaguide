@@ -113,7 +113,7 @@ const validateAndSubmit = (e) => {
         password: user.value.password,
       })
       .then((response) => {
-        if (response.status === 200 || response.data.code === 0) {
+        if (response.status === 200 && response.data.code === 0) {
           // setCookie('userRole', response.data.role, 1)
           // window.location.href = '/home'
           localStorage.setItem("token", response.data.data.token);

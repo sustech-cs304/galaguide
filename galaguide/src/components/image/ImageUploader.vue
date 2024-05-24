@@ -24,29 +24,39 @@ const afterRead = (e) => {
 }
 
 const uploadImage = () => {
-    // get token from local storage 
-    // use jwt scheme to post
     const token = localStorage.getItem("token");
     if (!token) {
         console.log("No token found");
         return;
     }
-    axios.post('/api/upload-image', {
-        image: src.value
-    }, {
+
+    const formData = new FormData();
+    const fileInput = document.getElementById('upload');
+    const file = fileInput.files[0];
+    
+    if (!file) {
+        console.log("No file selected");
+        return;
+    }
+
+    formData.append('file', file);
+
+    axios.post('/api/asset/upload', formData, {
         headers: {
-            Authorization: `Bearer ${token}`
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data'
         }
     }).then((res) => {
         console.log(res.data);
     }).catch((err) => {
         console.log(err);
     });
+
     console.log("Image uploaded");
-    src.value = "";
-    document.getElementById("upload").value = "";
+    fileInput.value = "";
     window.location.reload();
 }
+
 </script>
 
 <template>
