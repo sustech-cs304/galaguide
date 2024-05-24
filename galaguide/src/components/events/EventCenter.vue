@@ -37,25 +37,11 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import Eventposter from "./Eventposter.vue";
 import SearchBox from "./SearchBox.vue";
 import EventRecommend from "./EventRecommend.vue";
-//import EventSearch from "./EventSearch.vue";
-export default {
-  name: "EventCenter",
-  components: {
-    Eventposter,
-    SearchBox,
-    EventRecommend,
-    //EventSearch,
-    // SidebarComponent,
-    // HotEventsComponent,
-    // SearchComponent,
-    // RecommendColumnComponent,
-    // TopBySectionsComponent
-  },
-};
+
 </script>
 
 <style scoped>

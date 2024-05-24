@@ -14,54 +14,91 @@
         </div>
         <div class="event-card-buttons" v-show="showButtons">
             <button @click="favoriteGala">Favorite</button>
-            <button @click="reserveGala">Reserve</button>
+            <RouterLink to="/events/{{ eventId }}">
+                <button @click="reserveGala">Reserve</button>
+            </RouterLink>
+            
         </div>
     </div>
 </template>
 
-<script>
-import { ref, onMounted } from 'vue';
-import axios from 'axios';
+<script setup>
+import { ref, defineProps } from 'vue';
+// import axios from 'axios';
 
-export default {
-    name: 'EventCard',
-    props: {
-        eventId: Number,
-    },
-    setup(props) {
-        const gala = ref({
-            id: -1,
-            title: 'Sample Event Title',
-            host: 'Host Name',
-            fee: '$20 per person',
-            category: 'Arts & Music',
-            event_time: '10:00 AM - 3:00 PM',
-            registration_time: '10:00 AM - 2:00 PM',
-            description: 'This is a sample introduction of the event that gives users insight into what to expect.',
-            posterUrl: 'https://via.placeholder.com/400x300?text=Event+Poster',
-        });
-        const showButtons = ref(false);
 
-        onMounted(async () => {
-            try {
-                const response = await axios.get(`/api/event/${props.eventId}`);
-                gala.value = response.data;
-            } catch (error) {
-                console.error('Error fetching gala details:', error);
-            }
-        });
+defineProps({
+    eventId: {
+        type: Number,
+        required: true,
+    }
+});
 
-        const favoriteGala = () => {
-            console.log('Favorite event:', gala.value.title);
-        };
+const gala = ref({
+    id: -1,
+    title: 'Sample Event Title',
+    host: 'Host Name',
+    fee: '$20 per person',
+    category: 'Arts & Music',
+    event_time: '10:00 AM - 3:00 PM',
+    registration_time: '10:00 AM - 2:00 PM',
+    description: 'This is a sample introduction of the event that gives users insight into what to expect.',
+    posterUrl: 'https://via.placeholder.com/400x300?text=Event+Poster',
+});
 
-        const reserveGala = () => {
-            console.log('Reserve event:', gala.value.title);
-        };
+const showButtons = ref(false);
 
-        return { gala, showButtons, favoriteGala, reserveGala };
-    },
+const reserveGala = () => {
+    console.log('Reserve event:', gala.value.title);
 };
+
+// onMounted(async () => {
+//     try {
+//         const response = await axios.get(`/api/event/${props.value.eventId}`);
+//         gala.value = response.data;
+//     } catch (error) {
+//         console.error('Error fetching gala details:', error);
+//     }
+// });
+// export default {
+//     name: 'EventCard',2
+//     props: {
+//         eventId: Number,
+//     },
+//     setup(props) {
+//         const gala = ref({
+//             id: -1,
+//             title: 'Sample Event Title',
+//             host: 'Host Name',
+//             fee: '$20 per person',
+//             category: 'Arts & Music',
+//             event_time: '10:00 AM - 3:00 PM',
+//             registration_time: '10:00 AM - 2:00 PM',
+//             description: 'This is a sample introduction of the event that gives users insight into what to expect.',
+//             posterUrl: 'https://via.placeholder.com/400x300?text=Event+Poster',
+//         });
+//         const showButtons = ref(false);
+
+//         onMounted(async () => {
+//             try {
+//                 const response = await axios.get(`/api/event/${props.eventId}`);
+//                 gala.value = response.data;
+//             } catch (error) {
+//                 console.error('Error fetching gala details:', error);
+//             }
+//         });
+
+//         const favoriteGala = () => {
+//             console.log('Favorite event:', gala.value.title);
+//         };
+
+//         const reserveGala = () => {
+//             console.log('Reserve event:', gala.value.title);
+//         };
+
+//         return { gala, showButtons, favoriteGala, reserveGala };
+//     },
+// };
 </script>
 
 

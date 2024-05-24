@@ -3,26 +3,21 @@
   <div class="search-box-container">
     <input type="text" v-model="searchQuery" @keyup.enter="performSearch" placeholder="Search events..."
       class="search-input" />
-    <button @click="performSearch" class="search-button">🔍</button>
+    <RouterLink to="/events/search/{{ searchQuery.value }}" class="search-button">🔍</RouterLink>
+    <!-- <button @click="performSearch" class="search-button">🔍</button> -->
   </div>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      searchQuery: '',
-    };
-  },
-  methods: {
-    performSearch() {
-      if (this.searchQuery.trim()) {
-        this.$router.push({ path: '/events/search', name: 'search', query: { q: this.searchQuery } });
-      }
-      console.log('Searching for:', this.searchQuery);
-    },
-  },
-};
+<script setup>
+import { ref } from 'vue';
+//import axios from 'axios';
+const searchQuery = ref('');
+//const searchURL = computed(() => `/events/search?query=${searchQuery.value}`);
+
+const performSearch = () => {
+  
+}
+
 </script>
 
 <style scoped>

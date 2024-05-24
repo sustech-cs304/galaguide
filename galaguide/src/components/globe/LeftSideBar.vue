@@ -24,7 +24,7 @@ defineProps({
       </router-link>
     </div>
     <div class="bar-options" style="top: 300px">
-      <router-link to="/events/search" v-if="role > 0">
+      <router-link to="/search" v-if="role > 0">
         <img src="../../assets/reservations.png" alt="reservations.png" style="width: 30%; height: auto" />
         <h1>Gala Search</h1>
       </router-link>
