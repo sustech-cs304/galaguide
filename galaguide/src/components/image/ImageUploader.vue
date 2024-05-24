@@ -38,8 +38,9 @@ const uploadImage = () => {
         console.log("No file selected");
         return;
     }
-
+    console.log(file);
     formData.append('file', file);
+    console.log(formData);
 
     axios.post('/api/asset/upload', formData, {
         headers: {

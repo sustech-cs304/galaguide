@@ -9,13 +9,7 @@ const router = useRoute();
 const spaceUsed = ref(0);
 const spaceTotal = ref(1000);
 const imagesUploaded = ref(0);
-const myImgs = ref([
-    {
-        uuid: "123",
-        fileName: "image1.jpg",
-        size: 2,
-    },
-]);
+const myImgs = ref([]);
 const showAlert = ref(false);
 
 onMounted(() => {
@@ -46,7 +40,11 @@ const copyToClickBoard = (src) => {
 }
 
 const deleteImage = (uuid) => {
-    axios.delete(`/api/asset/${uuid}`).then((res) => {
+    axios.delete(`/api/asset/${uuid}`, {
+        headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+        },
+    }).then((res) => {
         console.log(res.data);
         window.location.reload();
     }).catch((err) => {
