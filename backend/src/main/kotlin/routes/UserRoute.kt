@@ -23,6 +23,7 @@ import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.or
 import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.simplejavamail.email.EmailBuilder
 import org.simplejavamail.mailer.MailerBuilder
@@ -239,7 +240,9 @@ fun Route.routeUser() {
             }
 
             get {
-                call.respond(call.user!!.asPrivateResponse())
+                newSuspendedTransaction {
+                    call.respond(call.user!!.asPrivateResponse())
+                }
             }
 
             @Serializable
@@ -254,21 +257,23 @@ fun Route.routeUser() {
                     return@post
                 }
 
-                user.changePassword(it.new)
+                transaction {
+                    user.changePassword(it.new)
+                }
                 call.respond(emptyRestResponse("password changed"))
             }
 
             get("/{uid}") {
-                val user = call.parameters["uid"]?.toLongOrNull()?.let {
-                    transaction {
+                newSuspendedTransaction {
+                    val user = call.parameters["uid"]?.toLongOrNull()?.let {
                         User.findById(it)
+                    } ?: run {
+                        call.respond(failRestResponseDefault(-1, "user not found"))
+                        return@newSuspendedTransaction
                     }
-                } ?: run {
-                    call.respond(failRestResponseDefault(-1, "user not found"))
-                    return@get
-                }
 
-                call.respond(user.asPublicResponse())
+                    call.respond(user.asPublicResponse())
+                }
             }
 
             get("/favorite") {
