@@ -66,8 +66,8 @@
 
         <div class="space-main-event">
           <div class="space-main-bar">
-            <h2>Subscribed Events</h2>
-            <router-link to="/subscribedEvent"> 
+            <h2>Reserved Events</h2>
+            <router-link to="/reservedEvent"> 
               <h4>View All</h4>
             </router-link>
           </div>
@@ -88,6 +88,9 @@
 <script setup>
 import { onMounted, ref } from "vue";
 import axios from "axios";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 const user = ref({
   userAvatarId: "",
@@ -125,10 +128,26 @@ onMounted(async () => {
   .catch((error) => {
     console.log("error:", error);
   });
+
+  axios
+  .get('/api/user/favorite', {
+      headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+  })
+  .then((response) => {
+    console.log("response", response);
+    if (response.status === 200 && response.data.code === 0) {
+      console.log(response.data.data);
+    }
+  })
+  .catch((error) => {
+    console.log("error:", error);
+  });
 });
 
 const revise = () => {
-  console.log("revise");
+  router.push("/userInfoRevision");
 };
 </script>
 

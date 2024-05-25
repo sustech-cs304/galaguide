@@ -75,6 +75,14 @@ const routes = [
       ),
   },
   {
+    path: "/reservedEvent",
+    name: "ReservedEvent",
+    component: () =>
+      import(
+        /* webpackChunkName: "events" */ "./components/events/ReservedEvent.vue"
+      ),
+  },
+  {
     path: "/chatroom",
     name: "ChatRoom",
     component: () =>
@@ -150,7 +158,12 @@ const routes = [
     component: () =>
       import(/* webpackChunkName: "image-host" */ "./components/image/ImageHost.vue"),
   },
-  
+  {
+    path: "/userInfoRevision",
+    name: "UserInfoRevision",
+    component: () =>
+      import(/* webpackChunkName: "userInfoRevision" */ "./components/user/UserInfoRevision.vue"),
+  },
 ];
 
 const router = createRouter({
