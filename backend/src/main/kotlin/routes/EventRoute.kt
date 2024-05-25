@@ -11,6 +11,7 @@ import galaGuide.table.EventAssetTable
 import galaGuide.table.EventPeriod
 import galaGuide.table.StaticAsset
 import galaGuide.table.user.UserFavoriteEventTable
+import galaGuide.table.user.UserHistoryEventTable
 import galaGuide.util.GroupManager
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -42,7 +43,14 @@ fun Route.routeEvent() {
                 }
 
                 val event = transaction {
-                    Event.findById(id)?.asRestResponse()
+                    Event.findById(id)?.also { e ->
+                        call.userId?.let { userId ->
+                            UserHistoryEventTable.insert {
+                                it[user] = userId
+                                it[event] = e.id
+                            }
+                        }
+                    }?.asRestResponse()
                 } ?: run {
                     call.respond(failRestResponseDefault(-2, "Event not found"))
                     return@get

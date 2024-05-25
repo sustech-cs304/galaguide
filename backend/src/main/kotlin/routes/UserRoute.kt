@@ -278,6 +278,17 @@ fun Route.routeUser() {
                     )
                 }
             }
+
+            get("/history") {
+                newSuspendedTransaction {
+                    call.respond(
+                        call.user!!
+                            .historyEvents
+                            .map { it.asDetail() }
+                            .asRestResponse()
+                    )
+                }
+            }
         }
     }
 }

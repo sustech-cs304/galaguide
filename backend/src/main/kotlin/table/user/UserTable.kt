@@ -3,6 +3,7 @@ package galaGuide.table.user
 import galaGuide.table.Event
 import galaGuide.table.StaticAsset
 import galaGuide.table.StaticAssetTable
+import galaGuide.util.createThis
 import io.ktor.server.auth.*
 import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
@@ -19,6 +20,10 @@ object UserTable : LongIdTable() {
     val avatar = reference("avatar", StaticAssetTable).nullable()
     val background = reference("background", StaticAssetTable).nullable()
     val intro = text("intro").default("This user is too lazy to write an introduction.")
+
+    init {
+        createThis()
+    }
 }
 
 class User(id: EntityID<Long>) : Principal, LongEntity(id) {
@@ -34,6 +39,7 @@ class User(id: EntityID<Long>) : Principal, LongEntity(id) {
     var intro by UserTable.intro
 
     val favoriteEvents by Event via UserFavoriteEventTable
+    val historyEvents by Event via UserHistoryEventTable
 
     val uploadedAssets by StaticAsset referrersOn StaticAssetTable.uploader
 
