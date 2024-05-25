@@ -21,7 +21,8 @@
 
   <!-- a buttom back to events -->
   <router-link to="/events">Back to Events</router-link>
-
+  <!-- a buttom to ask for help -->
+  
 
 </template>
 

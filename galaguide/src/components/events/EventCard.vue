@@ -12,13 +12,7 @@
                 <p>Event Time: {{ gala.event_time }}</p>
             </div>
         </div>
-        <div class="event-card-buttons" v-show="showButtons">
-            <button @click="favoriteGala">Favorite</button>
-            <RouterLink to="/events/{{ eventId }}">
-                <button @click="reserveGala">Reserve</button>
-            </RouterLink>
-            
-        </div>
+        
     </div>
 </template>
 
@@ -28,10 +22,19 @@ import { ref, defineProps } from 'vue';
 
 
 defineProps({
-    eventId: {
-        type: Number,
-        required: true,
+    // eventId: {
+    //     type: Number,
+    //     required: true,
+    // }
+    // a gala object with many attributes like name, host_name, status, etc.
+    gala: {
+        name: 'Sample Event Title',
+        host_name: 'Host Name',
+        status: 'Upcoming',
+        // Add more attributes here
     }
+   
+
 });
 
 const gala = ref({
@@ -48,9 +51,9 @@ const gala = ref({
 
 const showButtons = ref(false);
 
-const reserveGala = () => {
-    console.log('Reserve event:', gala.value.title);
-};
+// const reserveGala = () => {
+//     console.log('Reserve event:', gala.value.title);
+// };
 
 // onMounted(async () => {
 //     try {

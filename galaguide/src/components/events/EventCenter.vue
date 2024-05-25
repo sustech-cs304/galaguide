@@ -1,3 +1,10 @@
+<script setup>
+import Eventposter from "./Eventposter.vue";
+import SearchBox from "./SearchBox.vue";
+import EventRecommend from "./EventRecommend.vue";
+
+</script>
+
 <template>
   <div class="event-center">
     <div class="side-bar">
@@ -11,18 +18,29 @@
         <h2>This is hot-events</h2>
       </div>
 
-      <div class="top-by-sections">
-        <h2>This is sport sections</h2>
-      </div>
-      <div class="top-by-sections">
-        <h2>This is art sections</h2>
-      </div>
-      <div class="top-by-sections">
-        <h2>This is academic lecture sections</h2>
-      </div>
-      <div class="top-by-sections">
-        <h2>This is ceremony sections</h2>
-      </div>
+      <!-- TODO: following sections need links to jump to relating search result pages -->
+      <RouterLink to="{path='/search', query:{category:'sport'}}">
+        <div class="top-by-sections">
+          <h2>This is sport sections</h2>
+        </div>
+      </RouterLink>
+
+      <RouterLink to="{path='/search', query:{category:'literature and art'}}">
+        <div class="top-by-sections">
+          <h2>This is literature and art sections</h2>
+        </div>
+      </RouterLink>
+      <RouterLink to="{path='/search', query:{category:'education'}}">
+        <div class="top-by-sections">
+          <h2>This is academic lecture section</h2>
+        </div>
+      </RouterLink>
+      <RouterLink to="{path='/search', query:{category:'ceremony'}}">
+        <div class="top-by-sections">
+          <h2>This is ceremony sections</h2>
+        </div>
+      </RouterLink>
+
     </div>
 
     <div class="aid-functions">
@@ -37,12 +55,6 @@
   </div>
 </template>
 
-<script setup>
-import Eventposter from "./Eventposter.vue";
-import SearchBox from "./SearchBox.vue";
-import EventRecommend from "./EventRecommend.vue";
-
-</script>
 
 <style scoped>
 .event-center {

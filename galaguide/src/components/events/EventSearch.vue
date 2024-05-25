@@ -34,6 +34,7 @@ import SearchBox from './SearchBox.vue';
 import EventCard from './EventCard.vue';
 // TODO: implement the search query and filter logic
 // const searchQuery = ref('');
+const searchQuery = this.$route.query || '';
 const selectedFilters = reactive([
 	{ name: 'Category', options: ['Sport', 'Music', 'Lecture'], selected: [] },
 	{ name: 'Time', options: ['Morning', 'Afternoon', 'Evening'], selected: [] },
@@ -48,15 +49,28 @@ onMounted(() => {
 });
 
 const fetchEvents = () => {
-	axios.get('/api/events')
-		.then((response) => {
-			searchResults.value = response.data;
-		})
-		.catch((error) => {
-			console.error('Error fetching events:', error);
-		});
-};
+	// axios.get('/api/events')
+	// 	.then((response) => {
+	// 		searchResults.value = response.data;
+	// 	})
+	// 	.catch((error) => {
+	// 		console.error('Error fetching events:', error);
+	// 	});
 
+	if (searchQuery) {
+		axios.get(`/api/events?search=${searchQuery}`)
+			.then((response) => {
+				searchResults.value = response.data;
+			})
+
+	}
+	else {
+		axios.get('/api/events')
+			.then((response) => {
+				searchResults.value = response.data;
+			})
+	}
+}
 const toggleFilter = (category, option) => {
 	const selectedCategory = selectedFilters.find((filter) => filter.name === category);
 	if (selectedCategory) {

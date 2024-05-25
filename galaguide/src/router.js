@@ -43,7 +43,7 @@ const routes = [
       ),
   },
   {
-    path: "/events/search/:keyword",
+    path: "/events/search",
     name: "SearchResult",
     component: () =>
       import(

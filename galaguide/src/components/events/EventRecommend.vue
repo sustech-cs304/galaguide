@@ -9,37 +9,47 @@
       <div v-show="activeTab === 'rank'" class="tab-content">
         <!-- Iterate over ranked events and display them -->
         <div v-for="event in rankEvents" :key="event.id" class="event-card">
-          <h3>{{ event.name }}</h3>
+          <h2>{{ event.title }}</h2>
         </div>
       </div>
       <div v-show="activeTab === 'new'" class="tab-content">
         <!-- Iterate over new events and display them -->
         <div v-for="event in newEvents" :key="event.id" class="event-card">
-          <h3>{{ event.name }}</h3>
+          <h2>{{ event.title }}</h2>
         </div>
       </div>
     </div>
   </div>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      activeTab: 'rank',
-      rankEvents: [
-        { id: 1, name: 'Concert of the Year' },
-        { id: 2, name: 'Tech Expo 2024' },
-        { id: 3, name: 'Artisan Coffee Festival' },
-      ],
-      newEvents: [
-        { id: 4, name: 'Mystery Book Convention' },
-        { id: 5, name: 'Virtual Reality Adventure' },
-        { id: 6, name: 'Robotics Workshop' },
-      ],
-    };
-  },
-};
+<script setup>
+import { onMounted, ref } from 'vue';
+const rankEvents = ref([]);
+
+const newEvents = ref([]);
+
+onMounted(() => {
+  // Fetch ranked events
+  fetch('/api/events/top-rated')
+    .then((response) => response.json())
+    .then((data) => {
+      rankEvents.value = data;
+    })
+    .catch((error) => {
+      console.error('Error fetching ranked events:', error);
+    });
+
+  // Fetch new events
+  fetch('/api/events/newest')
+    .then((response) => response.json())
+    .then((data) => {
+      newEvents.value = data;
+    })
+    .catch((error) => {
+      console.error('Error fetching new events:', error);
+    });
+});
+
 </script>
 
 <style scoped>

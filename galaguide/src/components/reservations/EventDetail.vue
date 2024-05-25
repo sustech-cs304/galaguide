@@ -5,11 +5,10 @@
       <h2 style="color: #e5e1db; width: 10%">This is sidebar</h2>
     </div>
     <div class="event-detail">
-      <div class="title-container" @mouseover="showButtons = true" @mouseleave="showButtons = false">
+      <div class="title-container">
         <h1>{{ event_data.event_title }}</h1>
-        <div class="title-buttons" v-if="showButtons">
+        <div class="title-buttons">
           <button @click="addToFavorites">❤️ Add to Favorites</button>
-          <button @click="reserveNow">⏰ Reserve Now</button>
         </div>
       </div>
       <div class="poster-container">
@@ -68,9 +67,9 @@
 <script setup>
 
 // we need to store the value of formData
-import { ref, onMounted, axios } from 'vue';
+import { ref, onMounted, } from 'vue';
 import { useRoute } from 'vue-router';
-
+import axios from 'axios';
 const formData = ref({
   name: '',
   email: '',
@@ -342,20 +341,17 @@ const getHelp = () => {
 }
 
 .title-buttons {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  display: none;
   padding-right: 15px;
   position: absolute;
   right: 20px;
   top: 20px;
-  opacity: 0;
-  transition: opacity 0.3s ease;
+  /* transition: opacity 0.3s ease; */
 }
 
-.title-container:hover .title-buttons {
+/* .title-container:hover .title-buttons {
   display: block;
   opacity: 1;
-}
+} */
 
 .poster-container {
   text-align: center;
