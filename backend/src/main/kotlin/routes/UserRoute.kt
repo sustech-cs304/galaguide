@@ -266,7 +266,10 @@ fun Route.routeUser() {
 
                     val user = call.user!!
                     it.name?.let { user.name = it }
-                    it.email?.let { user.email = it }
+                    it.email?.let {
+                        user.email = it
+                        user.emailVerified = false
+                    }
                     avatar?.let { user.avatar = it }
                     background?.let { user.background = it }
                     it.intro?.let { user.intro = it }
