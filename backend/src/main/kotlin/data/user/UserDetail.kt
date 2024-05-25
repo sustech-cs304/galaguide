@@ -29,6 +29,7 @@ fun User.asPrivateDetail() = PrivateUserDetail(
 
 fun User.asPrivateResponse() = asPrivateDetail().asRestResponse()
 
+@Serializable
 data class PublicUserDetail(
     val id: Long,
     val name: String,

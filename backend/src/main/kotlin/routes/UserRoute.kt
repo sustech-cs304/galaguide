@@ -8,6 +8,7 @@ import galaGuide.data.emptyRestResponse
 import galaGuide.data.failRestResponseDefault
 import galaGuide.data.user.asPrivateResponse
 import galaGuide.data.user.asPublicResponse
+import galaGuide.table.staticAsset
 import galaGuide.table.user.User
 import galaGuide.table.user.UserTable
 import io.ktor.server.application.*
@@ -56,32 +57,20 @@ fun Route.routeUser() {
         @Serializable
         data class RegisterRequest(val name: String = "", val password: String = "", val email: String = "")
         post<RegisterRequest>("/register") {
-            transaction {
-                User.find {
-                    UserTable.name eq it.name
-                }.firstOrNull()
-            }?.let {
+            newSuspendedTransaction {
+                User.checkNameAvailable(it.name)
+            }.takeIf { it } ?: run {
                 call.respond(failRestResponseDefault(-1, "user already exists"))
                 return@post
             }
 
-            if (it.name.length > 32) {
-                call.respond(failRestResponseDefault(-1, "name too long"))
+            if (!User.checkEmailAvailable(it.email)) {
+                call.respond(failRestResponseDefault(-2, "invalid email"))
                 return@post
             }
 
-            if (it.email.length > 128) {
-                call.respond(failRestResponseDefault(-1, "email too long"))
-                return@post
-            }
-            val emailRegex = Regex("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+\$")
-            if (!emailRegex.matches(it.email)) {
-                call.respond(failRestResponseDefault(-1, "invalid email"))
-                return@post
-            }
-
-            if (it.password.length !in 6..128) {
-                call.respond(failRestResponseDefault(-1, "password length should be 6-128"))
+            if (!User.checkPasswordAvailable(it.password)) {
+                call.respond(failRestResponseDefault(-3, "password length should be 6-128"))
                 return@post
             }
 
@@ -234,6 +223,53 @@ fun Route.routeUser() {
             get {
                 newSuspendedTransaction {
                     call.respond(call.user!!.asPrivateResponse())
+                }
+            }
+
+            @Serializable
+            data class UserModifyRequest(
+                val name: String? = null,
+                val email: String? = null,
+                val avatarId: String? = null,
+                val backgroundId: String? = null,
+                val intro: String? = null,
+            )
+            post<UserModifyRequest>("edit") {
+                newSuspendedTransaction {
+                    it.name?.let {
+                        if (!User.checkNameAvailable(it)) {
+                            call.respond(failRestResponseDefault(-1, "name already exists"))
+                            return@newSuspendedTransaction
+                        }
+                    }
+
+                    it.email?.let {
+                        if (!User.checkEmailAvailable(it)) {
+                            call.respond(failRestResponseDefault(-2, "invalid email"))
+                            return@newSuspendedTransaction
+                        }
+                    }
+
+                    val avatar = it.avatarId?.let {
+                        it.staticAsset ?: run {
+                            call.respond(failRestResponseDefault(-3, "avatar not found"))
+                            return@newSuspendedTransaction
+                        }
+                    }
+
+                    val background = it.backgroundId?.let {
+                        it.staticAsset ?: run {
+                            call.respond(failRestResponseDefault(-4, "background not found"))
+                            return@newSuspendedTransaction
+                        }
+                    }
+
+                    val user = call.user!!
+                    it.name?.let { user.name = it }
+                    it.email?.let { user.email = it }
+                    avatar?.let { user.avatar = it }
+                    background?.let { user.background = it }
+                    it.intro?.let { user.intro = it }
                 }
             }
 

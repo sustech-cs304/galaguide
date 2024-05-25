@@ -27,7 +27,15 @@ object UserTable : LongIdTable() {
 }
 
 class User(id: EntityID<Long>) : Principal, LongEntity(id) {
-    companion object : LongEntityClass<User>(UserTable)
+    companion object : LongEntityClass<User>(UserTable) {
+        private val emailRegex = Regex("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+\$")
+
+        fun checkNameAvailable(name: String) = name.length <= 32 && find { UserTable.name eq name }.empty()
+
+        fun checkEmailAvailable(email: String) = email.length <= 128 && email.matches(emailRegex)
+
+        fun checkPasswordAvailable(password: String) = password.length in 6..128
+    }
 
     var name by UserTable.name
     private var password by UserTable.password

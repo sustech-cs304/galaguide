@@ -28,3 +28,7 @@ class StaticAsset(id: EntityID<UUID>) : UUIDEntity(id) {
     var fileName by StaticAssetTable.fileName
     var uploader by User referencedOn StaticAssetTable.uploader
 }
+
+val UUID.staticAsset get() = StaticAsset.findById(this)
+
+val String.staticAsset get() = UUID.fromString(this).staticAsset
