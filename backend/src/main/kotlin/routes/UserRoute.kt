@@ -8,9 +8,7 @@ import galaGuide.data.emptyRestResponse
 import galaGuide.data.failRestResponseDefault
 import galaGuide.data.user.asPrivateResponse
 import galaGuide.data.user.asPublicResponse
-import galaGuide.table.Event
 import galaGuide.table.user.User
-import galaGuide.table.user.UserFavoriteEventTable
 import galaGuide.table.user.UserTable
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -22,7 +20,6 @@ import kotlinx.datetime.Clock
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.or
-import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.simplejavamail.email.EmailBuilder
@@ -277,12 +274,14 @@ fun Route.routeUser() {
             }
 
             get("/favorite") {
-                val userId = call.userId!!
-                val list = transaction {
-                    UserFavoriteEventTable.select { UserFavoriteEventTable.user eq userId }
-                        .mapNotNull { Event.findById(it[UserFavoriteEventTable.event])?.asDetail() }
+                newSuspendedTransaction {
+                    call.respond(
+                        call.user!!
+                            .favoriteEvents
+                            .map { it.asDetail() }
+                            .asRestResponse()
+                    )
                 }
-                call.respond(list.asRestResponse())
             }
         }
     }
