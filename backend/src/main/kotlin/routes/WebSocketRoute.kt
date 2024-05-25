@@ -2,7 +2,9 @@ package galaGuide.routes
 
 import galaGuide.data.*
 import galaGuide.resources.userId
-import galaGuide.table.*
+import galaGuide.table.GroupMemberTable
+import galaGuide.table.GroupMessageTable
+import galaGuide.table.PrivateMessageTable
 import io.ktor.server.auth.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
@@ -12,7 +14,6 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toLocalDateTime
-import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -94,16 +95,6 @@ object WebsocketManager {
 }
 
 fun Route.routeWebSocket() = authenticate("user") {
-    transaction {
-        SchemaUtils.createMissingTablesAndColumns(
-            GroupTable,
-            GroupMemberTable,
-            PinnedMessageTable,
-            PrivateMessageTable,
-            GroupMessageTable
-        )
-    }
-
     webSocket("/ws") {
         val userId = call.userId ?: run {
             close(CloseReason(CloseReason.Codes.CANNOT_ACCEPT, "please login first"))

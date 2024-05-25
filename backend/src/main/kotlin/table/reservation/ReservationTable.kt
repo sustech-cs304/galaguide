@@ -2,6 +2,7 @@ package galaGuide.table.reservation
 
 import galaGuide.table.EventTable
 import galaGuide.table.user.UserTable
+import galaGuide.util.createThis
 import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
@@ -17,6 +18,10 @@ object ReservationTable : LongIdTable() {
     val createTime = datetime("create_time")
     val eventId = reference("event_id", EventTable, onDelete = ReferenceOption.CASCADE)
     val periodId = reference("period_id", EventTable, onDelete = ReferenceOption.CASCADE)
+
+    init {
+        createThis()
+    }
 }
 
 class Order(id: EntityID<Long>) : LongEntity(id) {

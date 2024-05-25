@@ -2,6 +2,7 @@ package galaGuide.table
 
 import galaGuide.table.user.User
 import galaGuide.table.user.UserTable
+import galaGuide.util.createThis
 import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
@@ -13,6 +14,10 @@ object PrivateMessageTable : LongIdTable() {
     val to = reference("to", UserTable)
     val content = text("content")
     val time = datetime("time")
+
+    init {
+        createThis()
+    }
 }
 
 class PrivateMessage(id: EntityID<Long>) : LongEntity(id) {
@@ -29,6 +34,10 @@ object GroupMessageTable : LongIdTable() {
     val group = reference("group", GroupTable)
     val content = text("content")
     val time = datetime("time")
+
+    init {
+        createThis()
+    }
 }
 
 class GroupMessage(id: EntityID<Long>) : LongEntity(id) {

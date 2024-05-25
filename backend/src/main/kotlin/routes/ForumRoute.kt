@@ -5,23 +5,25 @@ import galaGuide.data.asDetail
 import galaGuide.data.asRestResponse
 import galaGuide.data.emptyRestResponse
 import galaGuide.data.failRestResponseDefault
-import galaGuide.table.forum.*
+import galaGuide.table.forum.Discuss
+import galaGuide.table.forum.DiscussTable
+import galaGuide.table.forum.LikeTable
 import galaGuide.table.user.User
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.Serializable
-import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.deleteWhere
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.Instant
 
 fun Route.routeForum() = authenticate("user") {
     route("/discuss") {
-        transaction {
-            SchemaUtils.createMissingTablesAndColumns(DiscussTable, TagTable, DiscussTagTable, LikeTable)
-        }
         createDiscuss()
 //        deleteDiscuss()
         getDiscussList()

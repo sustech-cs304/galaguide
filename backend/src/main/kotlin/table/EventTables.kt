@@ -2,6 +2,7 @@ package galaGuide.table
 
 import galaGuide.table.user.User
 import galaGuide.table.user.UserTable
+import galaGuide.util.createThis
 import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
@@ -16,6 +17,10 @@ object EventTable : LongIdTable() {
     val description = text("description").nullable()
     val cost = long("cost").default(0)
     val category = varchar("category", 32).default("other")
+
+    init {
+        createThis()
+    }
 }
 
 class Event(id: EntityID<Long>) : LongEntity(id) {
@@ -36,6 +41,10 @@ object EventPeriodTable : LongIdTable() {
     val event = reference("event", EventTable)
     val start = timestamp("start")
     val end = timestamp("end")
+
+    init {
+        createThis()
+    }
 }
 
 class EventPeriod(id: EntityID<Long>) : LongEntity(id) {
@@ -50,5 +59,9 @@ object EventAssetTable : Table() {
     val event = reference("event", EventTable)
     val asset = reference("asset", StaticAssetTable)
     override val primaryKey = PrimaryKey(event, asset)
+
+    init {
+        createThis()
+    }
 }
 

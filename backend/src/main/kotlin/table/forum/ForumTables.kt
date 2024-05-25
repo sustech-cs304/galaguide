@@ -1,13 +1,14 @@
 package galaGuide.table.forum
 
-import galaGuide.table.user.UserTable
 import galaGuide.table.user.User
-import org.jetbrains.exposed.dao.*
+import galaGuide.table.user.UserTable
+import galaGuide.util.createThis
+import org.jetbrains.exposed.dao.LongEntity
+import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.LongIdTable
 import org.jetbrains.exposed.sql.ReferenceOption
 import org.jetbrains.exposed.sql.Table
-import org.jetbrains.exposed.sql.javatime.datetime
 import org.jetbrains.exposed.sql.javatime.timestamp
 
 // 帖子表
@@ -18,11 +19,19 @@ object DiscussTable : LongIdTable() {
     val createTime = timestamp("create_time")
     val likes = long("likes")
     val belongsToId = reference("belongs_to_id", id, onDelete = ReferenceOption.CASCADE)
+
+    init {
+        createThis()
+    }
 }
 
 // 标签表
 object TagTable : LongIdTable() {
     val name = varchar("name", 50)
+
+    init {
+        createThis()
+    }
 }
 
 // 中间表
@@ -30,6 +39,10 @@ object DiscussTagTable : Table() {
     val discussId = reference("discuss_id", DiscussTable)
     val tagId = reference("tag_id", TagTable)
     override val primaryKey = PrimaryKey(discussId)
+
+    init {
+        createThis()
+    }
 }
 
 // 帖子表实体类
@@ -58,4 +71,8 @@ object LikeTable : Table() {
     val likerId = reference("liker_id", UserTable)
     val discussId = reference("discuss_id", DiscussTable)
     override val primaryKey = PrimaryKey(likerId, discussId)
+
+    init {
+        createThis()
+    }
 }

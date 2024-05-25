@@ -2,6 +2,7 @@ package galaGuide.table
 
 import galaGuide.table.user.User
 import galaGuide.table.user.UserTable
+import galaGuide.util.createThis
 import org.jetbrains.exposed.dao.UUIDEntity
 import org.jetbrains.exposed.dao.UUIDEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
@@ -14,6 +15,10 @@ object StaticAssetTable : UUIDTable() {
     val uploadTime = datetime("uploadTime").clientDefault { LocalDateTime.now() }
     val fileName = varchar("fileName", 128)
     val uploader = reference("uploader", UserTable)
+
+    init {
+        createThis()
+    }
 }
 
 class StaticAsset(id: EntityID<UUID>) : UUIDEntity(id) {

@@ -1,11 +1,11 @@
 package galaGuide.routes
 
+import galaGuide.table.Event
+import galaGuide.table.EventPeriod
 import galaGuide.table.reservation.Order
 import galaGuide.table.reservation.OrderStatus
 import galaGuide.table.reservation.ReservationTable
 import galaGuide.table.user.User
-import galaGuide.table.Event
-import galaGuide.table.EventPeriod
 import io.ktor.http.*
 import io.ktor.resources.*
 import io.ktor.server.application.*
@@ -13,22 +13,16 @@ import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
-import kotlinx.serialization.Contextual
-import org.jetbrains.exposed.sql.SchemaUtils
-
 
 fun Route.routeReservation() = authenticate("user") {
     route("/reserve") {
-        transaction {
-            SchemaUtils.createMissingTablesAndColumns(ReservationTable)
-        }
-
         // 创建订单路由
         createOrderRoute()
 

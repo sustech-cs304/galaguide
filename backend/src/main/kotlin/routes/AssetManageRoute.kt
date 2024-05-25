@@ -6,7 +6,6 @@ import galaGuide.data.failRestResponseDefault
 import galaGuide.resources.user
 import galaGuide.resources.userId
 import galaGuide.table.StaticAsset
-import galaGuide.table.StaticAssetTable
 import galaGuide.util.StaticAssetManager
 import io.ktor.http.*
 import io.ktor.http.content.*
@@ -17,17 +16,12 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.util.logging.*
 import kotlinx.serialization.Serializable
-import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.io.InputStream
 import java.util.*
 
 fun Route.routeAssetManage() = authenticate("user") {
     route("/asset") {
-        transaction {
-            SchemaUtils.createMissingTablesAndColumns(StaticAssetTable)
-        }
-
         val logger = KtorSimpleLogger(StaticAssetManager::class.qualifiedName!!)
 
         @Serializable

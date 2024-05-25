@@ -18,7 +18,6 @@ import io.ktor.server.routing.*
 import io.ktor.util.logging.*
 import kotlinx.datetime.Clock
 import kotlinx.serialization.Serializable
-import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.or
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -45,10 +44,6 @@ fun Route.routeUser() {
         .withClaim("id", id)
         .withExpiresAt(Instant.now() + 30.days.toJavaDuration())
         .sign(Algorithm.HMAC256(secret))
-
-    transaction {
-        SchemaUtils.createMissingTablesAndColumns(UserTable)
-    }
 
     route("/user") {
         @Serializable
