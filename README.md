@@ -42,8 +42,8 @@ GitHub: [![GitHub](https://img.shields.io/badge/GitHub-GalaGuide-blue?logo=githu
 
 - [x] Interactive map
     - [x] Campus map with event locations
-    - [ ] Navigation to event locations
-    - [ ] Real-time location tracking
+    - [x] Navigation to event locations
+    - [x] Real-time location tracking
 
 
 ## Getting Started
