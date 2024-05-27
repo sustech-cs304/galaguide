@@ -135,6 +135,14 @@ const routes = [
       ),
   },
   {
+    path: "/forum/create",
+    name: "ForumCreate",
+    component: () =>
+      import(
+        /* webpackChunkName: "forum-create" */ "./components/forum/ForumCreate.vue"
+      ),
+  },
+  {
     path: "/help",
     name: "HelpCenter",
     component: () =>

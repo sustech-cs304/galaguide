@@ -8,7 +8,13 @@ GitHub: [![GitHub](https://img.shields.io/badge/GitHub-GalaGuide-blue?logo=githu
 
 ## Getting Started
 
-The GitHub repository provides both backend and frontend code. The backend is based on Ktor, and the frontend is based on Vue. You could also find the pre-built executable file in the release page. The following instructions will help you to build the project from source code. So if you only want to run the application using the executable file, you can skip the following steps.
+The GitHub repository provides both backend and frontend code. The backend is based on Ktor, and the frontend is based on Vue. You could also find the pre-built executable files in the release page. The following instructions will help you to build the project from source code. So if you only want to run the application using the executable file, you can skip the following steps.
+
+## Using pre-built executable files
+
+TODO
+
+## Building from source code
 
 ### Prerequisites
 
@@ -21,7 +27,7 @@ TODO: Add more prerequisites
 1. Clone the repository
 
 ```bash
-git clone https://github.com/sustech-cs304/team-project-24spring-23333.git
+git clone https://github.com/sustech-cs304/team-project-24spring-10.git
 ```
 
 2. Enter the directory `galaguide/` and install the dependencies for the frontend
@@ -30,9 +36,16 @@ git clone https://github.com/sustech-cs304/team-project-24spring-23333.git
 npm install
 ```
 
-3. Install the dependencies for the backend
+3. Build the backend
 
 TODO
+
+4. Install the requirements for the backend for AI
+
+```bash
+cd ../ai
+pip install -r requirements.txt
+```
 
 ### Usage
 
@@ -40,6 +53,8 @@ TODO
 
 ```bash
 TODO
+cd ../ai
+python app.py
 ```
 
 2. Enter the directory `galaguide/` and run the frontend

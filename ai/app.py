@@ -53,7 +53,10 @@ class AIHandler(tornado.web.RequestHandler):
         question = self.get_argument("question")
 
         prompt = preprompt.replace("<USER_EVENTS>", userEvents).replace("<EVENTS>", allEvents).replace("<HISTORY>", history).replace("<QUESTION>", question)
-        answer = openai.complete(prompt)
+        try:
+            answer = openai.complete(prompt)
+        except Exception as e:
+            answer = str(e)
         self.write(make_rest_response({"answer": answer}))
 
 def make_app():
