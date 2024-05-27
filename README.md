@@ -123,13 +123,23 @@ The logo of GalaGuide is designed by [Jianzheng Huang](https://github.com/Cara-Z
 
 ### Contact
 
-If you have any questions or suggestions, feel free to contact us via email or GitHub issues. You could find the contact information in the [wiki](https://github.com/sustech-cs304/team-project-24spring-10/wiki)
+If you have any questions or suggestions, feel free to contact us via email or GitHub issues. You could find the contact information in the [wiki](https://github.com/sustech-cs304/team-project-24spring-10/wiki).
 
 ### Sponsoring
 
 Open source development is not free and cannot be sustained without your support. If you like GalaGuide and want to support the development, you could sponsor us via GitHub Sponsors. You could find the sponsor button on the top right of the repository page. ❤️
 
 ### Acknowledgements
+
+> To see a **world** in a grain of sand,
+>
+> And a **heaven** in a wild flower,
+>
+> Hold **infinity** in the palm of your hand,
+>
+> And **eternity** in an hour.
+
+- William Blake, *Auguries of Innocence*
 
 GalaGuide is originally a team project for the course CS304 Software Engineering (Spring 2024) at Southern University of Science and Technology (SUSTech). The team members are (in ascending order of Pinyin):
 
@@ -139,7 +149,7 @@ GalaGuide is originally a team project for the course CS304 Software Engineering
 - [Lianji Bai](https://github.com/WinwayCome)
 - [Qiwen Xiao](https://github.com/Charley-xiao)
 
-We would like to thank the course instructor [Yida Tao](https://yidatao.github.io/) and teaching assistants for their guidance and support during the development of GalaGuide, the open-source community for providing us with the tools and resources to build GalaGuide, and also ourselves for the hard work and dedication to the project throughout the semester.
+We would like to thank the course instructor, [Yida Tao](https://yidatao.github.io/), and the teaching assistants for their guidance and support during the development of GalaGuide, and the open-source community for providing us with the tools and resources to build GalaGuide, and also ourselves for the hard work and dedication to the project throughout the semester.
 
 And lastly, a deep bow to you for using GalaGuide and supporting open-source development.
 
