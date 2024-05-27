@@ -6,14 +6,33 @@ from openai import OpenAI
 import os
 import random
 import toml
+import argparse
 
-with open("ai.toml") as f:
+parser = argparse.ArgumentParser(description="AI Server")
+parser.add_argument("--config", type=str, default="ai.toml", help="Path to the config file")
+parser.add_argument("--port", type=int, default=9262, help="Port to run the server")
+parser.add_argument("--model", type=str, default="gpt-3.5-turbo", help="Model to use")
+args = parser.parse_args()
+
+with open(args.config, "r") as f:
     config = toml.load(f)
 
-os.environ["http_proxy"] = config["proxy"]["http"]
-os.environ["https_proxy"] = config["proxy"]["https"]
-os.environ["OPENAI_API_KEY"] = config["openai"]["api_key"]
-openai = OpenAI(config["openai"]["api_key"])
+try:
+    os.environ["http_proxy"] = config["proxy"]["http"]
+    os.environ["https_proxy"] = config["proxy"]["https"]
+    os.environ["OPENAI_API_KEY"] = config["openai"]["api_key"]
+    if args.model.lower().startswith("gpt"):
+        openai = OpenAI(config["openai"]["api_key"])
+    else:
+        # Use local model downloaded from Hugging Face
+        import torch
+        from transformers import AutoModel, AutoTokenizer
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+        model = AutoModel.from_pretrained(args.model).to(device)
+        tokenizer = AutoTokenizer.from_pretrained(args.model)
+except Exception as e:
+    print(f"Error: {str(e)}")
+    
 preprompt = """
 You now need to answer the questions provided in the QUESTION section based on the information given in the CONTEXT section.
 
@@ -53,10 +72,17 @@ class AIHandler(tornado.web.RequestHandler):
         question = self.get_argument("question")
 
         prompt = preprompt.replace("<USER_EVENTS>", userEvents).replace("<EVENTS>", allEvents).replace("<HISTORY>", history).replace("<QUESTION>", question)
-        try:
-            answer = openai.complete(prompt)
-        except Exception as e:
-            answer = str(e)
+        
+        if args.model.lower().startswith("gpt"):
+            try:
+                answer = openai.complete(prompt)
+            except Exception as e:
+                answer = str(e)
+        else:
+            inputs = tokenizer(prompt, return_tensors="pt", max_length=1024, truncation=True).to(device)
+            output = model.generate(**inputs, max_length=1024, num_return_sequences=1, temperature=0.7)
+            answer = tokenizer.decode(output[0], skip_special_tokens=True)
+
         self.write(make_rest_response({"answer": answer}))
 
 def make_app():
@@ -66,6 +92,6 @@ def make_app():
 
 if __name__ == "__main__":
     app = make_app()
-    app.listen(9262)
-    print("Server is running on http://localhost:9262")
+    app.listen(args.port)
+    print(f"Server is running on http://localhost:{args.port}")
     tornado.ioloop.IOLoop.current().start()
