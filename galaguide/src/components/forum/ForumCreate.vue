@@ -1,14 +1,40 @@
 <script setup>
-import { onMounted } from "vue";
+import { onMounted, ref } from "vue";
 import axios from "axios";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 const router = useRouter();
+const route = useRoute();
+const discussId = ref(null);
 
 onMounted(() => {
     console.log("Forum Create Page");
     const token = localStorage.getItem("token");
     if (token) {
-    axios.defaults.headers.common["Bearer"] = token;
+        axios.defaults.headers.common["Bearer"] = token;
+    }
+    else {
+        router.push("/login");
+    }
+    try {
+        discussId.value = route.params.id;
+        // If such a parameter exists, then we are editing a post
+        // Get the post data and fill the form
+        if (discussId.value) {
+            axios.get(`/api/discuss/${discussId.value}`, {
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                },
+            }).then((res) => {
+                console.log(res.data);
+                document.querySelector("#post-form input").value = res.data.data[0].title;
+                document.querySelector("#post-form textarea").value = res.data.data[0].content;
+            }).catch((err) => {
+                console.log(err);
+            });
+        }
+    } catch (err) {
+        console.log(err);
+        // Otherwise, we are creating a new post
     }
 });
 
@@ -16,6 +42,26 @@ const createPost = () => {
     console.log("Creating a post");
     const title = document.querySelector("#post-form input").value;
     const content = document.querySelector("#post-form textarea").value;
+    if (!title || !content) {
+        alert("Please fill in all fields");
+        return;
+    }
+    if (discussId.value) {
+        axios.put(`/api/discuss/${discussId.value}`, {
+            title: title,
+            content: content,
+        }, {
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('token')
+            },
+        }).then((res) => {
+            console.log(res.data);
+            router.push("/forum");
+        }).catch((err) => {
+            console.log(err);
+        });
+        return;
+    }
     axios.post("/api/discuss/upload-discuss", {
         title: title,
         content: content,

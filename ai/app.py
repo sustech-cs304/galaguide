@@ -46,7 +46,8 @@ The following is all events in the system:
 Just now, you had a conversation with the user:
 <HISTORY>
 
-Please answer, <QUESTION>
+[QUESTION]
+<QUESTION>
 """
 
 def make_rest_response(data, message="", code=0):
