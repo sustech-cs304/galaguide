@@ -62,7 +62,7 @@ const createPost = () => {
         });
         return;
     }
-    axios.post("/api/discuss/upload-discuss", {
+    axios.post("/api/discuss/create-discuss", {
         title: title,
         content: content,
     }, {

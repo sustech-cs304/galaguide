@@ -8,7 +8,7 @@ const cur_g_id = ref(null);
 
 var socket = null;
 var lockReconnect = false;
-var wsUrl = 'ws://localhost:9260/ws';
+var wsUrl = 'ws://43.139.21.229:9260/ws';
 var timeout = 2000;
 var timeoutnum = null;
 
@@ -30,7 +30,7 @@ const getCookie = (name) => {
 const initWebsocket = async () => {
     if ('WebSocket' in window) {
         // socket = new WebSocket(wsUrl, getCookie("token"));
-        socket = new WebSocket(wsUrl);
+        socket = new WebSocket(wsUrl, localStorage.getItem("token"));
         socket.onerror = function () {
             reconnect();
         }

@@ -81,8 +81,8 @@ app.on('ready', async () => {
       });
 
     const win = new BrowserWindow({
-        width: 1500,
-        height: 1000,
+        // width: 1500,
+        // height: 1000,
         // fullscreenable: true,
         // fullscreen: true,
         show: false,
@@ -99,6 +99,7 @@ app.on('ready', async () => {
     win.once('ready-to-show', () => {
         setTimeout(() => {
             loadingWindow.destroy();
+            win.maximize();
             win.show();
         }, 1);
     });
