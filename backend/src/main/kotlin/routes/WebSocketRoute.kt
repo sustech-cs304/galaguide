@@ -109,6 +109,8 @@ fun Route.routeWebSocket() {
         .withIssuer(issuer)
         .build()
 
+    val logger = KtorSimpleLogger(WebsocketManager::class.qualifiedName!!)
+
     webSocket("/ws") {
         val token = call.request.headers[HttpHeaders.SecWebSocketProtocol] ?: run {
             close(CloseReason(CloseReason.Codes.CANNOT_ACCEPT, "No token provided"))
@@ -119,6 +121,7 @@ fun Route.routeWebSocket() {
                 User[verifier.verify(token)?.getClaim("id")?.asLong() ?: -1]
             }
         }.getOrElse {
+            logger.error(it)
             close(CloseReason(CloseReason.Codes.CANNOT_ACCEPT, "Invalid token"))
             return@webSocket
         }
