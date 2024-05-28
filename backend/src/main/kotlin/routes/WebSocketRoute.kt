@@ -1,11 +1,13 @@
 package galaGuide.routes
 
+import com.auth0.jwt.JWT
+import com.auth0.jwt.algorithms.Algorithm
 import galaGuide.data.*
-import galaGuide.resources.userId
 import galaGuide.table.GroupMemberTable
 import galaGuide.table.GroupMessageTable
 import galaGuide.table.PrivateMessageTable
-import io.ktor.server.auth.*
+import galaGuide.table.user.User
+import io.ktor.http.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import io.ktor.util.logging.*
@@ -94,13 +96,30 @@ object WebsocketManager {
     }
 }
 
-fun Route.routeWebSocket() = authenticate("user") {
+fun Route.routeWebSocket() {
+    val secret = environment!!.config.property("user-jwt.secret").getString()
+    val issuer = environment!!.config.property("user-jwt.issuer").getString()
+    val audience = environment!!.config.property("user-jwt.audience").getString()
+
+    val verifier = JWT.require(Algorithm.HMAC256(secret))
+        .withAudience(audience)
+        .withIssuer(issuer)
+        .build()
+
     webSocket("/ws") {
-        val userId = call.userId ?: run {
-            close(CloseReason(CloseReason.Codes.CANNOT_ACCEPT, "please login first"))
+        val token = call.request.headers[HttpHeaders.SecWebSocketProtocol] ?: run {
+            close(CloseReason(CloseReason.Codes.CANNOT_ACCEPT, "No token provided"))
+            return@webSocket
+        }
+        val user = kotlin.runCatching {
+            transaction {
+                User[verifier.verify(token)?.getClaim("id")?.asLong() ?: -1]
+            }
+        }.getOrElse {
+            close(CloseReason(CloseReason.Codes.CANNOT_ACCEPT, "Invalid token"))
             return@webSocket
         }
 
-        WebsocketManager.handleSession(userId, this)
+        WebsocketManager.handleSession(user.id.value, this)
     }
 }
