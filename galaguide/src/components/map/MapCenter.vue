@@ -150,9 +150,19 @@ const getRoute = () => {
                     L.latLng(lat, lon),
                     L.latLng(mode.value ? allevents.value[pos].lat : myevents.value[pos].lat, mode.value ? allevents.value[pos].lng : myevents.value[pos].lng),
                 ],
+                lineOptions: {
+                    styles: [{ color: "blue", opacity: 0.6, weight: 4 }],
+                },
+                showAlternatives: true,
+                altLineOptions: {
+                    styles: [
+                        { color: 'green', opacity: 0.6, weight: 4 }
+                    ]
+                },
+                routeWhileDragging: true
             }).addTo(map);
-            const marker = L.marker([mode.value ? allevents.value[pos].lat : myevents.value[pos].lat, mode.value ? allevents.value[pos].lng : myevents.value[pos].lng]).addTo(map);
-            marker.bindPopup(eventShow(mode.value ? allevents.value[pos] : myevents.value[pos])).openPopup();
+            L.marker([mode.value ? allevents.value[pos].lat : myevents.value[pos].lat, mode.value ? allevents.value[pos].lng : myevents.value[pos].lng])
+                .addTo(map).bindPopup(eventShow(mode.value ? allevents.value[pos] : myevents.value[pos])).openPopup();
         }).catch((error) => {
             console.log(error);
         });
@@ -226,7 +236,7 @@ onMounted(() => {
         L.Icon.Default.mergeOptions({
             iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png"),
             iconUrl: require("leaflet/dist/images/marker-icon.png"),
-            shadowUrl: require("leaflet/dist/images/marker-shadow.png")
+            shadowUrl: require("leaflet/dist/images/marker-shadow.png"),            
         });
         map = L.map(mapContainer.value).setView(allevents.value[pos], 13);
 
@@ -254,6 +264,16 @@ onMounted(() => {
                         L.latLng(lat, lon),
                         L.latLng(allevents.value[pos].lat, allevents.value[pos].lng),
                     ],
+                    lineOptions: {
+                        styles: [{ color: "blue", opacity: 0.6, weight: 4 }],
+                    },
+                    showAlternatives: true,
+                    altLineOptions: {
+                        styles: [
+                            { color: 'green', opacity: 0.6, weight: 4 }
+                        ]
+                    },
+                    routeWhileDragging: true
                 }).addTo(map);
             }).catch((error) => {
                 console.log(error);
@@ -264,7 +284,7 @@ onMounted(() => {
 });
 </script>
 
-<style scoped>
+<style>
 #map-center {
     position: absolute;
     left: 10%;
@@ -324,5 +344,25 @@ onMounted(() => {
     background-color: #34495e;
 }
 
+.leaflet-routing-alternatives-container {
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 5px;
+  padding: 10px;
+  font-family: Arial, sans-serif;
+  color: #333;
+  overflow: scroll;
+}
+
+.leaflet-routing-alt {
+  background-color: #f0f0f0;
+  border-radius: 5px;
+  padding: 5px;
+  margin-top: 5px;
+  overflow: auto;
+}
+
+.leaflet-routing-alt:hover {
+  background-color: #e0e0e0;
+}
 </style>
   

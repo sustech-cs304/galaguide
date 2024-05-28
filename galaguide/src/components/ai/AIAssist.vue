@@ -65,7 +65,7 @@ const closeModal = () => {
 const chatHistory = ref("");
 
 const getUserEvents = () => {
-    axios.get('/api/event-center/list/my', {
+    axios.get('/api/reserve/mine', {
         headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`
         }
@@ -77,7 +77,7 @@ const getUserEvents = () => {
 };
 
 const getAllEvents = () => {
-    axios.get('/api/event-center/list/all', {
+    axios.get('/api/event', {
         headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`
         }
@@ -88,11 +88,22 @@ const getAllEvents = () => {
     });
 };
 
+const makeInfoString = (data) => {
+    if (!data) {
+        return '';
+    }
+    let infoString = '';
+    data.forEach((item) => {
+        infoString += item.title + ' ' + item.description + ' ' + item.location + ' ' + item.date + ' ' + item.time + ' ';
+    });
+    return infoString;
+};
+
 const sendmsg = () => {
     axios.get('/api2/ai', {
         question: document.getElementById('help-holder').value,
-        userEvents: getUserEvents(),
-        allEvents: getAllEvents(),
+        userEvents: makeInfoString(getUserEvents()),
+        allEvents: makeInfoString(getAllEvents()),
         history: chatHistory.value
     }).then((response) => {
         console.log(response.data);
