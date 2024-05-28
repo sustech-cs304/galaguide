@@ -9,7 +9,8 @@ const cur_g_id = ref(null);
 var socket = null;
 var lockReconnect = false;
 var wsUrl = 'ws://43.139.21.229:9260/ws';
-var timeout = 2000;
+// var wsUrl = 'ws://10.16.165.97:9260/ws';
+var timeout = 4000;
 var timeoutnum = null;
 
 const getCookie = (name) => {
@@ -30,7 +31,7 @@ const getCookie = (name) => {
 const initWebsocket = async () => {
     if ('WebSocket' in window) {
         // socket = new WebSocket(wsUrl, getCookie("token"));
-        socket = new WebSocket(wsUrl, localStorage.getItem("token"));
+        socket = new WebSocket(wsUrl);
         console.log('WebSocket created');
         socket.onerror = function () {
             reconnect();
@@ -38,6 +39,10 @@ const initWebsocket = async () => {
         socket.onopen = function () {
             console.log('WebSocket open');
             clearTimeout(timeoutnum);
+            // The first message sent to the server must be:
+            // { "event": "auth", "token": "your_token" }
+            socket.send(JSON.stringify({ "event": "auth", "token": localStorage.getItem("token") }));
+            console.log('WebSocket auth sent');
         }
         socket.onmessage = function (event) {
             console.log('WebSocket message:', event.data);
@@ -105,6 +110,7 @@ const sendMessage = (g_id) => {
 
 const easyMarkdownConversion = (text) => {
     let newText = text;
+    if (!newText) return newText;
     // text inside ``` ``` is protected from markdown conversion
     let codeBlocks = newText.match(/```(.*?)```/g);
     if (codeBlocks) {
