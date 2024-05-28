@@ -5,25 +5,26 @@ import galaGuide.data.asDetail
 import galaGuide.data.asRestResponse
 import galaGuide.data.emptyRestResponse
 import galaGuide.data.failRestResponseDefault
-import galaGuide.table.forum.Discuss
-import galaGuide.table.forum.DiscussTable
-import galaGuide.table.forum.LikeTable
+import galaGuide.table.forum.*
 import galaGuide.table.user.User
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.Serializable
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.and
-import org.jetbrains.exposed.sql.deleteWhere
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.Instant
+import java.time.ZoneOffset
+import java.time.LocalDateTime
+import java.util.*
 
 fun Route.routeForum() = authenticate("user") {
     route("/discuss") {
+        transaction {
+            SchemaUtils.createMissingTablesAndColumns(DiscussTable, TagTable, DiscussTagTable, LikeTable)
+        }
         createDiscuss()
 //        deleteDiscuss()
         getDiscussList()
@@ -87,10 +88,6 @@ fun Route.uploadDiscussReply() {
             call.respond(failRestResponseDefault(-3, "Cannot Authentic: Not logged in"))
             return@post
         }
-        if (currentUser.id.value != it.posterId) {
-            call.respond(failRestResponseDefault(-3, "Wrong Authentic: Access Denied"))
-            return@post
-        }
 //        val title = it.title
 //        val posterId = it.posterId
 //        val content = it.content
@@ -106,7 +103,7 @@ fun Route.uploadDiscussReply() {
         val reply = Discuss.new {
             title = it.title
             content = it.content
-            createTime = Instant.ofEpochSecond(it.time)
+            createTime = Instant.ofEpochSecond(Date().time)
             poster = currentUser
             belongsToId = discuss.id
             likes = 0
@@ -162,21 +159,12 @@ fun Route.createDiscuss() {
             call.respond(failRestResponseDefault(-3, "Cannot Authentic: Not logged in"))
             return@post
         }
-        val user = transaction { User.findById(it.posterId) }
-        if (user == null){
-            call.respond(failRestResponseDefault(-2, "Wrong Argument: UserId"))
-            return@post
-        }
-        if(user.id.value != it.posterId){
-            call.respond(failRestResponseDefault(-3, "Wrong Authentic: Access Denied"))
-            return@post
-        }
         val discuss = Discuss.new {
             title = it.title
             content = it.content
             poster = currentUser
             belongsToId = id
-            createTime = Instant.ofEpochSecond(it.time)
+            createTime = Instant.ofEpochSecond(Date().time)
             likes = 0
         }
         call.respond(discuss.asDetail().asRestResponse("Operator Success: Create discuss with id: ${discuss.id}$"))
@@ -228,8 +216,6 @@ class ForumRoute {
         data class Object(
             val title: String,
             val content: String,
-            val posterId: Long,
-            val time: Long,
         )
     }
 }
