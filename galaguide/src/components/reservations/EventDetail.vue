@@ -162,142 +162,7 @@ const getHelp = () => {
 };
 
 </script>
-<!--  Modern & Minimalistic
-<style scoped>
-.event-detail {
-  font-family: 'Helvetica Neue', Arial, sans-serif;
-  color: #333;
-  background-color: #f4f4f4;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
 
-.title-container {
-  padding: 16px;
-  background-color: #fff;
-  border-bottom: 1px solid #eee;
-}
-
-.title-container h1 {
-  font-size: 24px;
-  margin: 0;
-}
-
-.title-buttons {
-  display: none;
-  position: absolute;
-  right: 16px;
-  top: 16px;
-}
-
-.title-container:hover .title-buttons {
-  display: block;
-}
-
-.poster-container {
-  padding: 16px;
-}
-
-.poster-container img {
-  width: 100%;
-  border-radius: 4px;
-}
-</style> -->
-
-<!-- Classic & Elegant
-<style scoped>
-.event-detail {
-  font-family: 'Times New Roman', serif;
-  color: #5c5c5c;
-  background-color: #fff;
-  padding: 20px;
-  border: 1px solid #dcdcdc;
-}
-
-.title-container {
-  padding-bottom: 10px;
-  margin-bottom: 20px;
-  border-bottom: 2px solid #cbcbcb;
-}
-
-.title-container h1 {
-  font-size: 28px;
-  color: #3e3e3e;
-}
-
-.title-buttons {
-  display: none;
-  position: absolute;
-  right: 20px;
-  top: 20px;
-}
-
-.title-container:hover .title-buttons {
-  display: block;
-  opacity: 1;
-}
-
-.poster-container {
-  text-align: center;
-}
-
-.poster-container img {
-  width: auto;
-  max-width: 100%;
-  height: auto;
-  display: inline-block;
-}
-
-</style> -->
-
-<!-- Vibrant & Interactive
-<style>
-.event-detail {
-  font-family: 'Roboto', sans-serif;
-  color: #ffffff;
-  background: linear-gradient(135deg, #6e8efb, #a777e3);
-  padding: 20px;
-  border-radius: 12px;
-  transition: transform 0.3s ease;
-}
-
-.event-detail:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-}
-
-.title-container {
-  position: relative;
-  background-color: transparent;
-}
-
-.title-container h1 {
-  font-size: 26px;
-  text-shadow: 1px 1px 5px rgba(0,0,0,0.2);
-}
-
-.title-buttons {
-  display: none;
-  position: absolute;
-  right: 0;
-  top: 0;
-  transition: opacity 0.3s ease;
-}
-
-.title-container:hover .title-buttons {
-  display: block;
-  opacity: 1;
-}
-
-.poster-container img {
-  width: 100%;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-}
-
-</style> -->
-
-<!-- revised Classic-->
 <style scoped>
 .main {
   height: 100%;
@@ -308,7 +173,6 @@ const getHelp = () => {
 }
 
 .event-detail {
-  /* font-family: 'Times New Roman', serif; */
   width: 80%;
   height: 100%;
   flex: 4;
@@ -316,6 +180,8 @@ const getHelp = () => {
   background-color: #fff;
   padding: 20px;
   border: 1px solid #dcdcdc;
+  border-radius: 10px; /* Updated */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Updated */
   transition: border-color 0.3s ease-in-out;
 }
 
@@ -345,13 +211,7 @@ const getHelp = () => {
   position: absolute;
   right: 20px;
   top: 20px;
-  /* transition: opacity 0.3s ease; */
 }
-
-/* .title-container:hover .title-buttons {
-  display: block;
-  opacity: 1;
-} */
 
 .poster-container {
   text-align: center;
@@ -362,6 +222,7 @@ const getHelp = () => {
   max-width: 100%;
   height: auto;
   display: inline-block;
+  border-radius: 10px; /* Updated */
   transition: box-shadow 0.3s ease;
 }
 
@@ -369,12 +230,12 @@ const getHelp = () => {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 }
 
-
 .introduction-container {
   padding: 16px;
   background-color: #f8f8f8;
   margin: 16px 0;
   border-left: 4px solid #dcdcdc;
+  border-radius: 10px; /* Updated */
   transition: border-color 0.3s ease-in-out;
 }
 
@@ -385,7 +246,6 @@ const getHelp = () => {
 .details-container {
   display: flex;
   flex-wrap: wrap;
-  /* Allow details to wrap onto the next line if space requires */
   width: 80%;
   margin: 0 auto;
   justify-content: space-between;
@@ -393,6 +253,7 @@ const getHelp = () => {
   background-color: #fff;
   border-top: 1px solid #dcdcdc;
   border-bottom: 1px solid #dcdcdc;
+  border-radius: 10px; /* Updated */
 }
 
 .detail h2 {
@@ -419,22 +280,21 @@ const getHelp = () => {
   width: 200px;
   height: 200px;
   flex: 0 0 auto;
-  /* Ensures that the container does not grow or shrink */
   display: flex;
   justify-content: center;
   align-items: center;
   overflow: hidden;
   border: 1px solid #dcdcdc;
   margin: 0 8px;
-  border-radius: 8px;
+  border-radius: 10px; /* Updated */
 }
 
 .event-image {
   display: block;
   max-width: 100%;
-  max-height: 200px;
-  /* Example fixed height for consistency */
-  border-radius: 4px;
+  max-height: 100%;
+  border-radius: 10px; /* Updated */
+  transition: transform 0.3s ease;
 }
 
 .event-image:hover {
@@ -447,150 +307,12 @@ const getHelp = () => {
   padding: 16px;
 }
 
-.reserve-button,
-.help-button {
+.reserve-button,.help-button {
   font-size: 16px;
   padding: 8px 16px;
   margin: 0 8px;
   border: none;
-  border-radius: 4px;
+  border-radius: 10px; /* Updated */
   cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.reserve-button:hover {
-  background-color: #d1e8d1;
-  /* Green tint on hover */
-}
-
-.help-button:hover {
-  background-color: #f0d8d8;
-  /* Red tint on hover */
-}
-
-.sidebar {
-  width: 15%;
-  flex: 1;
-  background-color: #f2f2f2;
-  padding: 20px;
-  box-sizing: border-box;
-}
-
-
-.reservation-form {
-  background-color: #ffffff;
-  max-width: 600px;
-  margin: 20px auto;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.reservation-form label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
-}
-
-.reservation-form input[type="text"],
-.reservation-form input[type="email"],
-.reservation-form select {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 20px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.reservation-form button {
-  background-color: #0056b3;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.reservation-form button:hover {
-  background-color: #004494;
-}
-
-.error {
-  color: #d32f2f;
-  margin-top: -15px;
-  margin-bottom: 15px;
-  font-size: 0.875em;
-}
-
-@media (max-width: 768px) {
-  .reservation-form {
-    padding: 15px;
-  }
-
-  .reservation-form button {
-    width: 100%;
-  }
 }
 </style>
-
-<!-- Revised Modern-->
-<!-- <style scoped>
-.event-detail {
-  font-family: 'Helvetica Neue', Arial, sans-serif;
-  color: #333;
-  background-color: #f4f4f4;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-  transition: box-shadow 0.3s ease-in-out;
-}
-
-.event-detail:hover {
-  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-}
-
-.title-container {
-  padding: 16px;
-  background-color: #fff;
-  border-bottom: 1px solid #eee;
-  position: relative;
-}
-
-.title-container h1 {
-  font-size: 24px;
-  margin: 0;
-  transition: font-size 0.3s ease;
-}
-
-.title-container:hover h1 {
-  font-size: 26px;
-}
-
-.title-buttons {
-  display: none;
-  position: absolute;
-  right: 16px;
-  top: 16px;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.title-container:hover .title-buttons {
-  display: block;
-  opacity: 1;
-}
-
-.poster-container {
-  padding: 16px;
-}
-
-.poster-container img {
-  width: 100%;
-  border-radius: 4px;
-  transition: transform 0.3s ease;
-}
-
-.poster-container img:hover {
-  transform: scale(1.02);
-}
-
-</style> -->

@@ -69,7 +69,7 @@ const deleteImage = (uuid) => {
             <h2>My Images</h2>
             <h4>Click on images to copy to clipboard</h4>
             <div id="imgs-holder">
-                <div v-for="img in myImgs" :key="img" class="single-img" @click="copyToClickBoard(img.src)">
+                <div v-for="img in myImgs" :key="img" class="single-img" @click="copyToClickBoard(img.uuid)">
                     <img :src="'/api/asset/' + img.uuid" alt="File" />
                     <p>{{ img.fileName }}</p>
                     <p>{{ img.size / 1024 / 1024 }}MB</p>

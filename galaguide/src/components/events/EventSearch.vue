@@ -57,13 +57,17 @@ const fetchEvents = () => {
 	// 	.catch((error) => {
 	// 		console.error('Error fetching events:', error);
 	// 	});
+	const token = localStorage.getItem("token");
+  if (token) {
+    axios.defaults.headers.common["Bearer"] = token;
+  }
 
 	if (searchQuery) {
-		axios.get(`/api/events?search=${searchQuery}`)
+		// add the filter values inside post body
+		axios.post('/api/events/filter', { searchQuery, selectedFilters })
 			.then((response) => {
 				searchResults.value = response.data;
 			})
-
 	}
 	else {
 		axios.get('/api/events')

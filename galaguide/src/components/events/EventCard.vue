@@ -31,6 +31,8 @@ defineProps({
         name: 'Sample Event Title',
         host_name: 'Host Name',
         status: 'Upcoming',
+        registration_time: '10:00 AM - 2:00 PM',
+        event_time: '10:00 AM - 3:00 PM',
         // Add more attributes here
     }
    
