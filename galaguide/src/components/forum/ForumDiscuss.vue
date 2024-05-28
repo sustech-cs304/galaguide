@@ -1,22 +1,14 @@
 <script setup>
 import { onMounted, ref } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import axios from "axios";
 import CustomAlert from "../../components/CustomAlert.vue";
 const route = useRoute();
 const discussId = route.params.id;
 const textareaInput = ref("");
+const router = useRouter();
 
-const comments = ref([
-  {
-    id: 1,
-    sender_id: 1,
-    sender_name: " ",
-    time: " ",
-    title: " ",
-    content: " ",
-  }
-]);
+const comments = ref([]);
 
 const filteredComments = ref([]);
 
@@ -177,6 +169,36 @@ const sharePost = () => {
 
 const showAlert = ref(false);
 
+const editPost = () => {
+  console.log("Editing post");
+  router.push(`/forum/discuss/${discussId}/edit`);
+};
+
+const deletePost = () => {
+  console.log("Deleting post");
+  axios
+    .delete(`/api/discuss/${discussId}`)
+    .then((response) => {
+      console.log(response.data);
+      router.push("/forum");
+    })
+    .catch((error) => {
+      console.error("Error deleting post:", error);
+    });
+};
+
+const deleteComment = (id) => {
+  console.log("Deleting comment");
+  axios
+    .delete(`/api/discuss/${discussId}/delete-reply/${id}`)
+    .then((response) => {
+      console.log(response.data);
+      window.location.reload();
+    })
+    .catch((error) => {
+      console.error("Error deleting comment:", error);
+    });
+};
 </script>
 
 <template>
@@ -197,6 +219,12 @@ const showAlert = ref(false);
         </button>
         <button style="background-color: darkmagenta;" @click="sharePost">
           Share
+        </button>
+        <button v-if="comments[0].sender_id == localStorage.getItem('id')" style="background-color: rgb(0, 179, 255);" @click="editPost">
+          Edit
+        </button>
+        <button v-if="comments[0].sender_id == localStorage.getItem('id')" style="background-color: rgb(0, 179, 255);" @click="deletePost">
+          Delete
         </button>
       </div>
     </div>
@@ -230,6 +258,9 @@ const showAlert = ref(false);
           </button>
           <button style="background-color: rgb(254, 121, 73);" @click="replyComment(comment.sender_name)">
             Reply
+          </button>
+          <button v-if="comment.sender_id == localStorage.getItem('id')" style="background-color: darkmagenta;" @click="deleteComment(comment.id)">
+            Delete
           </button>
         </div>
       </div>

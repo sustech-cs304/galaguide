@@ -33,6 +33,15 @@ const posts = ref();
       <button>Search</button>
       <button>Advanced Search</button>
       <div id="advanced-search"></div>
+      <div id="create-post">
+        <router-link to="/forum/create">
+          <br/>
+          <div id="create-post-button">
+            + Create Post
+          </div>
+          <br/>
+        </router-link>
+      </div>
     </div>
     <div id="posts-holder">
       <div v-for="post in posts" :key="post.id" class="post">
@@ -215,5 +224,27 @@ const posts = ref();
 
 .tag:hover {
   background-color: #6fd7ac;
+}
+
+#create-post {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: auto;
+  margin-top: 1%;
+  margin-bottom: 1%;
+  background-color: #91d0e0;
+  border: 1px solid rgb(130, 208, 247);
+  border-radius: 10px;
+}
+
+#create-post:hover {
+  background-color: #4b91b2;
+}
+
+#create-post-button {
+  font-size: 150%;
+  font-weight: bold;
 }
 </style>
