@@ -107,17 +107,15 @@ fun Route.routeEvent() {
 
                 newSuspendedTransaction {
                     val poster = StaticAsset.findById(UUID.fromString(it.posterId)) ?: run {
-                        call.respond(failRestResponseDefault(-3, "Poster not found"))
+                        call.respond(failRestResponseDefault(-5, "Poster not found"))
                         return@newSuspendedTransaction
                     }
 
-                    it.assetIds?.all { uuid ->
-                        StaticAsset.findById(UUID.fromString(uuid)) != null
-                    }.takeUnless { b ->
-                        b == false
-                    } ?: run {
-                        call.respond(failRestResponseDefault(-4, "Asset not found"))
-                        return@newSuspendedTransaction
+                    it.assetIds?.forEach { uuid ->
+                        StaticAsset.findById(UUID.fromString(uuid)) ?: run {
+                            call.respond(failRestResponseDefault(-6, "Asset $uuid not found"))
+                            return@newSuspendedTransaction
+                        }
                     }
 
                     val event = Event.new {
