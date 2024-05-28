@@ -30,7 +30,7 @@ object WebsocketManager {
         try {
             connected[id] = session
 
-            val loginEvent = UserLoginEvent(id)
+            val loginEvent: WebSocketEvent = UserLoginEvent(id)
             connected.values.forEach {
                 it.sendSerialized(loginEvent)
             }
@@ -85,13 +85,15 @@ object WebsocketManager {
                             }
                     }
 
+                    is UserLogoutEvent -> break
+
                     else -> {}
                 }
             }
         } finally {
             connected.remove(id)
 
-            val logoutEvent = UserLogoutEvent(id)
+            val logoutEvent: WebSocketEvent = UserLogoutEvent(id)
             connected.values.forEach {
                 it.sendSerialized(logoutEvent)
             }
