@@ -12,6 +12,7 @@ import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import io.ktor.util.logging.*
 import io.ktor.websocket.*
+import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toJavaLocalDateTime
@@ -37,6 +38,8 @@ object WebsocketManager {
             while (true) {
                 val event = try {
                     session.receiveDeserialized<WebSocketEvent>()
+                } catch (e: ClosedReceiveChannelException) {
+                    break
                 } catch (e: Exception) {
                     logger.error("Error receiving event from user $id", e)
                     continue
