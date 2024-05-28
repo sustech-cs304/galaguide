@@ -15,6 +15,10 @@ sealed class WebSocketEvent {
 }
 
 @Serializable
+@SerialName("auth")
+data class AuthEvent(val token: String, override val time: Instant = Clock.System.now()) : WebSocketEvent()
+
+@Serializable
 @SerialName("login")
 data class UserLoginEvent(val id: Long, override val time: Instant = Clock.System.now()) : WebSocketEvent()
 

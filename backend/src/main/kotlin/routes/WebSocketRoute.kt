@@ -7,7 +7,6 @@ import galaGuide.table.GroupMemberTable
 import galaGuide.table.GroupMessageTable
 import galaGuide.table.PrivateMessageTable
 import galaGuide.table.user.User
-import io.ktor.http.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import io.ktor.util.logging.*
@@ -21,6 +20,7 @@ import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.*
+import kotlin.collections.set
 
 object WebsocketManager {
     private val connected = Collections.synchronizedMap(mutableMapOf<Long, WebSocketServerSession>())
@@ -92,6 +92,7 @@ object WebsocketManager {
             }
         } finally {
             connected.remove(id)
+            session.close()
 
             val logoutEvent: WebSocketEvent = UserLogoutEvent(id)
             connected.values.forEach {
@@ -114,8 +115,8 @@ fun Route.routeWebSocket() {
     val logger = KtorSimpleLogger(WebsocketManager::class.qualifiedName!!)
 
     webSocket("/ws") {
-        val token = call.request.headers[HttpHeaders.SecWebSocketProtocol] ?: run {
-            close(CloseReason(CloseReason.Codes.CANNOT_ACCEPT, "No token provided"))
+        val token = (receiveDeserialized<WebSocketEvent>() as? AuthEvent)?.token ?: run {
+            close(CloseReason(CloseReason.Codes.CANNOT_ACCEPT, "Invalid token"))
             return@webSocket
         }
         val user = kotlin.runCatching {
@@ -123,7 +124,6 @@ fun Route.routeWebSocket() {
                 User[verifier.verify(token)?.getClaim("id")?.asLong() ?: -1]
             }
         }.getOrElse {
-            logger.error(it)
             close(CloseReason(CloseReason.Codes.CANNOT_ACCEPT, "Invalid token"))
             return@webSocket
         }
