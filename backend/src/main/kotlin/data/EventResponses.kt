@@ -6,9 +6,9 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class EventPeriodDetail(
-    val id: Long,
-    val start: Long,
-    val end: Long,
+    val id: Long? = null,
+    val start: Long? = null,
+    val end: Long? = null,
 )
 
 fun EventPeriod.asDetail() = EventPeriodDetail(

@@ -100,6 +100,11 @@ fun Route.routeEvent() {
                     return@post
                 }
 
+                if (it.periods.any { it.start == null || it.end == null }) {
+                    call.respond(failRestResponseDefault(-4, "Period start or end not provided"))
+                    return@post
+                }
+
                 newSuspendedTransaction {
                     val poster = StaticAsset.findById(UUID.fromString(it.posterId)) ?: run {
                         call.respond(failRestResponseDefault(-3, "Poster not found"))
@@ -134,8 +139,8 @@ fun Route.routeEvent() {
                     it.periods.forEach {
                         EventPeriod.new {
                             this.event = event
-                            start = Instant.ofEpochSecond(it.start)
-                            end = Instant.ofEpochSecond(it.end)
+                            start = Instant.ofEpochSecond(it.start!!)
+                            end = Instant.ofEpochSecond(it.end!!)
                         }
                     }
 
