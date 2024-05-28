@@ -45,6 +45,11 @@ GitHub: [![GitHub](https://img.shields.io/badge/GitHub-GalaGuide-blue?logo=githu
     - [x] Navigation to event locations
     - [x] Real-time location tracking
 
+- [x] Calendar
+    - [x] Personal calendar for event and reservation management
+    - [ ] Sync with other calendar applications
+    - [x] Reminder for upcoming events and reservations
+
 
 ## Getting Started
 
