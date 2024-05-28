@@ -12,6 +12,7 @@ import EventRecommend from "./EventRecommend.vue";
     </div>
 
     <div class="main-content">
+      
       <div class="hot-events">
         <Eventposter></Eventposter>
         <h2>This is hot-events</h2>
@@ -76,13 +77,20 @@ import EventRecommend from "./EventRecommend.vue";
     </div>
 
     <div class="aid-functions">
+      
       <div class="search-box">
         <SearchBox></SearchBox>
+      </div>
+      <div class="create-event">
+        <RouterLink to="/event/create">
+          <button class="create-event-button">Create Your Own Event !</button>
+        </RouterLink>
       </div>
       <div class="recommend-column">
         <EventRecommend></EventRecommend>
         <h2>This is recommend-column</h2>
       </div>
+      
     </div>
   </div>
 </template>
@@ -160,5 +168,29 @@ import EventRecommend from "./EventRecommend.vue";
   /* Example color */
   padding: 20px;
   box-sizing: border-box;
+}
+/* Add these styles */
+.create-event {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.create-event-button {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 600;
+  background-color: #cbe091;
+  color: #000;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
+}
+
+.create-event-button:hover {
+  background-color: #a5adba;
 }
 </style>

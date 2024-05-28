@@ -35,6 +35,14 @@ const routes = [
       ),
   },
   {
+    path: "/event/create",
+    name: "EventCreate",
+    component: () =>
+      import(
+        /* webpackChunkName: "event-create" */ "./components/events/CreateEvent.vue"
+      ),
+  },
+  {
     path: "/search",
     name: "SearchCenter",
     component: () =>
