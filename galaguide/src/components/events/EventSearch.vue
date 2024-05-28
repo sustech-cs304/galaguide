@@ -32,9 +32,10 @@ import { onMounted, reactive, ref } from 'vue';
 import axios from 'axios';
 import SearchBox from './SearchBox.vue';
 import EventCard from './EventCard.vue';
+import { useRoute } from 'vue-router';
 // TODO: implement the search query and filter logic
 // const searchQuery = ref('');
-const searchQuery = this.$route.query || '';
+const searchQuery = useRoute().query;
 const selectedFilters = reactive([
 	{ name: 'Category', options: ['Sport', 'Music', 'Lecture'], selected: [] },
 	{ name: 'Time', options: ['Morning', 'Afternoon', 'Evening'], selected: [] },

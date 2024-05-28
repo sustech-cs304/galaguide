@@ -102,7 +102,7 @@ export default {
     background-color: rgba(0, 0, 0, 0.5);
     /* Semi-transparent black */
     border: none;
-    color: white;
+    color: rgba(32, 139, 201, 0.479);
     padding: 10px;
     cursor: pointer;
 }
@@ -144,7 +144,7 @@ export default {
 }
 
 .indicator-buttons button {
-    background-color: #ccc;
+    background-color: #a7a1a1;
     border: none;
     height: 10px;
     width: 100px;
@@ -154,10 +154,10 @@ export default {
 }
 
 .indicator-buttons button:hover {
-    background-color: #999;
+    background-color: #303c44;
 }
 
 .indicator-buttons button.active {
-    background-color: #666;
+    background-color: #4d4444;
 }
 </style>
