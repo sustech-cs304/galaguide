@@ -6,6 +6,7 @@ import galaGuide.data.failRestResponseDefault
 import galaGuide.resources.user
 import galaGuide.resources.userId
 import galaGuide.table.StaticAsset
+import galaGuide.table.user.User
 import galaGuide.util.StaticAssetManager
 import io.ktor.http.*
 import io.ktor.http.content.*
@@ -20,7 +21,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import java.io.InputStream
 import java.util.*
 
-fun Route.routeAssetManage() = authenticate("user") {
+fun Route.routeAssetManage() {
     route("/asset") {
         val logger = KtorSimpleLogger(StaticAssetManager::class.qualifiedName!!)
 
@@ -78,36 +79,29 @@ fun Route.routeAssetManage() = authenticate("user") {
                 )
             }
 
+            fun handleUpload(uploader: User, data: PartData.FileItem) = kotlin.runCatching {
+                val fileName = data.originalFileName
+                val fileStream = data.streamProvider()
+
+                StaticAssetManager.new(fileStream, uploader, fileName)
+            }.getOrElse {
+                logger.error(it)
+                null
+            }
             post("upload") {
                 val uploader = call.user!!
-                var fileName: String? = null
-                var fileStream: InputStream? = null
+                val uploads = mutableListOf<StaticAssetResponse?>()
                 call.receiveMultipart().forEachPart {
                     when (it) {
                         is PartData.FileItem -> {
-                            fileName = it.originalFileName
-                            fileStream = it.streamProvider()
+                            uploads += handleUpload(uploader, it)?.asSerializable()
                         }
 
                         else -> {}
                     }
                     it.dispose()
                 }
-
-                if (fileStream == null) {
-                    call.respond(failRestResponseDefault(-2, "No file uploaded"))
-                    return@post
-                }
-
-                kotlin.runCatching {
-                    call.respond(
-                        StaticAssetManager.new(fileStream!!, uploader, fileName)
-                            .asRestResponse()
-                    )
-                }.onFailure {
-                    logger.error(it)
-                    call.respond(failRestResponseDefault(-3, it.message ?: "Unknown error"))
-                }
+                call.respond(uploads.asRestResponse())
             }
 
             post("{uuid}") {

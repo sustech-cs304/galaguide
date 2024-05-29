@@ -1,15 +1,17 @@
 package galaGuide.routes
 
+import com.auth0.jwt.JWT
+import com.auth0.jwt.algorithms.Algorithm
 import galaGuide.data.*
-import galaGuide.resources.userId
 import galaGuide.table.GroupMemberTable
 import galaGuide.table.GroupMessageTable
 import galaGuide.table.PrivateMessageTable
-import io.ktor.server.auth.*
+import galaGuide.table.user.User
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import io.ktor.util.logging.*
 import io.ktor.websocket.*
+import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toJavaLocalDateTime
@@ -18,6 +20,7 @@ import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.*
+import kotlin.collections.set
 
 object WebsocketManager {
     private val connected = Collections.synchronizedMap(mutableMapOf<Long, WebSocketServerSession>())
@@ -27,7 +30,7 @@ object WebsocketManager {
         try {
             connected[id] = session
 
-            val loginEvent = UserLoginEvent(id)
+            val loginEvent: WebSocketEvent = UserLoginEvent(id)
             connected.values.forEach {
                 it.sendSerialized(loginEvent)
             }
@@ -35,6 +38,8 @@ object WebsocketManager {
             while (true) {
                 val event = try {
                     session.receiveDeserialized<WebSocketEvent>()
+                } catch (e: ClosedReceiveChannelException) {
+                    break
                 } catch (e: Exception) {
                     logger.error("Error receiving event from user $id", e)
                     continue
@@ -80,13 +85,16 @@ object WebsocketManager {
                             }
                     }
 
+                    is UserLogoutEvent -> break
+
                     else -> {}
                 }
             }
         } finally {
             connected.remove(id)
+            session.close()
 
-            val logoutEvent = UserLogoutEvent(id)
+            val logoutEvent: WebSocketEvent = UserLogoutEvent(id)
             connected.values.forEach {
                 it.sendSerialized(logoutEvent)
             }
@@ -94,13 +102,32 @@ object WebsocketManager {
     }
 }
 
-fun Route.routeWebSocket() = authenticate("user") {
+fun Route.routeWebSocket() {
+    val secret = environment!!.config.property("user-jwt.secret").getString()
+    val issuer = environment!!.config.property("user-jwt.issuer").getString()
+    val audience = environment!!.config.property("user-jwt.audience").getString()
+
+    val verifier = JWT.require(Algorithm.HMAC256(secret))
+        .withAudience(audience)
+        .withIssuer(issuer)
+        .build()
+
+    val logger = KtorSimpleLogger(WebsocketManager::class.qualifiedName!!)
+
     webSocket("/ws") {
-        val userId = call.userId ?: run {
-            close(CloseReason(CloseReason.Codes.CANNOT_ACCEPT, "please login first"))
+        val token = (receiveDeserialized<WebSocketEvent>() as? AuthEvent)?.token ?: run {
+            close(CloseReason(CloseReason.Codes.CANNOT_ACCEPT, "Invalid token"))
+            return@webSocket
+        }
+        val user = kotlin.runCatching {
+            transaction {
+                User[verifier.verify(token)?.getClaim("id")?.asLong() ?: -1]
+            }
+        }.getOrElse {
+            close(CloseReason(CloseReason.Codes.CANNOT_ACCEPT, "Invalid token"))
             return@webSocket
         }
 
-        WebsocketManager.handleSession(userId, this)
+        WebsocketManager.handleSession(user.id.value, this)
     }
 }

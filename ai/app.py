@@ -24,7 +24,6 @@ try:
     if args.model.lower().startswith("gpt"):
         openai = OpenAI(config["openai"]["api_key"])
     else:
-        # Use local model downloaded from Hugging Face
         import torch
         from transformers import AutoModel, AutoTokenizer
         device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -76,7 +75,13 @@ class AIHandler(tornado.web.RequestHandler):
         
         if args.model.lower().startswith("gpt"):
             try:
-                answer = openai.complete(prompt)
+                answer = openai.chat.completions.create(
+                    model=args.model,
+                    messages=[
+                        {"role": "system", "content": prompt.split("[QUESTION]")[0]},
+                        {"role": "user", "content": prompt.split("[QUESTION]")[1]}
+                    ]
+                ).choices[0].message.content
             except Exception as e:
                 answer = str(e)
         else:

@@ -188,6 +188,24 @@ const routes = [
     component: () =>
       import(/* webpackChunkName: "userInfoRevision" */ "./components/user/UserInfoRevision.vue"),
   },
+  {
+    path: "/console",
+    name: "Console",
+    component: () =>
+      import(/* webpackChunkName: "console" */ "./components/console/AdminConsole.vue"),
+  },
+  {
+    path: "/admin/users",
+    name: "ViewAllUsers",
+    component: () =>
+      import("./components/console/ViewAllUsers.vue"),
+  },
+  {
+    path: "/admin/users/add",
+    name: "AddNewUser",
+    component: () =>
+      import("./components/console/AddNewUser.vue"),
+  }
 ];
 
 const router = createRouter({

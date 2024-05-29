@@ -2,12 +2,12 @@
 import { onMounted, ref } from 'vue';
 import ImageUploader from './ImageUploader.vue';
 import CustomAlert from "../../components/CustomAlert.vue";
-import { useRoute } from "vue-router";
+import { useRouter } from "vue-router";
 import axios from 'axios';
-const router = useRoute();
+const router = useRouter();
 
 const spaceUsed = ref(0);
-const spaceTotal = ref(1000);
+const spaceTotal = ref(10000);
 const imagesUploaded = ref(0);
 const myImgs = ref([]);
 const showAlert = ref(false);
@@ -21,21 +21,21 @@ onMounted(() => {
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     axios.get("/api/asset").then((res) => {
         console.log(res.data);
-        spaceUsed.value = res.data.data;
-    }).catch((err) => {
-        console.log(err);
-    });
-    axios.get("/api/asset").then((res) => {
-        console.log(res.data);
         myImgs.value = res.data.data;
         imagesUploaded.value = res.data.data.length;
+        spaceUsed.value = 0;
+        res.data.data.forEach((img) => {
+            spaceUsed.value += img.size;
+        });
     }).catch((err) => {
         console.log(err);
     });
 });
 
 const copyToClickBoard = (src) => {
-    navigator.clipboard.writeText(src);
+    navigator.clipboard.writeText(
+        window.location.origin + '/api/asset/' +
+        src);
     showAlert.value = true;
 }
 
@@ -59,7 +59,7 @@ const deleteImage = (uuid) => {
         <ImageUploader />
         <div id="usage-info">
             <h2>Usage</h2>
-            <p>Space Used: {{ spaceUsed / 1024 / 1024 }}MB / {{ spaceTotal }}MB</p>
+            <p>Space Used: {{ spaceUsed / 1024 }}KB / {{ spaceTotal }}KB</p>
             <p>Images Uploaded: {{ imagesUploaded }}</p>
             <h2>Uploading Guidelines</h2>
             <p>1. All uploaded images must adhere to relevant laws.</p>
@@ -69,12 +69,15 @@ const deleteImage = (uuid) => {
             <h2>My Images</h2>
             <h4>Click on images to copy to clipboard</h4>
             <div id="imgs-holder">
-                <div v-for="img in myImgs" :key="img" class="single-img" @click="copyToClickBoard(img.uuid)">
-                    <img :src="'/api/asset/' + img.uuid" alt="File" />
-                    <p>{{ img.fileName }}</p>
-                    <p>{{ img.size / 1024 / 1024 }}MB</p>
+                <div v-for="img in myImgs" :key="img" class="single-img">
+                    <img :src="'/api/asset/' + img.uuid" alt="File" @click="copyToClickBoard(img.uuid)"/>
+                    <p><strong>{{ img.fileName }}</strong></p>
+                    <p><strong>{{ img.size / 1024 }}&nbsp;</strong>KB</p>
                     <p class="delete-button" @click="deleteImage(img.uuid)">
                         Delete
+                    </p>
+                    <p class="copy-button" @click="copyToClickBoard(img.uuid)">
+                        Copy
                     </p>
                 </div>
             </div>
@@ -154,6 +157,9 @@ const deleteImage = (uuid) => {
 }
 
 .delete-button {
+    position: relative;
+    width: 80%;
+    left: 10%;
     background-color: red;
     color: white;
     text-align: center;
@@ -164,5 +170,21 @@ const deleteImage = (uuid) => {
 
 .delete-button:hover {
     background-color: rgb(224, 2, 2);
+}
+
+.copy-button {
+    position: relative;
+    width: 80%;
+    left: 10%;
+    background-color: blue;
+    color: white;
+    text-align: center;
+    border-radius: 5px;
+    cursor: pointer;
+    transition-duration: 0.4s;
+}
+
+.copy-button:hover {
+    background-color: rgb(2, 2, 224);
 }
 </style>

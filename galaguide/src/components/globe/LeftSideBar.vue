@@ -74,6 +74,16 @@ defineProps({
         <h1>Image Host</h1>
       </router-link>
     </div>
+    <div class="bar-options" style="top: 800px">
+      <router-link to="/console" v-if="role > 0"><img src="../../assets/console.png" alt="console.png"
+          style="width: 30%; height: auto" />
+        <h1>Console</h1>
+      </router-link>
+      <router-link to="/login" v-else><img src="../../assets/console.png" alt="console.png"
+          style="width: 30%; height: auto" />
+        <h1>Console</h1>
+      </router-link>
+    </div>
   </div>
 </template>
 
@@ -86,7 +96,7 @@ defineProps({
   height: 100%;
   background-color: white;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+  overflow: scroll;
 }
 
 .bar-logo {
