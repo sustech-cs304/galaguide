@@ -205,6 +205,12 @@ const routes = [
     name: "AddNewUser",
     component: () =>
       import("./components/console/AddNewUser.vue"),
+  },
+  {
+    path: "/admin/events/requests",
+    name: "ReviewEventRequests",
+    component: () =>
+      import("./components/console/ReviewEventRequests.vue"),
   }
 ];
 

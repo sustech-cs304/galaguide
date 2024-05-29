@@ -82,7 +82,7 @@ onMounted(() => {
                 <h2>Forum Management</h2>
                 <img src="../../assets/forum.png" alt="Forum" style="width: 50px; height: 50px;" />
                 <div class="link-container">
-                    <router-link class="router-link" to="/admin/forum">
+                    <router-link class="router-link" to="/forum">
                         <img src="../../assets/arrow_right.png" alt="" style="width: 15px; height: 15px;" />
                         View all posts
                     </router-link>

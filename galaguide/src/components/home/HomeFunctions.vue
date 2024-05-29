@@ -1,6 +1,8 @@
 <script setup>
 
 import { defineProps, ref } from 'vue'
+import { useRouter } from 'vue-router'
+const router = useRouter();
 
 const props = defineProps({
     role: Number
@@ -8,6 +10,7 @@ const props = defineProps({
 
 const createEvent = () => {
     console.log('Create an event');
+    router.push('/event/create');
 };
 
 const makeReservation = () => {
@@ -282,7 +285,7 @@ const popUpImgs = ref();
         <h1 style="text-align: center; margin-bottom: 20px;">Quick Functions</h1>
         <input class="search" type="text" placeholder="Search in GalaGuide..." />
         <button class="create-event" @click="createEvent">
-            <a href="/create-event" style="color: aliceblue;">Create an event</a>
+            <a href="/event/create" style="color: aliceblue;">Create an event</a>
         </button>
         <button class="make-res" @click="makeReservation">
             <a href="/make-res" style="color: aliceblue;">Make a reservation</a>
