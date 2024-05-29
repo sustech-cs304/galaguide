@@ -196,7 +196,7 @@ fun Route.routeUser() {
 
             @Serializable
             data class EmailVerifyRequest(val code: String)
-            post<EmailVerifyRequest>("POverify-email") {
+            post<EmailVerifyRequest>("/verify-email") {
                 val user = call.user!!
                 if (user.emailVerified) {
                     call.respond(failRestResponseDefault(-1, "email already verified"))
