@@ -20,7 +20,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import java.io.InputStream
 import java.util.*
 
-fun Route.routeAssetManage() = authenticate("user") {
+fun Route.routeAssetManage() {
     route("/asset") {
         val logger = KtorSimpleLogger(StaticAssetManager::class.qualifiedName!!)
 
