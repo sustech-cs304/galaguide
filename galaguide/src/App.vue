@@ -137,9 +137,43 @@ function getUserInfo() {
   }
 }
 
+function getUserEvents() {
+  console.log("document.cookie:", document.cookie);
+  const cookie = document.cookie
+    .split(";")
+    .find((cookie) => cookie.trim().startsWith("userRole="));
+  console.log("cookie:", cookie);
+  if (cookie && cookie.split("=")[1] !== "0") {
+    console.log("cookie:", cookie);
+    axios
+    .get('/api/reserve/mine', {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+    })
+    .then((response) => {
+      console.log("response:", response);
+      if (response.status === 200 && response.data.code === 0) {
+        events.value = response.data.data.map((event) => {
+          return {
+            description: event.name,
+            isComplete: false,
+            dates: { start: new Date(event.start), end: new Date(event.end) },
+            color: "red",
+          };
+        });
+      }
+    })
+    .catch((error) => {
+      console.log("error:", error);
+    });
+  }
+}
+
 onMounted(() => {
   getRoleFromCookie();
   getUserInfo();
+  getUserEvents();
 });
 
 function logout() {
