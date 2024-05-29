@@ -91,7 +91,7 @@ const deleteImage = (uuid) => {
     </div>
 </template>
 
-<style>
+<style scoped>
 #image-host {
     position: absolute;
     top: 10%;
