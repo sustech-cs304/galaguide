@@ -2,9 +2,9 @@
 import { onMounted, ref } from 'vue';
 import ImageUploader from './ImageUploader.vue';
 import CustomAlert from "../../components/CustomAlert.vue";
-import { useRoute } from "vue-router";
+import { useRouter } from "vue-router";
 import axios from 'axios';
-const router = useRoute();
+const router = useRouter();
 
 const spaceUsed = ref(0);
 const spaceTotal = ref(10000);

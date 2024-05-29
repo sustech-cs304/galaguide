@@ -1,285 +1,202 @@
 <script setup>
 /* 
- * Console component for admin users
- *
- * This component is responsible for displaying the admin console to manage the application using commandline-like interface.
+ * Home page for the admin console.
  * 
  * Main features:
  * 
- * - User management:
- *     - View all users: `user list`
- *     - View user details (including reservations, images, etc.): `user {id} {reservations|images|events|forum|chatrooms}`
- *     - Delete users: `user delete {id}`
- * 
- * - Image management:
- *     - View all images: `image list`
- *     - Delete images: `image delete {id}`
- * 
- * - Event management:
- *     - View all events: `event list`
- *     - View event details: `event {id}`
- *     - Reject/Accept pending events: `event reject|accept {id}`
- * 
- * - Forum management:
- *     - View all forum posts: `forum list`
- *     - Delete forum posts: `forum delete {id}`
- * 
- * - Chatroom management:
- *     - View all chatrooms: `chatroom list`
- *     - View chatroom details: `chatroom {id}`
- *     - Delete chatrooms: `chatroom delete {id}`
- * 
- * - Help:
- *     - Display help message: `help`
- * 
+ * - User management
+ * - Image management
+ * - Event management
+ * - Forum management
+ * - Chat room management
  * 
  */
-
-import { onMounted, ref } from 'vue';
-import axios from 'axios';
-
-const consoleInput = ref('');
-const consoleOutput = ref('');
-const pre = 'admin@console:~$';
+import { onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+const router = useRouter();
 
 onMounted(() => {
-    consoleOutput.value = 'Welcome to the admin console. Type <span style="color: yellow">help</span> to display help message.';
+    const userRole = localStorage.getItem('userRole');
+    console.log(userRole);
+    console.log(router);
+    // if (userRole < 1) router.push('/');
 });
-
-const handleConsoleInput = () => {
-    consoleOutput.value += '\n' + '<span style="color: wheat">' + pre + '&emsp;' + consoleInput.value + '</span>';
-    if (consoleInput.value === 'help') {
-        consoleOutput.value += getHelpMessage();
-    }
-    else if (consoleInput.value === 'clear') {
-        consoleOutput.value = '';
-    }
-    else if (consoleInput.value.startsWith('user')) {
-        if (consoleInput.value === 'user list') {
-            axios.get('/api/user').then((res) => {
-                if (res.data.code !== 0) {
-                    consoleOutput.value += '<br><span style="color: red">' + res.data.message + '</span>';
-                }
-                else if (res.data.data.length === 0) {
-                    consoleOutput.value += '<br>No users found.';
-                }
-                else {
-                    res.data.data.forEach((user) => {
-                        consoleOutput.value += '<br>' + user.id + ' - ' + user.email;
-                    });
-                }
-            }).catch((err) => {
-                consoleOutput.value += '<br><span style="color: red">' + err.response.data.message + '</span>';
-            });
-        }
-        else if (consoleInput.value.startsWith('user delete')) {
-            const id = consoleInput.value.split(' ')[2];
-            axios.delete(`/api/user/${id}`).then((res) => {
-                consoleOutput.value += '<br>' + JSON.stringify(res.data, null, 2);
-            }).catch((err) => {
-                consoleOutput.value += '<br><span style="color: red">' + err.response.data.message + '</span>';
-            });
-        }
-        else {
-            consoleOutput.value += '<br><span style="color: red">Invalid command. Type <span style="color: yellow">help</span> to display help message.</span>';
-        }
-    }
-    else if (consoleInput.value.startsWith('image')) {
-        if (consoleInput.value === 'image list') {
-            axios.get('/api/asset').then((res) => {
-                if (res.data.code !== 0) {
-                    consoleOutput.value += '<br><span style="color: red">' + res.data.message + '</span>';
-                }
-                else if (res.data.data.length === 0) {
-                    consoleOutput.value += '<br>No images found.';
-                }
-                else {
-                    res.data.data.forEach((img) => {
-                        consoleOutput.value += '<br>' + img.uuid + ' - ' + img.name;
-                    });
-                }
-            }).catch((err) => {
-                consoleOutput.value += '<br><span style="color: red">' + err.response.data.message + '</span>';
-            });
-        }
-        else if (consoleInput.value.startsWith('image delete')) {
-            const id = consoleInput.value.split(' ')[2];
-            axios.delete(`/api/asset/${id}`).then((res) => {
-                consoleOutput.value += '<br>' + JSON.stringify(res.data, null, 2);
-            }).catch((err) => {
-                consoleOutput.value += '<br><span style="color: red">' + err.response.data.message + '</span>';
-            });
-        }
-        else {
-            consoleOutput.value += '<br><span style="color: red">Invalid command. Type <span style="color: yellow">help</span> to display help message.</span>';
-        }
-    }
-    else if (consoleInput.value.startsWith('event')) {
-        if (consoleInput.value === 'event list') {
-            axios.get('/api/event').then((res) => {
-                if (res.data.code !== 0) {
-                    consoleOutput.value += '<br><span style="color: red">' + res.data.message + '</span>';
-                }
-                else if (res.data.data.length === 0) {
-                    consoleOutput.value += '<br>No events found.';
-                }
-                else {
-                    res.data.data.forEach((event) => {
-                        consoleOutput.value += '<br>' + event.id + ' - ' + event.name;
-                    });
-                }
-            }).catch((err) => {
-                consoleOutput.value += '<br><span style="color: red">' + err.response.data.message + '</span>';
-            });
-        }
-        else if (consoleInput.value.startsWith('event reject')) {
-            const id = consoleInput.value.split(' ')[2];
-            axios.put(`/api/event/${id}/reject`).then((res) => {
-                consoleOutput.value += '<br>' + JSON.stringify(res.data, null, 2);
-            }).catch((err) => {
-                consoleOutput.value += '<br><span style="color: red">' + err.response.data.message + '</span>';
-            });
-        }
-        else if (consoleInput.value.startsWith('event accept')) {
-            const id = consoleInput.value.split(' ')[2];
-            axios.put(`/api/event/${id}/accept`).then((res) => {
-                consoleOutput.value += '<br>' + JSON.stringify(res.data, null, 2);
-            }).catch((err) => {
-                consoleOutput.value += '<br><span style="color: red">' + err.response.data.message + '</span>';
-            });
-        }
-        else {
-            consoleOutput.value += '<br><span style="color: red">Invalid command. Type <span style="color: yellow">help</span> to display help message.</span>';
-        }
-    }
-    else {
-        consoleOutput.value += '<br><span style="color: red">Command not found.</span> Type <span style="color: yellow">help</span> to display help message.';
-    }
-    consoleInput.value = '';
-}
-
-const handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
-        handleConsoleInput();
-        // window.scrollTo(0, document.body.scrollHeight);
-        document.getElementById('console-output').scrollTop = document.getElementById('console-output').scrollHeight;
-    }
-}
-
-const getHelpMessage = () => {
-    return `
-    <p style="color: green">User management:</p>
-    <p>    - View all users: <span style="color: yellow">user list</span></p>
-    <p>    - View user details (including reservations, images, etc.): <span style="color: yellow">user {id} {reservations|images|events|forum|chatrooms}</span></p>
-    <p>    - Delete users: <span style="color: yellow">user delete {id}</span></p>
-    <p style="color: green">Image management:</p>
-    <p>    - View all images: <span style="color: yellow">image list</span></p>
-    <p>    - Delete images: <span style="color: yellow">image delete {id}</span></p>
-    <p style="color: green">Event management:</p>
-    <p>    - View all events: <span style="color: yellow">event list</span></p>
-    <p>    - View event details: <span style="color: yellow">event {id}</span></p>
-    <p>    - Reject/Accept pending events: <span style="color: yellow">event reject|accept {id}</span></p>
-    <p style="color: green">Forum management:</p>
-    <p>    - View all forum posts: <span style="color: yellow">forum list</span></p>
-    <p>    - Delete forum posts: <span style="color: yellow">forum delete {id}</span></p>
-    <p style="color: green">Chatroom management:</p>
-    <p>    - View all chatrooms: <span style="color: yellow">chatroom list</span></p>
-    <p>    - View chatroom details: <span style="color: yellow">chatroom {id}</span></p>
-    <p>    - Delete chatrooms: <span style="color: yellow">chatroom delete {id}</span></p>
-    <p style="color: green">Help:</p>
-    <p>    - Display help message: <span style="color: yellow">help</span></p>
-    `;
-}
 </script>
 
 <template>
     <div id="admin-console">
-        <div id="console">
-            <div id="console-output">
-                <p v-for="line in consoleOutput.split('\n')" :key="line" v-html="line"></p>
+        <h1>Admin Console</h1>
+        <div id="admin-console-menu">
+            <div class="admin-console-option" id="option-user-management">
+                <h2>User Management</h2>
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="50"
+                    height="50"
+                    fill="currentColor"
+                    class="bi bi-person-circle"
+                    viewBox="-2 -2 20 20"
+                >
+                    <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
+                    <path
+                    fill-rule="evenodd"
+                    d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"
+                    />
+                </svg>
+                <div class="link-container">
+                    <router-link class="router-link" to="/admin/users">
+                        <img src="../../assets/arrow_right.png" alt="" style="width: 15px; height: 15px;" />
+                        View all users
+                    </router-link>
+                    <router-link class="router-link" to="/admin/users/add">
+                        <img src="../../assets/arrow_right.png" alt="" style="width: 15px; height: 15px;" />
+                        Add a user
+                    </router-link>
+                </div>
             </div>
-            <div id="console-input">
-                <input type="text" placeholder="Enter command here" v-model="consoleInput" @keydown="handleKeyDown" />
+            <div class="admin-console-option" id="option-image-management">
+                <h2>Image Management</h2>
+                <img src="../../assets/image-host.png" alt="Image host" style="width: 50px; height: 50px;" />
+                <div class="link-container">
+                    <router-link class="router-link" to="/admin/images">
+                        <img src="../../assets/arrow_right.png" alt="" style="width: 15px; height: 15px;" />
+                        View all images
+                    </router-link>
+                </div>
+            </div>
+            <div class="admin-console-option" id="option-event-management">
+                <h2>Event Management</h2>
+                <img src="../../assets/events.png" alt="Event" style="width: 50px; height: 50px;" />
+                <div class="link-container">
+                    <router-link class="router-link" to="/admin/events">
+                        <img src="../../assets/arrow_right.png" alt="" style="width: 15px; height: 15px;" />
+                        View all events
+                    </router-link>
+                    <router-link class="router-link" to="/admin/events/requests">
+                        <img src="../../assets/arrow_right.png" alt="" style="width: 15px; height: 15px;" />
+                        View active requests
+                    </router-link>
+                </div>
+            </div>
+            <div class="admin-console-option" id="option-forum-management">
+                <h2>Forum Management</h2>
+                <img src="../../assets/forum.png" alt="Forum" style="width: 50px; height: 50px;" />
+                <div class="link-container">
+                    <router-link class="router-link" to="/admin/forum">
+                        <img src="../../assets/arrow_right.png" alt="" style="width: 15px; height: 15px;" />
+                        View all posts
+                    </router-link>
+                </div>
+            </div>
+            <div class="admin-console-option" id="option-chat-room-management">
+                <h2>Chat Room Management</h2>
+                <img src="../../assets/chat.png" alt="Chat" style="width: 50px; height: 50px;" />
+                <div class="link-container">
+                    <router-link class="router-link" to="/admin/chat">
+                        <img src="../../assets/arrow_right.png" alt="" style="width: 15px; height: 15px;" />
+                        View all rooms
+                    </router-link>
+                </div>
             </div>
         </div>
     </div>
 </template>
 
+
 <style scoped>
 #admin-console {
-    position: absolute;
-    top: 0%;
-    left: 10%;
-    width: 90%;
-    height: 100%;
-    overflow: scroll;
+    /* font-family: 'Arial', sans-serif; */
+    background-color: #f9f9f9;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 1s ease-in-out;
+    position: relative;
+    left: 5%;
 }
 
-#console {
-    position: absolute;
-    top: 10%;
-    left: 10%;
-    width: 80%;
-    height: 80%;
-    background-color: black;
-    color: white;
-    border-radius: 10px;
+h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 40px;
+    animation: slideDown 1s ease-in-out;
+}
+
+#admin-console-menu {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.admin-console-option {
+    background-color: #ffffff;
     padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation: popIn 1s ease-in-out;
+}
+
+.admin-console-option:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.admin-console-option h2 {
+    margin-top: 0;
+    color: #007BFF;
+}
+
+.link-container {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    font-family:system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
-#console-output {
-    height: 90%;
-    overflow: scroll;
-    z-index: 999;
+.router-link {
+    font-size: 120%;
+    margin: 10px 0;
+    color: #0faf77;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease, transform 0.3s ease;
 }
 
-#console-input {
-    height: 10%;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
+.router-link:hover {
+    color: #00ff6a;
+    transform: translateX(10px);
 }
 
-#console-input input {
-    width: 90%;
-    height: 100%;
-    border: none;
-    background-color: black;
-    color: white;
-    font-size: 100%;
-    padding: 0px;
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
-#console-input input:focus {
-    outline: none;
+@keyframes slideDown {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }
 
-#console-output p {
-    font-size: 100%;
-    margin: 0;
+@keyframes popIn {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
 }
-
-#console-output p:nth-child(odd) {
-    /*color: rgb(189, 194, 189);*/
-    color: white;
-}
-
-#console-output p:nth-child(even) {
-    color: white;
-}
-
-#console-output p:hover {
-    background-color: #333;
-}
-
-#console-output p:hover {
-    background-color: #333;
-}
-
-
 </style>
