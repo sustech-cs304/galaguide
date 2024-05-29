@@ -180,6 +180,12 @@ const routes = [
     component: () =>
       import(/* webpackChunkName: "userInfoRevision" */ "./components/user/UserInfoRevision.vue"),
   },
+  {
+    path: "/console",
+    name: "Console",
+    component: () =>
+      import(/* webpackChunkName: "console" */ "./components/console/AdminConsole.vue"),
+  },
 ];
 
 const router = createRouter({
