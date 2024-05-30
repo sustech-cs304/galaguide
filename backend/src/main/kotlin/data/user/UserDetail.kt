@@ -2,6 +2,7 @@ package galaGuide.data.user
 
 import galaGuide.data.asRestResponse
 import galaGuide.table.user.User
+import galaGuide.table.user.UserRole
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -14,6 +15,7 @@ data class PrivateUserDetail(
     val avatarId: String?,
     val backgroundId: String?,
     val intro: String,
+    val role: UserRole,
 )
 
 fun User.asPrivateDetail() = PrivateUserDetail(
@@ -25,6 +27,7 @@ fun User.asPrivateDetail() = PrivateUserDetail(
     avatar?.id?.value?.toString(),
     background?.id?.value?.toString(),
     intro,
+    role,
 )
 
 fun User.asPrivateResponse() = asPrivateDetail().asRestResponse()

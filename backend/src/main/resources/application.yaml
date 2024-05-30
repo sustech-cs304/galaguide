@@ -8,7 +8,9 @@ user-jwt:
   secret: 1145141919810
   issuer: localhost
   audience: localhost/user
-  realm: 'Access to user'
+  unverified-realm: 'unverified user'
+  user-realm: 'Access to user'
+  admin-realm: 'Access to admin'
 user:
   email-verify:
     host: smtp.qq.com

@@ -1,20 +1,79 @@
 package galaGuide.routes
 
+import galaGuide.data.*
+import galaGuide.resources.userId
+import galaGuide.table.*
+import io.ktor.server.application.*
 import io.ktor.server.auth.*
+import io.ktor.server.request.*
+import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.transactions.transaction
 
 fun Route.routeContact() {
-    route("/contact") {
-        routeGroup()
+    authenticate("user") {
+        route("/contact") {
+            routePrivate()
+            routeGroup()
+        }
+    }
+}
+
+private fun Route.routePrivate() {
+    route("/private") {
+        get("/{from}") {
+            val from = call.parameters["from"]?.toLongOrNull() ?: run {
+                call.respond(failRestResponseDefault(-1, "Invalid from user id"))
+                return@get
+            }
+            val to = call.userId!!
+            val option = call.receive<PagingOption>()
+
+            val messages = transaction {
+                PrivateMessage.find {
+                    (PrivateMessageTable.from eq from) and
+                            (PrivateMessageTable.to eq to)
+                }.page(option) {
+                    it.asDetail()
+                }
+            }
+
+            call.respond(messages.asRestResponse())
+        }
     }
 }
 
 private fun Route.routeGroup() {
     route("/group") {
-        authenticate("user") {
-            post("/create") {
-
+        get("/{group}") {
+            val group = call.parameters["group"]?.toLongOrNull() ?: run {
+                call.respond(failRestResponseDefault(-1, "Invalid group id"))
+                return@get
             }
+
+            val option = call.receive<PagingOption>()
+
+            transaction {
+                GroupMemberTable.select {
+                    (GroupMemberTable.group eq group) and
+                            (GroupMemberTable.user eq call.userId!!)
+                }.firstOrNull()
+            } ?: run {
+                call.respond(failRestResponseDefault(-2, "You are not a member of this group"))
+                return@get
+            }
+
+            val messages = transaction {
+                GroupMessage.find {
+                    GroupMessageTable.group eq group
+                }.page(option) {
+                    it.asDetail()
+                }
+            }
+
+            call.respond(messages.asRestResponse())
         }
     }
 }

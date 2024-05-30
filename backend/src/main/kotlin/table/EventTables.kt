@@ -17,6 +17,7 @@ object EventTable : LongIdTable() {
     val description = text("description").nullable()
     val cost = long("cost").default(0)
     val category = varchar("category", 32).default("other")
+    val reviewed = bool("reviewed").default(false)
 
     init {
         createThis()
@@ -32,6 +33,7 @@ class Event(id: EntityID<Long>) : LongEntity(id) {
     var description by EventTable.description
     var cost by EventTable.cost
     var category by EventTable.category
+    var reviewed by EventTable.reviewed
 
     val assets by StaticAsset via EventAssetTable
     val periods by EventPeriod referrersOn EventPeriodTable.event

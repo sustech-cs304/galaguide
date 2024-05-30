@@ -1,15 +1,9 @@
 package galaGuide.routes
 
-import galaGuide.data.EventDetail
-import galaGuide.data.asRestResponse
-import galaGuide.data.emptyRestResponse
-import galaGuide.data.failRestResponseDefault
+import galaGuide.data.*
 import galaGuide.resources.user
 import galaGuide.resources.userId
-import galaGuide.table.Event
-import galaGuide.table.EventAssetTable
-import galaGuide.table.EventPeriod
-import galaGuide.table.StaticAsset
+import galaGuide.table.*
 import galaGuide.table.user.UserFavoriteEventTable
 import galaGuide.table.user.UserHistoryEventTable
 import galaGuide.util.GroupManager
@@ -31,8 +25,8 @@ fun Route.routeEvent() {
     route("/event") {
         get {
             call.respond(transaction {
-                Event.all().map { it.asRestResponse() }
-            })
+                Event.all().map { it.asDetail() }
+            }.asRestResponse())
         }
 
         route("/{id}") {
@@ -59,6 +53,27 @@ fun Route.routeEvent() {
                 call.respond(event)
             }
 
+            authenticate("admin") {
+                post("review") {
+                    val id = call.parameters["id"]?.toLongOrNull() ?: run {
+                        call.respond(failRestResponseDefault(-1, "Invalid ID"))
+                        return@post
+                    }
+
+                    val event = transaction {
+                        Event.findById(id)
+                    } ?: run {
+                        call.respond(failRestResponseDefault(-2, "Event not found"))
+                        return@post
+                    }
+
+                    transaction {
+                        event.reviewed = true
+                    }
+                    call.respond(emptyRestResponse("Event reviewed"))
+                }
+            }
+
             authenticate("user") {
                 post("/favorite") {
                     val userId = call.userId!!
@@ -81,6 +96,14 @@ fun Route.routeEvent() {
 
                     call.respond(emptyRestResponse("Favorite toggled"))
                 }
+            }
+        }
+
+        authenticate("admin") {
+            get("/unreviewed") {
+                call.respond(transaction {
+                    Event.find { EventTable.reviewed eq false }.map { it.asDetail() }
+                }.asRestResponse())
             }
         }
 

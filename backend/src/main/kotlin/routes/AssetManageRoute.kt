@@ -1,5 +1,6 @@
 package galaGuide.routes
 
+import galaGuide.data.PagingOption
 import galaGuide.data.asRestResponse
 import galaGuide.data.emptyRestResponse
 import galaGuide.data.failRestResponseDefault
@@ -28,12 +29,14 @@ fun Route.routeAssetManage() {
         @Serializable
         data class StaticAssetResponse(
             val uuid: String,
+            val uploaderId: Long,
             val fileName: String,
             val size: Long,
         )
 
         fun StaticAsset.asSerializable() = StaticAssetResponse(
             id.value.toString(),
+            uploader.id.value,
             fileName,
             StaticAssetManager.get(id.value)?.length() ?: 0
         )
@@ -65,6 +68,14 @@ fun Route.routeAssetManage() {
                 call.respondFile(file)
             }.getOrElse {
                 call.respond(failRestResponseDefault(-3, it.message ?: "Unknown error"))
+            }
+        }
+
+        authenticate("admin") {
+            get("/all") {
+                val option = call.receive<PagingOption>()
+                val result = StaticAssetManager.query(option) { it.asSerializable() }
+                call.respond(result.asRestResponse())
             }
         }
 

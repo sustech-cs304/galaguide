@@ -1,5 +1,7 @@
 package galaGuide.util
 
+import galaGuide.data.PagingOption
+import galaGuide.data.page
 import galaGuide.table.StaticAsset
 import galaGuide.table.StaticAssetTable.uploader
 import galaGuide.table.user.User
@@ -77,6 +79,14 @@ object StaticAssetManager {
 
     fun query(uuid: UUID) = transaction {
         StaticAsset.findById(uuid)
+    }
+
+    fun query(pagingOption: PagingOption) = transaction {
+        StaticAsset.page(pagingOption)
+    }
+
+    fun <R> query(pagingOption: PagingOption, transform: (StaticAsset) -> R) = transaction {
+        StaticAsset.page(pagingOption, transform)
     }
 
     fun queryAll(uploader: User) = uploader.uploadedAssets

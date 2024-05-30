@@ -2,28 +2,28 @@ package galaGuide.resources
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
-import galaGuide.data.asDetail
-import galaGuide.data.asRestResponse
-import galaGuide.data.emptyRestResponse
-import galaGuide.data.failRestResponseDefault
+import galaGuide.data.*
+import galaGuide.data.user.asPrivateDetail
 import galaGuide.data.user.asPrivateResponse
 import galaGuide.data.user.asPublicResponse
 import galaGuide.table.staticAsset
 import galaGuide.table.user.User
+import galaGuide.table.user.UserRole
 import galaGuide.table.user.UserTable
+import galaGuide.util.SMTP
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
+import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.util.logging.*
+import io.ktor.util.pipeline.*
 import kotlinx.datetime.Clock
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.or
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.simplejavamail.email.EmailBuilder
-import org.simplejavamail.mailer.MailerBuilder
 import java.time.Instant
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
@@ -51,7 +51,7 @@ fun Route.routeUser() {
         data class LoginData(
             val token: String,
             val userName: String,
-            val userRole: Int = 1,
+            val userRole: UserRole,
         )
 
         @Serializable
@@ -86,6 +86,7 @@ fun Route.routeUser() {
                 LoginData(
                     generateToken(user.id.value),
                     user.name,
+                    user.role,
                 ).asRestResponse()
             )
         }
@@ -111,44 +112,25 @@ fun Route.routeUser() {
                 LoginData(
                     generateToken(user.id.value),
                     user.name,
+                    user.role,
                 ).asRestResponse()
             )
         }
 
-        authenticate("user") {
+        authenticate("admin") {
+            get("/all") {
+                val option = call.receive<PagingOption>()
+                val result = User.page(option) { it.asPrivateDetail() }
+                call.respond(result.asRestResponse())
+            }
+        }
+
+        authenticate("unverified") {
             val requestInterval = environment?.config?.property("user.email-verify.request-interval")?.getString()
                 ?.toLongOrNull()?.seconds ?: 1.minutes
             val codeExpireTime =
                 environment?.config?.property("user.email-verify.expire-time")?.getString()?.toLongOrNull()?.seconds
                     ?: 1.hours
-            val smtpServerHost = environment?.config?.property("user.email-verify.host")?.getString()
-                ?: throw IllegalArgumentException("user.email-verify.host not found")
-            val smtpServerPort = environment?.config?.property("user.email-verify.port")?.getString()?.toIntOrNull()
-            val smtpServerUsername = environment?.config?.property("user.email-verify.username")?.getString()
-            val smtpServerPassword = environment?.config?.property("user.email-verify.password")?.getString()
-            val sender = environment?.config?.property("user.email-verify.sender")?.getString()
-                ?: "None"
-            val senderEmail = environment?.config?.property("user.email-verify.sender-email")?.getString()
-                ?: throw IllegalArgumentException("user.email-verify.sender-email not found")
-            val title = environment?.config?.property("user.email-verify.title")?.getString()
-                ?: "Galaguide Email Verification"
-            val template = environment?.config?.property("user.email-verify.template")?.getString()
-                ?: "Welcome to Galaguide! Your email verification code is: %s"
-
-            val smtpServer by lazy {
-                MailerBuilder.withSMTPServerHost(smtpServerHost).run {
-                    smtpServerPort?.let {
-                        withSMTPServerPort(it)
-                    }
-                    smtpServerUsername?.let {
-                        withSMTPServerUsername(it)
-                    }
-                    smtpServerPassword?.let {
-                        withSMTPServerPassword(it)
-                    }
-                    buildMailer()
-                }
-            }
 
             data class EmailVerifyInfo(
                 val code: String,
@@ -157,14 +139,10 @@ fun Route.routeUser() {
             )
 
             val emailVerifyMap = mutableMapOf<Long, EmailVerifyInfo>()
-            val emailLogger = KtorSimpleLogger(smtpServer::class.qualifiedName!!)
+            val emailLogger = SMTP.logger
 
             post("/request-email") {
                 val user = call.user!!
-                if (user.emailVerified) {
-                    call.respond(failRestResponseDefault(-1, "email already verified"))
-                    return@post
-                }
 
                 if ((emailVerifyMap[call.userId]?.nextRequestTime
                         ?: kotlinx.datetime.Instant.DISTANT_PAST) > Clock.System.now()
@@ -177,14 +155,7 @@ fun Route.routeUser() {
                     (0..9).random().toString()
                 }
                 kotlin.runCatching {
-                    val email = EmailBuilder.startingBlank()
-                        .from(sender, senderEmail)
-                        .to(user.name, user.email)
-                        .withSubject(title)
-                        .withPlainText(template.format(code))
-                        .buildEmail()
-
-                    smtpServer.sendMail(email)
+                    SMTP.sendEmailVerification(user.email, user.name, code)
                 }.onFailure {
                     emailLogger.error(it)
                     call.respond(failRestResponseDefault(-3, "send email failed"))
@@ -198,10 +169,6 @@ fun Route.routeUser() {
             data class EmailVerifyRequest(val code: String)
             post<EmailVerifyRequest>("/verify-email") {
                 val user = call.user!!
-                if (user.emailVerified) {
-                    call.respond(failRestResponseDefault(-1, "email already verified"))
-                    return@post
-                }
 
                 val info = emailVerifyMap[call.userId] ?: run {
                     call.respond(failRestResponseDefault(-2, "incorrect code"))
@@ -219,7 +186,9 @@ fun Route.routeUser() {
                 emailVerifyMap.remove(call.userId)
                 call.respond(emptyRestResponse("email verified"))
             }
+        }
 
+        authenticate("user") {
             get {
                 newSuspendedTransaction {
                     call.respond(call.user!!.asPrivateResponse())
@@ -233,47 +202,63 @@ fun Route.routeUser() {
                 val avatarId: String? = null,
                 val backgroundId: String? = null,
                 val intro: String? = null,
+                val role: UserRole? = null,
             )
-            post<UserModifyRequest>("edit") {
+
+            suspend fun PipelineContext<*, ApplicationCall>.editUserInfo(userId: Long, option: UserModifyRequest) {
                 newSuspendedTransaction {
-                    it.name?.let {
+                    option.name?.let {
                         if (!User.checkNameAvailable(it)) {
                             call.respond(failRestResponseDefault(-1, "name already exists"))
                             return@newSuspendedTransaction
                         }
                     }
 
-                    it.email?.let {
+                    option.email?.let {
                         if (!User.checkEmailAvailable(it)) {
                             call.respond(failRestResponseDefault(-2, "invalid email"))
                             return@newSuspendedTransaction
                         }
                     }
 
-                    val avatar = it.avatarId?.let {
+                    val avatar = option.avatarId?.let {
                         it.staticAsset ?: run {
                             call.respond(failRestResponseDefault(-3, "avatar not found"))
                             return@newSuspendedTransaction
                         }
                     }
 
-                    val background = it.backgroundId?.let {
+                    val background = option.backgroundId?.let {
                         it.staticAsset ?: run {
                             call.respond(failRestResponseDefault(-4, "background not found"))
                             return@newSuspendedTransaction
                         }
                     }
 
-                    val user = call.user!!
-                    it.name?.let { user.name = it }
-                    it.email?.let {
+                    if (option.role != null && call.user!!.role != UserRole.ADMIN) {
+                        call.respond(failRestResponseDefault(-5, "permission denied"))
+                        return@newSuspendedTransaction
+                    }
+
+                    val user = User.findById(userId) ?: run {
+                        call.respond(failRestResponseDefault(-6, "user not found"))
+                        return@newSuspendedTransaction
+                    }
+
+                    option.name?.let { user.name = it }
+                    option.email?.let {
                         user.email = it
                         user.emailVerified = false
                     }
                     avatar?.let { user.avatar = it }
                     background?.let { user.background = it }
-                    it.intro?.let { user.intro = it }
+                    option.intro?.let { user.intro = it }
+                    option.role?.let { user.role = it }
                 }
+            }
+
+            post<UserModifyRequest>("edit") {
+                editUserInfo(call.userId!!, it)
             }
 
             @Serializable
@@ -294,16 +279,29 @@ fun Route.routeUser() {
                 call.respond(emptyRestResponse("password changed"))
             }
 
-            get("/{uid}") {
-                newSuspendedTransaction {
-                    val user = call.parameters["uid"]?.toLongOrNull()?.let {
-                        User.findById(it)
-                    } ?: run {
-                        call.respond(failRestResponseDefault(-1, "user not found"))
-                        return@newSuspendedTransaction
-                    }
+            route("/{uid}") {
+                get {
+                    newSuspendedTransaction {
+                        val user = call.parameters["uid"]?.toLongOrNull()?.let {
+                            User.findById(it)
+                        } ?: run {
+                            call.respond(failRestResponseDefault(-1, "user not found"))
+                            return@newSuspendedTransaction
+                        }
 
-                    call.respond(user.asPublicResponse())
+                        call.respond(user.asPublicResponse())
+                    }
+                }
+
+                authenticate("admin") {
+                    post<UserModifyRequest>("/edit") {
+                        val id = call.parameters["uid"]?.toLongOrNull() ?: run {
+                            call.respond(failRestResponseDefault(-1, "user not found"))
+                            return@post
+                        }
+
+                        editUserInfo(id, it)
+                    }
                 }
             }
 
