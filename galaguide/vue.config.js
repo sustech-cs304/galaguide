@@ -24,6 +24,27 @@ module.exports = defineConfig({
     electronBuilder: {
       chainWebpackMainProcess: (config) => {
         config.output.filename('background.js');
+      },
+      builderOptions: {
+        appId: 'com.galaguide.app',
+        productName: 'GalaGuide',
+        win: {
+          icon: 'public/icon.ico'
+        },
+        linux: {
+          icon: 'public/icon.ico'
+        },
+        files: [
+          'dist/**/*'
+        ],
+        extraResources: [
+          {
+            from: 'public',
+            to: '.',
+            filter: ['**/*']
+          }
+        ],
+        asar: false
       }
     }
   }
