@@ -87,8 +87,9 @@ import EventRecommend from "./EventRecommend.vue";
         </RouterLink>
       </div>
       <div class="recommend-column">
+        <h2>Recommend-column</h2>
         <EventRecommend></EventRecommend>
-        <h2>This is recommend-column</h2>
+        
       </div>
       
     </div>
@@ -135,6 +136,8 @@ import EventRecommend from "./EventRecommend.vue";
   padding: 10px;
   box-sizing: border-box;
   animation: slideDown 1s ease-in-out;
+  border: #f2f2f2;
+  border-radius: 16px;
 }
 
 .top-by-sections {
@@ -173,6 +176,8 @@ import EventRecommend from "./EventRecommend.vue";
   padding: 20px;
   box-sizing: border-box;
   animation: fadeIn 1s ease-in-out;
+  border: #f2f2f2;
+  border-radius: 16px;
 }
 /* Add these styles */
 .create-event {

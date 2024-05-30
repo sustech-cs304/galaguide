@@ -9,8 +9,8 @@
 							<img class="logo-icon" src="@/assets/logo.png" alt="Gala Logo" />
 						</div>
 						<div class="search-bar">
-							<input class="input-field" placeholder="Search for any Gala you like" type="text" />
-							<button class="search-button">Search</button>
+							<input class="input-field" v-model="searchQuery" placeholder="Search for any Gala you like" type="text" />
+							<button class="search-button" @click="searchGala">Search</button>
 						</div>
 					</div>
 
@@ -65,9 +65,9 @@
 									min
 									price.</span>
 								<br>
-								<span v-if="(start_date > end_date) && showFilters" class="error">"The end date must be later than the
+								<span v-if="(start_date > end_date) && showFilters" class="error">The end date must be later than the
 									start
-									date."</span>
+									date.</span>
 							</div>
 						</div>
 					</div>
@@ -80,6 +80,7 @@
 
 
 <script lang="js" setup>
+import router from "@/router";
 import { ref, } from "vue";
 const category = ref("")
 //initialize start date and end date with the current date
@@ -88,7 +89,7 @@ const end_date = ref(new Date().toISOString().substr(0, 10))
 const event_status = ref("")
 const min_price = ref(0)
 const max_price = ref(0)
-
+const searchQuery = ref("")
 
 const category_options = [
 	{
@@ -125,6 +126,25 @@ const showFilters = ref(false);
 
 const toggleFilters = () => {
 	showFilters.value = !showFilters.value;
+};
+
+// Search for Gala
+const searchGala = () => {
+	// the user will be pushed to search result page with the search query
+	// the search query will be the values of the filters
+	router.push({
+		name: "SearchResult",
+		query: {
+			queries: searchQuery.value,
+			category: category.value,
+			start_date: start_date.value,
+			end_date: end_date.value,
+			event_status: event_status.value,
+			min_price: min_price.value,
+			max_price: max_price.value,
+		},
+	});
+	
 };
 
 </script>

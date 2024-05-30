@@ -27,7 +27,7 @@ import { onMounted, ref } from 'vue';
 const rankEvents = ref([]);
 
 const newEvents = ref([]);
-
+const activeTab = ref('rank');
 onMounted(() => {
   // Fetch ranked events
   fetch('/api/events/top-rated')
@@ -55,6 +55,8 @@ onMounted(() => {
 <style scoped>
 .recommend-column {
   width: 100%;
+  display: flex;
+  background-color: rgb(186, 194, 201);
 }
 
 .tabs {
@@ -66,7 +68,7 @@ onMounted(() => {
   font-size: large;
   padding: 10px;
   border: none;
-  background-color: #ddd;
+  background-color: #aaa4a4;
   margin-right: 0px;
   cursor: pointer;
 }

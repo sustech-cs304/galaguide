@@ -38,7 +38,7 @@
         </div>
         <div class="form-group">
           <label for="event-poster">Event Poster</label>
-          <div style="border: 2px; border-radius: 16px; border-color: black;">
+          <div class="uploaderHolder">
             <ImageUploader />
           </div>
           
@@ -111,6 +111,8 @@ select {
 .form-group {
   display: flex;
   flex-direction: column;
+  align-self:center;
+  width: 80%;
 }
 
 .form-group-horizontal {
@@ -157,5 +159,17 @@ button {
 
 button:hover {
   background-color: #a5adba;
+}
+
+.uploaderHolder {
+  display: flex;
+  align-self: center;
+  justify-content: center;
+  align-items: center;
+  width: 50%;
+  height: auto;
+  border: 1px dashed #353232;
+  border-radius: 10px;
+  cursor: pointer;
 }
 </style>
