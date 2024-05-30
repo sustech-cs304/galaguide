@@ -145,7 +145,7 @@ const toggleFilters = () => {
 	height: 90%;
 	align-items: center;
 	margin: auto;
-
+	animation: fadeIn 1s ease-in-out;
 }
 
 .main-content {
@@ -184,7 +184,7 @@ const toggleFilters = () => {
 	align-items: center;
 	align-self: center;
 	width: 80%;
-
+	animation: popIn 1s ease-in-out;
 }
 
 .input-field {
@@ -235,6 +235,13 @@ const toggleFilters = () => {
 	border-radius: 5px;
 	height: 200%;
 	border-color: #f0f0f0;
+	animation: slideDown 1s ease-in-out;
+	transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.filterBoxButton:hover {
+	transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .filters {
@@ -253,6 +260,7 @@ const toggleFilters = () => {
 	border-radius: 15px;
 	display: inline-block;
 	vertical-align: middle;
+	animation: popIn 1s ease-in-out;
 }
 
 .label {
@@ -265,5 +273,36 @@ const toggleFilters = () => {
 	/* Size of the chevron icon */
 	float: right;
 	align-self: center;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes popIn {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
 }
 </style>

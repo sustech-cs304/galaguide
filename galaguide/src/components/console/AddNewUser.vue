@@ -20,28 +20,8 @@
                 <label for="role">Role</label>
                 <select v-model="role" id="role" class="input-field">
                     <option value="admin">Admin</option>
-                    <option value="editor">Editor</option>
-                    <option value="viewer">Viewer</option>
+                    <option value="viewer">User</option>
                 </select>
-            </div>
-            <div class="form-group">
-                <label for="status">Status</label>
-                <select v-model="status" id="status" class="input-field">
-                    <option value="active">Active</option>
-                    <option value="inactive">Inactive</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="dob">Date of Birth</label>
-                <input v-model="dob" type="date" id="dob" class="input-field">
-            </div>
-            <div class="form-group">
-                <label for="phone">Phone Number</label>
-                <input v-model="phone" type="tel" id="phone" placeholder="Enter phone number" class="input-field">
-            </div>
-            <div class="form-group">
-                <label for="address">Address</label>
-                <input v-model="address" type="text" id="address" placeholder="Enter address" class="input-field">
             </div>
             <button type="submit" class="submit-button">Create User</button>
         </form>
@@ -50,41 +30,40 @@
 
 <script setup>
 import { ref } from 'vue';
+import axios from 'axios';
 
 const name = ref('');
 const email = ref('');
 const password = ref('');
 const role = ref('viewer');
-const status = ref('active');
-const dob = ref('');
-const phone = ref('');
-const address = ref('');
 
 const submitForm = () => {
     const newUser = {
         name: name.value,
         email: email.value,
         password: password.value,
-        role: role.value,
-        status: status.value,
-        dob: dob.value,
-        phone: phone.value,
-        address: address.value,
+        userRole: role.value === 'viewer' ? 1 : 2
     };
 
-    alert(`User Created: ${JSON.stringify(newUser)}`);
-
-    // Here you would typically send the newUser object to your backend server.
-
-    // Clear the form after submission
+    axios.post('/api/user/register', {
+        headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+        },
+        name: newUser.name,
+        email: newUser.email,
+        password: newUser.password,
+        userRole: newUser.userRole
+    }).then((response) => {
+      console.log(response.data);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+    
     name.value = '';
     email.value = '';
     password.value = '';
     role.value = 'viewer';
-    status.value = 'active';
-    dob.value = '';
-    phone.value = '';
-    address.value = '';
 };
 </script>
 

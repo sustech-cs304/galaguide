@@ -103,6 +103,7 @@ import EventRecommend from "./EventRecommend.vue";
   flex-direction: row;
   max-width: 100%;
   margin: auto;
+  animation: fadeIn 1s ease-in-out;
 }
 
 .sidebar {
@@ -120,6 +121,7 @@ import EventRecommend from "./EventRecommend.vue";
   flex: 4;
   padding: 20px;
   box-sizing: border-box;
+  animation: popIn 1s ease-in-out;
 }
 
 .aid-functions {
@@ -132,6 +134,7 @@ import EventRecommend from "./EventRecommend.vue";
   margin-bottom: 20px;
   padding: 10px;
   box-sizing: border-box;
+  animation: slideDown 1s ease-in-out;
 }
 
 .top-by-sections {
@@ -160,6 +163,7 @@ import EventRecommend from "./EventRecommend.vue";
   background: transparent;
   /* Example color */
   box-sizing: border-box;
+  animation: slideDown 1s ease-in-out;
 }
 
 .recommend-column {
@@ -168,12 +172,14 @@ import EventRecommend from "./EventRecommend.vue";
   /* Example color */
   padding: 20px;
   box-sizing: border-box;
+  animation: fadeIn 1s ease-in-out;
 }
 /* Add these styles */
 .create-event {
   display: flex;
   justify-content: center;
   margin-bottom: 20px;
+  animation: fadeIn 1s ease-in-out;
 }
 
 .create-event-button {
@@ -192,5 +198,36 @@ import EventRecommend from "./EventRecommend.vue";
 
 .create-event-button:hover {
   background-color: #a5adba;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes popIn {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
 }
 </style>
