@@ -120,7 +120,9 @@ fun Route.routeUser() {
         authenticate("admin") {
             get("/all") {
                 val option = call.request.queryParameters.receivePagingOption()
-                val result = User.page(option) { it.asPrivateDetail() }
+                val result = transaction {
+                    User.page(option) { it.asPrivateDetail() }
+                }
                 call.respond(result.asRestResponse())
             }
         }
