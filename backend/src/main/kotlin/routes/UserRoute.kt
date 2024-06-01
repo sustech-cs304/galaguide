@@ -9,6 +9,7 @@ import galaGuide.data.user.asPublicResponse
 import galaGuide.table.staticAsset
 import galaGuide.table.user.User
 import galaGuide.table.user.UserRole
+import galaGuide.table.user.UserSignIn
 import galaGuide.table.user.UserTable
 import galaGuide.util.SMTP
 import io.ktor.server.application.*
@@ -192,6 +193,13 @@ fun Route.routeUser() {
             get {
                 newSuspendedTransaction {
                     call.respond(call.user!!.asPrivateResponse())
+                }
+            }
+
+            post("sign-in") {
+                newSuspendedTransaction {
+                    val signIn = UserSignIn[call.userId!!]
+                    call.respond(signIn.signIn().asRestResponse())
                 }
             }
 

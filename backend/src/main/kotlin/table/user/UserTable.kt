@@ -43,7 +43,7 @@ object UserTable : LongIdTable() {
     val name = varchar("name", 32)
     val password = varchar("password", 128)
     val email = varchar("email", 128)
-    val guiro = long("guiro").default(0)
+    val guiro = long("guiro").default(500)
     val emailVerified = bool("emailVerified").default(false)
     val avatar = reference("avatar", StaticAssetTable).nullable()
     val background = reference("background", StaticAssetTable).nullable()
