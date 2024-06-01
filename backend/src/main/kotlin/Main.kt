@@ -20,6 +20,7 @@ import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.resources.*
 import io.ktor.server.response.*
 import io.ktor.server.websocket.*
+import io.ktor.util.logging.*
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -51,7 +52,9 @@ fun Application.init() {
     install(AutoHeadResponse)
 
     install(StatusPages) {
+        val logger = KtorSimpleLogger(Application::class.qualifiedName!!)
         exception<Exception> { call, e ->
+            logger.error(e)
             call.respond(failRestResponseDefault(-500, e.localizedMessage ?: "Internal Server Error"))
         }
     }

@@ -73,6 +73,10 @@ fun Route.getSimilarDiscuss() {
 
 fun Route.uploadDiscussReply() {
     post<ForumRoute.Reply.Object>("/{discussId}/upload-reply") {
+        if(it.equals(null)) {
+            call.respond(failRestResponseDefault(-1, "Missing request body"))
+            return@post
+        }
         val discussId = call.parameters["discussId"]?.toLong()
         if (discussId == null) {
             call.respond(failRestResponseDefault(-1, "Missing argument: DiscussId"))

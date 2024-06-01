@@ -1,6 +1,2 @@
-[proxy]
-http = "http://127.0.0.1:10808"
-https = "http://127.0.0.1:10808"
-
 [openai]
-api_key = "API_KEY"
+api_key = "AK-7d7861c3-0c71-42c7-a42d-e876dfcc2567"
