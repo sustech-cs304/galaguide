@@ -5,6 +5,7 @@ import galaGuide.table.StaticAsset
 import galaGuide.table.StaticAssetTable
 import galaGuide.util.createThis
 import io.ktor.server.auth.*
+import io.ktor.util.logging.*
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.descriptors.PrimitiveKind
@@ -16,6 +17,9 @@ import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.LongIdTable
 import java.security.MessageDigest
+import java.util.*
+
+private val logger = KtorSimpleLogger(UserTable::class.qualifiedName!!)
 
 @Serializable(UserRole.Serializer::class)
 enum class UserRole(val id: Int) {
@@ -56,7 +60,9 @@ object UserTable : LongIdTable() {
     ).default(UserRole.USER)
 
     init {
-        createThis()
+        createThis {
+            User.tryInitRoot()
+        }
     }
 }
 
@@ -69,6 +75,28 @@ class User(id: EntityID<Long>) : Principal, LongEntity(id) {
         fun checkEmailAvailable(email: String) = email.length <= 128 && email.matches(emailRegex)
 
         fun checkPasswordAvailable(password: String) = password.length in 6..128
+
+        fun tryInitRoot() {
+            if (User.find { UserTable.role eq UserRole.ADMIN }.any()) {
+                return
+            }
+
+            logger.info("Detected no admin user, will create a new admin user.")
+            val rootName = "root-${UUID.randomUUID()}"
+            val password = UUID.randomUUID().toString().replace("-", "")
+            val email = "$rootName@galaguide.com"
+
+            new {
+                name = rootName
+                changePassword(password)
+                this.email = email
+                role = UserRole.ADMIN
+            }
+
+            logger.info("Name: $rootName")
+            logger.info("Password: $password")
+            logger.info("Email: $email")
+        }
     }
 
     var name by UserTable.name
