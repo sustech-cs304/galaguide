@@ -1,9 +1,23 @@
 package galaGuide.data
 
+import galaGuide.table.Group
 import galaGuide.table.GroupMessage
 import galaGuide.table.PrivateMessage
 import kotlinx.serialization.Serializable
 import java.time.ZoneOffset
+
+@Serializable
+data class GroupDetail(
+    val id: Long,
+    val name: String,
+)
+
+fun Group.asDetail() = GroupDetail(
+    id.value,
+    name,
+)
+
+fun Group.asRestResponse() = asDetail().asRestResponse()
 
 private val zone = ZoneOffset.of("+8")
 

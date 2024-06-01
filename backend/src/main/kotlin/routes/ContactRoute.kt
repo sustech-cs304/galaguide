@@ -23,57 +23,85 @@ fun Route.routeContact() {
 
 private fun Route.routePrivate() {
     route("/private") {
-        get("/{from}") {
-            val from = call.parameters["from"]?.toLongOrNull() ?: run {
-                call.respond(failRestResponseDefault(-1, "Invalid from user id"))
-                return@get
-            }
-            val to = call.userId!!
-            val option = call.receive<PagingOption>()
-
-            val messages = transaction {
-                PrivateMessage.find {
-                    (PrivateMessageTable.from eq from) and
-                            (PrivateMessageTable.to eq to)
-                }.page(option) {
-                    it.asDetail()
+        route("/{from}") {
+            get("/msg") {
+                val from = call.parameters["from"]?.toLongOrNull() ?: run {
+                    call.respond(failRestResponseDefault(-1, "Invalid from user id"))
+                    return@get
                 }
-            }
+                val to = call.userId!!
+                val option = call.receive<PagingOption>()
 
-            call.respond(messages.asRestResponse())
+                val messages = transaction {
+                    PrivateMessage.find {
+                        (PrivateMessageTable.from eq from) and
+                                (PrivateMessageTable.to eq to)
+                    }.page(option) {
+                        it.asDetail()
+                    }
+                }
+
+                call.respond(messages.asRestResponse())
+            }
         }
     }
 }
 
 private fun Route.routeGroup() {
     route("/group") {
-        get("/{group}") {
-            val group = call.parameters["group"]?.toLongOrNull() ?: run {
-                call.respond(failRestResponseDefault(-1, "Invalid group id"))
-                return@get
+        get {
+            val groups = transaction {
+                GroupMember.find { GroupMemberTable.user eq call.userId!! }
+                    .map { it.group.asDetail() }
             }
+            call.respond(groups.asRestResponse())
+        }
 
-            val option = call.receive<PagingOption>()
-
-            transaction {
-                GroupMemberTable.select {
-                    (GroupMemberTable.group eq group) and
-                            (GroupMemberTable.user eq call.userId!!)
-                }.firstOrNull()
-            } ?: run {
-                call.respond(failRestResponseDefault(-2, "You are not a member of this group"))
-                return@get
-            }
-
-            val messages = transaction {
-                GroupMessage.find {
-                    GroupMessageTable.group eq group
-                }.page(option) {
-                    it.asDetail()
+        route("/{group}") {
+            get {
+                val groupId = call.parameters["group"]?.toLongOrNull() ?: run {
+                    call.respond(failRestResponseDefault(-1, "Invalid group id"))
+                    return@get
                 }
+
+                val group = transaction {
+                    Group.findById(groupId)
+                } ?: run {
+                    call.respond(failRestResponseDefault(-2, "Group not found"))
+                    return@get
+                }
+
+                call.respond(group.asRestResponse())
             }
 
-            call.respond(messages.asRestResponse())
+            get("/msg") {
+                val group = call.parameters["group"]?.toLongOrNull() ?: run {
+                    call.respond(failRestResponseDefault(-1, "Invalid group id"))
+                    return@get
+                }
+
+                val option = call.receive<PagingOption>()
+
+                transaction {
+                    GroupMemberTable.select {
+                        (GroupMemberTable.group eq group) and
+                                (GroupMemberTable.user eq call.userId!!)
+                    }.firstOrNull()
+                } ?: run {
+                    call.respond(failRestResponseDefault(-2, "You are not a member of this group"))
+                    return@get
+                }
+
+                val messages = transaction {
+                    GroupMessage.find {
+                        GroupMessageTable.group eq group
+                    }.page(option) {
+                        it.asDetail()
+                    }
+                }
+
+                call.respond(messages.asRestResponse())
+            }
         }
     }
 }
