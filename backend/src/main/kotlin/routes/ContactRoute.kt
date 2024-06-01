@@ -5,10 +5,10 @@ import galaGuide.resources.userId
 import galaGuide.table.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
-import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.or
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 
@@ -23,6 +23,22 @@ fun Route.routeContact() {
 
 private fun Route.routePrivate() {
     route("/private") {
+        get {
+            val users = transaction {
+                with(PrivateMessageTable) {
+                    select {
+                        (from eq call.userId) or (to eq call.userId)
+                    }.flatMap {
+                        listOf(it[from], it[to])
+                    }.map {
+                        it.value
+                    }
+                }
+            }
+
+            call.respond(users.asRestResponse())
+        }
+
         route("/{from}") {
             get("/msg") {
                 val from = call.parameters["from"]?.toLongOrNull() ?: run {
@@ -30,7 +46,7 @@ private fun Route.routePrivate() {
                     return@get
                 }
                 val to = call.userId!!
-                val option = call.receive<PagingOption>()
+                val option = call.request.queryParameters.receivePagingOption()
 
                 val messages = transaction {
                     PrivateMessage.find {
@@ -80,7 +96,7 @@ private fun Route.routeGroup() {
                     return@get
                 }
 
-                val option = call.receive<PagingOption>()
+                val option = call.request.queryParameters.receivePagingOption()
 
                 transaction {
                     GroupMemberTable.select {
