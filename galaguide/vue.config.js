@@ -11,11 +11,11 @@ module.exports = defineConfig({
           '^/api': ''
         }
       },
-      '/api2': {
+      '/v2-api': {
         target: 'http://43.139.21.229:9262',
         changeOrigin: true,
         pathRewrite: {
-          '^/api2': ''
+          '^/v2-api': ''
         }
       }
     }

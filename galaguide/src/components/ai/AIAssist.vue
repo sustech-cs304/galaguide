@@ -73,6 +73,7 @@ const getUserEvents = () => {
         return response.data.data;
     }).catch((error) => {
         console.error(error);
+        return null;
     });
 };
 
@@ -85,6 +86,7 @@ const getAllEvents = () => {
         return response.data.data;
     }).catch((error) => {
         console.error(error);
+        return null;
     });
 };
 
@@ -100,7 +102,7 @@ const makeInfoString = (data) => {
 };
 
 const sendmsg = () => {
-    axios.get('/api2/ai', {
+    axios.post('/v2-api/ai', {
         question: document.getElementById('help-holder').value,
         userEvents: makeInfoString(getUserEvents()),
         allEvents: makeInfoString(getAllEvents()),
@@ -117,10 +119,10 @@ const sendmsg = () => {
         document.getElementById('help-holder').value = '';
 
         const message = document.createElement('p');
-        message.innerHTML = '<strong>Gal:</strong><br/>' + JSON.parse(response.data).data.answer;
+        message.innerHTML = '<strong>Gal:</strong><br/>' + response.data.data.answer;
         message.classList.add('query-ai-message');
         document.querySelector('#chat-holder').appendChild(message);
-        chatHistory.value += JSON.parse(response.data).data.answer + '\n';
+        chatHistory.value += response.data.data.answer + '\n';
     }).catch((error) => {
         console.error(error);
     });
