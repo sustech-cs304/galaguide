@@ -199,7 +199,7 @@ fun Route.routeUser() {
 
             post("sign-in") {
                 newSuspendedTransaction {
-                    val signIn = UserSignIn[call.userId!!]
+                    val signIn = UserSignIn.findById(call.userId!!) ?: UserSignIn.new(call.userId!!) {}
                     call.respond(signIn.signIn().asRestResponse())
                 }
             }
