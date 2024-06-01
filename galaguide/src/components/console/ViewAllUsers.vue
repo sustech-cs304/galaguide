@@ -14,18 +14,30 @@
                     </p>
                     <p>
                         <img src="../../assets/status.png" alt="Status Icon" class="icon">
-                        <span class="label">Status:</span> <span class="value">{{ user.status }}</span>
+                        <span class="label">Status:</span> <span class="value">{{ user.emailVerified ? 'Active' : 'Inactive' }}</span>
                     </p>
                 </div>
                 <transition name="fade">
                     <div v-if="user.showDetails" class="user-details">
                         <p>
                             <img src="../../assets/joined.png" alt="Joined Icon" class="icon">
-                            <span class="label">Joined:</span> <span class="value">{{ user.joined }}</span>
+                            <span class="label">Guiro:</span> <span class="value">{{ user.guiro }}</span>
+                        </p>
+                        <p>
+                            <!-- <img src="../../assets/role.png" alt="Role Icon" class="icon"> -->
+                            <span class="label">Role:</span> <span class="value">{{ user.role === 1 ? 'User' : 'Admin' }}</span>
+                        </p>
+                        <p>
+                            <!-- <img src="../../assets/avatar.png" alt="Avatar Icon" class="icon"> -->
+                            <span class="label">Avatar:</span> <span class="value">{{ user.avatarId }}</span>
+                        </p>
+                        <p>
+                            <!-- <img src="../../assets/background.png" alt="Background Icon" class="icon"> -->
+                            <span class="label">Background:</span> <span class="value">{{ user.backgroundId }}</span>
                         </p>
                         <p>
                             <img src="../../assets/info.png" alt="Info Icon" class="icon">
-                            <span class="label">Additional Info:</span> <span class="value">{{ user.info }}</span>
+                            <span class="label">Introduction:</span> <span class="value">{{ user.intro }}</span>
                         </p>
                         <button @click="showNotificationForm(user.id)" class="notify-button">Send Notification</button>
                         <transition name="slide-fade">
@@ -52,9 +64,17 @@ import { ref, onMounted } from 'vue';
 import axios from 'axios';
 
 const users = ref([
-  { id: 1, name: 'Alice', status: 'Active', email: 'alice@example.com', joined: '2023-01-01', info: 'Additional info about Alice', showDetails: false, showNotificationForm: false },
-  { id: 2, name: 'Bob', status: 'Inactive', email: 'bob@example.com', joined: '2022-05-12', info: 'Additional info about Bob', showDetails: false, showNotificationForm: false },
-  // Add more users as needed
+  {
+    id: 1,
+    name: 'John Doe',
+    email: '',
+    guiro: 500,
+    emailVerified: true, // status: Active
+    avatarId: 1,
+    backgroundId: 1,
+    intro: 'Hello, I am John Doe',
+    role: 2 // Admin
+  }
 ]);
 
 const notificationTitle = ref('');
@@ -64,9 +84,11 @@ const offset = ref(0);
 const limit = ref(10);
 
 onMounted(() => {
-    axios.get(`/api/users?offset=${offset.value}&limit=${limit.value}`)
+    const token = localStorage.getItem("token");
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    axios.get(`/api/user/all?offset=${offset.value}&limit=${limit.value}`)
         .then(response => {
-            users.value = response.data.data;
+            users.value = response.data.data.container;
         })
         .catch(error => {
             console.error(error);
@@ -74,8 +96,10 @@ onMounted(() => {
 });
 
 const loadMore = () => {
+    const token = localStorage.getItem("token");
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     offset.value += limit.value;
-    axios.get(`/api/users?offset=${offset.value}&limit=${limit.value}`)
+    axios.get(`/api/user/all?offset=${offset.value}&limit=${limit.value}`)
         .then(response => {
             users.value = [...users.value, ...response.data.data];
         })
