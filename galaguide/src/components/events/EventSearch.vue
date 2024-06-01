@@ -62,15 +62,15 @@ const fetchEvents = () => {
     axios.defaults.headers.common["Bearer"] = token;
   }
 
-	if (searchQuery) {
+	if (searchQuery.queryWord) {
 		// add the filter values inside post body
-		axios.post('/api/events/filter', { searchQuery, selectedFilters })
+		axios.post('/api/event/filter', { searchQuery, selectedFilters })
 			.then((response) => {
 				searchResults.value = response.data;
 			})
 	}
 	else {
-		axios.get('/api/events')
+		axios.get('/api/event')
 			.then((response) => {
 				searchResults.value = response.data;
 			})

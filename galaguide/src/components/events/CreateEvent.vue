@@ -15,12 +15,12 @@
         </div>
         <div class="form-group-horizontal">
           <div class="form-group">
-            <label for="event-time">Event Time</label>
+            <label for="event-time">Event Start Time</label>
             <input type="datetime-local" id="event-time" v-model="formData.time" />
           </div>
           <div class="form-group">
-            <label for="event-host">Host</label>
-            <input type="text" id="event-host" v-model="formData.host" />
+            <label for="event-time">Event End Time</label>
+            <input type="datetime-local" id="event-time" v-model="formData.time" />
           </div>
           <div class="form-group">
             <label for="event-fee">Fee</label>
@@ -89,12 +89,11 @@ const category_options = [
 ];
 const formData = ref({
   title: '',
-  introduction: '',
-  time: '',
-  host: '',
-  fee: '',
+  posterId: '',
+  description:'',
   category: '',
-  posterUrl: '',
+  cost: 0,
+  periods: [],
 });
 
 const createEvent = async () => {

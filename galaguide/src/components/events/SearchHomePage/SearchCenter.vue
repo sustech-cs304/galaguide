@@ -135,7 +135,7 @@ const searchGala = () => {
 	router.push({
 		name: "SearchResult",
 		query: {
-			queries: searchQuery.value,
+			queryWord: searchQuery.value,
 			category: category.value,
 			start_date: start_date.value,
 			end_date: end_date.value,
