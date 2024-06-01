@@ -1,5 +1,6 @@
 package galaGuide.data
 
+import io.ktor.http.*
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.dao.Entity
 import org.jetbrains.exposed.dao.EntityClass
@@ -12,6 +13,11 @@ import org.jetbrains.exposed.sql.selectAll
 data class PagingOption(
     val offset: Long = 0,
     val limit: Int = Int.MAX_VALUE,
+)
+
+fun Parameters.receivePagingOption() = PagingOption(
+    this["offset"]?.toLongOrNull() ?: 0,
+    this["limit"]?.toIntOrNull() ?: Int.MAX_VALUE
 )
 
 @Serializable

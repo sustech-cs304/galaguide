@@ -15,7 +15,6 @@ import galaGuide.util.SMTP
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
-import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.util.logging.*
@@ -120,7 +119,7 @@ fun Route.routeUser() {
 
         authenticate("admin") {
             get("/all") {
-                val option = call.receive<PagingOption>()
+                val option = call.request.queryParameters.receivePagingOption()
                 val result = User.page(option) { it.asPrivateDetail() }
                 call.respond(result.asRestResponse())
             }

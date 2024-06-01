@@ -1,9 +1,9 @@
 package galaGuide.routes
 
-import galaGuide.data.PagingOption
 import galaGuide.data.asRestResponse
 import galaGuide.data.emptyRestResponse
 import galaGuide.data.failRestResponseDefault
+import galaGuide.data.receivePagingOption
 import galaGuide.resources.user
 import galaGuide.resources.userId
 import galaGuide.table.StaticAsset
@@ -73,7 +73,7 @@ fun Route.routeAssetManage() {
 
         authenticate("admin") {
             get("/all") {
-                val option = call.receive<PagingOption>()
+                val option = call.request.queryParameters.receivePagingOption()
                 val result = StaticAssetManager.query(option) { it.asSerializable() }
                 call.respond(result.asRestResponse())
             }
