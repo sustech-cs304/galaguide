@@ -84,7 +84,7 @@ class User(id: EntityID<Long>) : Principal, LongEntity(id) {
             logger.info("Detected no admin user, will create a new admin user.")
             val randomName = (1..8).map {
                 ('a'..'z').random()
-            }.joinToString { it.toString() }
+            }.joinToString("")
             val rootName = "root-$randomName"
             val password = UUID.randomUUID().toString().replace("-", "")
             val email = "noreply@galaguide.com"
