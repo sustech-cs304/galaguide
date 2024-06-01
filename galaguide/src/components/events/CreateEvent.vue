@@ -39,11 +39,34 @@
         <div class="form-group">
           <label for="event-poster">Event Poster</label>
           <div class="uploaderHolder">
-            <ImageUploader />
+            <ImageUploader :posterId="formData.posterUrl" />
           </div>
-          
+          <div class="my-images">
+            <h2>My Images</h2>
+            
+            <div class="myImageHolder">
+              <h4>Click on images to copy to clipboard</h4>
+              <div id="imgs-holder">
+                <div v-for="img in myImgs" :key="img" class="single-img">
+                  <img :src="'/api/asset/' + img.uuid" alt="File" @click="copyToClickBoard(img.uuid)" />
+                  <p><strong>{{ img.fileName }}</strong></p>
+                  <p><strong>{{ img.size / 1024 }}&nbsp;</strong>KB</p>
+                  <p class="delete-button" @click="deleteImage(img.uuid)">
+                    Delete
+                  </p>
+                  <p class="copy-button" @click="copyToClickBoard(img.uuid)">
+                    Copy
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
         </div>
         <button @click.prevent="createEvent">Create Event</button>
+        <CustomAlert :visible="showAlert" title="Congrats!" message="Link copied to clipboard!"
+          @close="showAlert = false" />
       </form>
     </div>
   </div>
@@ -51,15 +74,18 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted, } from 'vue';
+import { useRouter } from "vue-router";
 import axios from 'axios';
 import ImageUploader from '../image/ImageUploader.vue';
+import CustomAlert from '../CustomAlert.vue';
+const router = useRouter();
 const category_options = [
   { label: 'Sport', value: 'Sport' },
   { label: 'Music', value: 'Music' },
   { label: 'Education', value: 'Education' },
   { label: 'Art', value: 'Art' },
-  { label: 'Other', value: 'Other'}
+  { label: 'Other', value: 'Other' }
 ];
 const formData = ref({
   title: '',
@@ -79,6 +105,44 @@ const createEvent = async () => {
     console.error(error);
   }
 };
+const myImgs = ref([]);
+const showAlert = ref(false);
+
+onMounted(() => {
+    console.log('ImageHost component is mounted');
+    const token = localStorage.getItem("token");
+    if (!token) {
+        router.push("/login");
+    }
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    axios.get("/api/asset").then((res) => {
+        console.log(res.data);
+        myImgs.value = res.data.data;
+        
+    }).catch((err) => {
+        console.log(err);
+    });
+});
+
+const copyToClickBoard = (src) => {
+    navigator.clipboard.writeText(
+        window.location.origin + '/api/asset/' +
+        src);
+    showAlert.value = true;
+}
+
+const deleteImage = (uuid) => {
+    axios.delete(`/api/asset/${uuid}`, {
+        headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+        },
+    }).then((res) => {
+        console.log(res.data);
+        window.location.reload();
+    }).catch((err) => {
+        console.log(err);
+    });
+}
 </script>
 
 <style scoped>
@@ -100,6 +164,7 @@ form {
   flex-direction: column;
   gap: 15px;
 }
+
 select {
   padding: 10px;
   border: 1px solid #ccc;
@@ -111,7 +176,7 @@ select {
 .form-group {
   display: flex;
   flex-direction: column;
-  align-self:center;
+  align-self: center;
   width: 80%;
 }
 
@@ -171,5 +236,78 @@ button:hover {
   border: 1px dashed #353232;
   border-radius: 10px;
   cursor: pointer;
+}
+.myImageHolder {
+  display: flex;
+  align-self: center;
+  justify-content: center;
+  align-items: center;
+  width: 90%;
+  height: auto;
+  border: 1px dashed #353232;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.my-images {
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+  width: 80%;
+  gap: 10px;
+}
+
+#imgs-holder {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.single-img {
+    margin-top: 4px;
+    background: rgb(234, 234, 234);
+    border-radius: 5px;
+    transition-duration: 0.4s;
+}
+
+.single-img:hover {
+    box-shadow: 0 0 30px rgba(82, 81, 81, 0.7);
+}
+
+#imgs-holder>div>img {
+    height: 150px;
+    margin: 5px;
+}
+
+.delete-button {
+    position: relative;
+    width: 80%;
+    left: 10%;
+    background-color: red;
+    color: white;
+    text-align: center;
+    border-radius: 5px;
+    cursor: pointer;
+    transition-duration: 0.4s;
+}
+
+.delete-button:hover {
+    background-color: rgb(224, 2, 2);
+}
+
+.copy-button {
+    position: relative;
+    width: 80%;
+    left: 10%;
+    background-color: blue;
+    color: white;
+    text-align: center;
+    border-radius: 5px;
+    cursor: pointer;
+    transition-duration: 0.4s;
+}
+
+.copy-button:hover {
+    background-color: rgb(2, 2, 224);
 }
 </style>

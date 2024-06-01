@@ -141,7 +141,7 @@ const reserveNow = () => {
     return;
   }
   // use axios to post the form data into the server
-  axios.post('/api/reserve', formData.value)
+  axios.post('/api/reserve/create-order', formData.value)
     .then((response) => {
       console.log(response.data);
       // Show success message to the user

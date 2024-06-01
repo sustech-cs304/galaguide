@@ -12,7 +12,7 @@
         <h2>My Favorite Events</h2>
       </header>
       <section class="event" v-for="event in favoriteEvents" :key="event.id">
-        <EventCard :eventId=event.id />
+        <EventCard :gala="event" />
         <!-- More details can be displayed here -->
         <div class="event-actions">
           <button @click="shareEvent()" class="share-button">Share</button>

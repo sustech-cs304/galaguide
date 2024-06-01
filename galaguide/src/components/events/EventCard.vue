@@ -19,37 +19,10 @@
 <script setup>
 import { ref, defineProps } from 'vue';
 // import axios from 'axios';
+// gala and its detail is pushed from another component
+const gala = defineProps(['gala']);
 
 
-defineProps({
-    // eventId: {
-    //     type: Number,
-    //     required: true,
-    // }
-    // a gala object with many attributes like name, host_name, status, etc.
-    gala: {
-        name: 'Sample Event Title',
-        host_name: 'Host Name',
-        status: 'Upcoming',
-        registration_time: '10:00 AM - 2:00 PM',
-        event_time: '10:00 AM - 3:00 PM',
-        // Add more attributes here
-    }
-   
-
-});
-
-const gala = ref({
-    id: -1,
-    title: 'Sample Event Title',
-    host: 'Host Name',
-    fee: '$20 per person',
-    category: 'Arts & Music',
-    event_time: '10:00 AM - 3:00 PM',
-    registration_time: '10:00 AM - 2:00 PM',
-    description: 'This is a sample introduction of the event that gives users insight into what to expect.',
-    posterUrl: 'https://via.placeholder.com/400x300?text=Event+Poster',
-});
 
 const showButtons = ref(false);
 

@@ -22,7 +22,7 @@ const afterRead = (e) => {
         src.value = reader.result;
     };
 }
-
+const posterId = ref("");
 const uploadImage = () => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -49,6 +49,7 @@ const uploadImage = () => {
         }
     }).then((res) => {
         console.log(res.data);
+        posterId.value = res.data[0].uuid;
     }).catch((err) => {
         console.log(err);
     });
@@ -57,7 +58,6 @@ const uploadImage = () => {
     fileInput.value = "";
     window.location.reload();
 }
-
 </script>
 
 <template>

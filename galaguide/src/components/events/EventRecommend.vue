@@ -9,13 +9,13 @@
       <div v-show="activeTab === 'rank'" class="tab-content">
         <!-- Iterate over ranked events and display them -->
         <div v-for="event in rankEvents" :key="event.id" class="event-card">
-          <h2>{{ event.title }}</h2>
+          <EventCard :event="event" />
         </div>
       </div>
       <div v-show="activeTab === 'new'" class="tab-content">
         <!-- Iterate over new events and display them -->
         <div v-for="event in newEvents" :key="event.id" class="event-card">
-          <h2>{{ event.title }}</h2>
+          <EventCard :gala="event" />
         </div>
       </div>
     </div>
@@ -24,6 +24,7 @@
 
 <script setup>
 import { onMounted, ref } from 'vue';
+import EventCard from './EventCard.vue';
 const rankEvents = ref([]);
 
 const newEvents = ref([]);
