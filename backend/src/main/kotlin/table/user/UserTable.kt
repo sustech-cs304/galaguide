@@ -84,12 +84,13 @@ class User(id: EntityID<Long>) : Principal, LongEntity(id) {
             logger.info("Detected no admin user, will create a new admin user.")
             val rootName = "root-${UUID.randomUUID()}"
             val password = UUID.randomUUID().toString().replace("-", "")
-            val email = "$rootName@galaguide.com"
+            val email = "noreply@galaguide.com"
 
             new {
                 name = rootName
                 changePassword(password)
                 this.email = email
+                emailVerified = true
                 role = UserRole.ADMIN
             }
 
