@@ -38,6 +38,9 @@
                     </div>
                 </transition>
             </div>
+            <div class="user-card" style="text-align: center;">
+                <button @click="loadMore" class="notify-button">Show More</button>
+            </div>
         </div>
     </div>
 </template>
@@ -45,7 +48,8 @@
 
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
 
 const users = ref([
   { id: 1, name: 'Alice', status: 'Active', email: 'alice@example.com', joined: '2023-01-01', info: 'Additional info about Alice', showDetails: false, showNotificationForm: false },
@@ -55,6 +59,30 @@ const users = ref([
 
 const notificationTitle = ref('');
 const notificationContent = ref('');
+
+const offset = ref(0);
+const limit = ref(10);
+
+onMounted(() => {
+    axios.get(`/api/users?offset=${offset.value}&limit=${limit.value}`)
+        .then(response => {
+            users.value = response.data.data;
+        })
+        .catch(error => {
+            console.error(error);
+        });
+});
+
+const loadMore = () => {
+    offset.value += limit.value;
+    axios.get(`/api/users?offset=${offset.value}&limit=${limit.value}`)
+        .then(response => {
+            users.value = [...users.value, ...response.data.data];
+        })
+        .catch(error => {
+            console.error(error);
+        });
+};
 
 const toggleDetails = (userId) => {
   const user = users.value.find((user) => user.id === userId);

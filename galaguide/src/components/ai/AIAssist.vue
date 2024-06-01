@@ -306,6 +306,7 @@ onMounted(() => {
     margin-bottom: 10px;
     text-align: left;
     overflow-wrap: break-word;
+    animation: popIn 1s ease-in-out;
 }
 
 .query-ai-message {
@@ -315,6 +316,38 @@ onMounted(() => {
     margin-bottom: 10px;
     text-align: right;
     overflow-wrap: break-word;
+    animation: popIn 1s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes popIn {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
 }
 </style>
   
