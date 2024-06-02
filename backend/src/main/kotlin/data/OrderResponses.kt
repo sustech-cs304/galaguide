@@ -30,3 +30,6 @@ fun Order.asDetail() = OrderDetail(
     phoneNumber = phoneNumber,
     email = email,
 )
+
+fun Order.asRestResponse() = asDetail().asRestResponse()
+fun List<Order>.asRestResponse() = map{it.asRestResponse()}

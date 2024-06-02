@@ -41,5 +41,5 @@ fun Event.asDetail() = EventDetail(
     periods.map { it.asDetail() },
     category,
 )
-
 fun Event.asRestResponse() = asDetail().asRestResponse()
+fun List<Event>.asRestResponse() = map { it.asRestResponse() }

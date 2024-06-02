@@ -5,6 +5,7 @@ import galaGuide.data.asDetail
 import galaGuide.data.asRestResponse
 import galaGuide.data.emptyRestResponse
 import galaGuide.data.failRestResponseDefault
+import galaGuide.resources.user
 import galaGuide.table.forum.*
 import galaGuide.table.user.User
 import io.ktor.server.application.*
@@ -16,8 +17,6 @@ import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.Instant
-import java.time.ZoneOffset
-import java.time.LocalDateTime
 import java.util.*
 
 fun Route.routeForum() = authenticate("user") {
@@ -26,10 +25,9 @@ fun Route.routeForum() = authenticate("user") {
             SchemaUtils.createMissingTablesAndColumns(DiscussTable, TagTable, DiscussTagTable, LikeTable)
         }
         createDiscuss()
-//        deleteDiscuss()
+        deleteDiscuss()
         getDiscussList()
         getReplyList()
-//        updateDiscussAccessHistory()
         uploadDiscussReply()
         getSimilarDiscuss()
         updateDiscussLikes()
@@ -73,7 +71,7 @@ fun Route.getSimilarDiscuss() {
 
 fun Route.uploadDiscussReply() {
     post<ForumRoute.Reply.Object>("/{discussId}/upload-reply") {
-        if(it.equals(null)) {
+        if (it.equals(null)) {
             call.respond(failRestResponseDefault(-1, "Missing request body"))
             return@post
         }
@@ -112,12 +110,12 @@ fun Route.uploadDiscussReply() {
             belongsToId = discuss.id
             likes = 0
         }
-        kotlin.runCatching { call.respond(reply.asDetail().asRestResponse("Operator Success: Create reply with id: ${reply.id}$")) }
+        kotlin.runCatching {
+            call.respond(
+                reply.asDetail().asRestResponse("Operator Success: Create reply with id: ${reply.id}$")
+            )
+        }
     }
-}
-
-fun Route.updateDiscussAccessHistory() {
-    TODO("Not yet implemented")
 }
 
 fun Route.getReplyList() {
@@ -134,7 +132,8 @@ fun Route.getReplyList() {
         }
         // 获取该帖子的所有回复并按时间排序
         val replies = transaction {
-            Discuss.find { DiscussTable.belongsToId eq discussId }.toList().sortedBy { it.createTime }
+            Discuss.find { (DiscussTable.belongsToId eq discussId) and (DiscussTable.id neq discussId) }.toList()
+                .sortedBy { it.createTime }
         }
 
         call.respond((listOf(discuss) + replies).asDetail().asRestResponse())
@@ -153,13 +152,41 @@ fun Route.getDiscussList() {
 }
 
 fun Route.deleteDiscuss() {
-    TODO("Not yet implemented")
+    delete("/discuss/{discussId}") {
+        if (call.user == null) {
+            call.respond(failRestResponseDefault(-3, "Cannot Authentic: Not logged in"))
+            return@delete
+        }
+        val discussId = call.parameters["discussId"]?.toLong()
+        if (discussId == null) {
+            call.respond(failRestResponseDefault(-1, "Missing argument: DiscussId"))
+            return@delete
+        }
+        val discuss = transaction { Discuss.findById(discussId) }
+        if (discuss == null) {
+            call.respond(failRestResponseDefault(-2, "Wrong argument: DiscussId"))
+            return@delete
+        }
+        if (discuss.poster != call.user) {
+            call.respond(failRestResponseDefault(-3, "Cannot Authentic: Permission Denied"))
+            return@delete
+        }
+        if (discuss.id == discuss.belongsToId) {
+            transaction {
+                Discuss.find { DiscussTable.belongsToId eq discussId }.forEach { it.delete() }
+            }
+        } else {
+            transaction { Discuss.find { DiscussTable.id eq discussId }.forEach { it.delete() } }
+        }
+        call.respond("Operation Success: Delete")
+        return@delete
+    }
 }
 
 fun Route.createDiscuss() {
     post<ForumRoute.Reply.Object>("/create-discuss") {
         val currentUser = call.authentication.principal<User>()
-        if (currentUser == null){
+        if (currentUser == null) {
             call.respond(failRestResponseDefault(-3, "Cannot Authentic: Not logged in"))
             return@post
         }
