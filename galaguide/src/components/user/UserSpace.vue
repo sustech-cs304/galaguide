@@ -120,9 +120,6 @@ onMounted(async () => {
       user.value.userEmail = response.data.data.email === "" ? "123@gmail.com" : response.data.data.email;
       user.value.userGuiro = response.data.data.guiro;
       user.value.userIntro = response.data.data.intro === "" ? "This is a user intro." : response.data.data.intro;
-      user.value.userFavoriteEvents = response.data.data.favoriteEvents;
-      user.value.userSubscribedEvents = response.data.data.subscribedEvents;
-      user.value.userBrowsedEvents = response.data.data.browsedEvents;
     }
   })
   .catch((error) => {

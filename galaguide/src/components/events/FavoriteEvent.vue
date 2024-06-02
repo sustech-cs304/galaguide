@@ -7,106 +7,66 @@
     <!-- <aside class="left-bar"> -->
     <!-- Content for left sidebar -->
     <!-- </aside> -->
-    <main class="main-content">
       <header class="title">
         <h2>My Favorite Events</h2>
       </header>
-      <section class="event" v-for="event in favoriteEvents" :key="event.id">
-        <EventCard :gala="event" />
+      <div class="event" v-for="event in favoriteEvents" :key="event.id">
+        <EventCard :gala="favoriteEvents" />
         <!-- More details can be displayed here -->
         <div class="event-actions">
-          <button @click="shareEvent()" class="share-button">Share</button>
-          <button @click="deleteEvent()" class="delete-button">Delete</button>
+          <button type="submit" @click="shareEvent" class="share-button">Share</button>
+          <button type="submit" @click="deleteEvent" class="delete-button">Delete</button>
         </div>
-      </section>
-    </main>
+      </div>
   </div>
 </template>
 
-<script>
+<script setup>
 import EventCard from './EventCard.vue';
-// import axios from 'axios';
-export default {
-  components: {
-    EventCard,
-  },
-  data() {
-    return {
-      // Your event data here
-      favoriteEvents: [
-        {
-          eventTitle: "Sample Event Title", // This will be dynamic based on event data
-          eventIntroduction:
-            "This is a sample introduction of the event that gives users insight into what to expect.",
-          eventDetails: {
-            Time: "10:00 AM - 3:00 PM",
-            Host: "Host Name",
-            Fee: "$20 per person",
-            Category: "Arts & Music",
-            // More details can be added here as needed
-          },
-          gallery: [
-            { id: 1, src: "w1.com", alt: "w0.com" },
-            { id: 2, src: "w2.com", alt: "w0.com" },
-          ],
-          posterUrl: "https://via.placeholder.com/400x300?text=Event+Poster", // Mock-up URL
-          showButtons: false,
-          loading: true,
-          error: false,
-        },
-        {
-          eventTitle: "Sample Event Title", // This will be dynamic based on event data
-          eventIntroduction:
-            "This is a sample introduction of the event that gives users insight into what to expect.",
-          eventDetails: {
-            Time: "10:00 AM - 3:00 PM",
-            Host: "Host Name",
-            Fee: "$20 per person",
-            Category: "Arts & Music",
-            // More details can be added here as needed
-          },
-          gallery: [
-            { id: 1, src: "w1.com", alt: "w0.com" },
-            { id: 2, src: "w2.com", alt: "w0.com" },
-          ],
-          posterUrl: "https://via.placeholder.com/400x300?text=Event+Poster", // Mock-up URL
-          showButtons: false,
-          loading: true,
-          error: false,
-        },
-        {
-          eventTitle: "Sample Event Title", // This will be dynamic based on event data
-          eventIntroduction:
-            "This is a sample introduction of the event that gives users insight into what to expect.",
-          eventDetails: {
-            Time: "10:00 AM - 3:00 PM",
-            Host: "Host Name",
-            Fee: "$20 per person",
-            Category: "Arts & Music",
-            // More details can be added here as needed
-          },
-          gallery: [
-            { id: 1, src: "w1.com", alt: "w0.com" },
-            { id: 2, src: "w2.com", alt: "w0.com" },
-          ],
-          posterUrl: "https://via.placeholder.com/400x300?text=Event+Poster", // Mock-up URL
-          showButtons: false,
-          loading: true,
-          error: false,
-        },
-      ],
-      // ... rest of your data
-    };
-  },
-  methods: {
-    shareEvent() {
-      // Logic to share an event
-    },
-    deleteEvent() {
-      // Logic to remove an event from favorites
-    },
-  },
+import axios from 'axios';
+import { onMounted, ref } from 'vue';
+
+const shareEvent = () => {
+  // Logic to share the event
+  console.log('Sharing the event');
 };
+
+function deleteEvent() {
+  // Logic to delete the event
+  console.log("Deleting the event");
+}
+
+const favoriteEvents = ref([]);
+
+function fetchFavoriteEvents() {
+  console.log("document.cookie:", document.cookie);
+  const cookie = document.cookie
+    .split(";")
+    .find((cookie) => cookie.trim().startsWith("userRole="));
+  console.log("cookie:", cookie);
+  if (cookie && cookie.split("=")[1] !== "0") {
+    console.log("cookie:", cookie);
+    axios
+    .get('/api/event', {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+    })
+    .then((response) => {
+      console.log("response:", response);
+      if (response.status === 200 && response.data.code === 0) {
+        favoriteEvents.value = response.data.data;
+      }
+    })
+    .catch((error) => {
+      console.log("error:", error);
+    });
+  }
+}
+
+onMounted(() => {
+  fetchFavoriteEvents();
+});
 </script>
 
 <style scoped>

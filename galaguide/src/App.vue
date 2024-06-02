@@ -58,6 +58,39 @@ const attributes = computed(() => [
   })),
 ]);
 
+function checkIn() {
+  axios
+    .post("/api/sign-in", {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    })
+    .then((response) => {
+      console.log("response:", response);
+      if (response.status === 200 && response.data.code === 0) {
+        console.log("Check in success!");
+      }
+    })
+    .catch((error) => {
+      console.log("error:", error);
+    });
+
+    axios
+      .get('/api/user', {
+          headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+      }).then((response) => {
+      console.log("response:", response);
+      if (response.status === 200 && response.data.code === 0) {
+        user.userGuiro = response.data.data.guiro;
+      }
+    })
+    .catch((error) => {
+      console.log("error:", error);
+    });
+}
+
 /* // event style
 const date = new Date();
 const year = date.getFullYear();
@@ -399,16 +432,20 @@ function logout() {
               />
             </svg>
           </div>
-          <router-link
-            to="/settings"
+          <!-- add check in button -->
+          <button
+            @click="checkIn"
             style="
-              display: inline;
               color: black;
-              margin-bottom: 5px;
-              margin-left: 5px;
-            "
-            >Settings</router-link
-          >
+              right: 12%;
+              height: 22px;
+              width: 50%;
+              color: white;
+              background-color: #23b375;
+              border-radius: 5px;
+            ">
+            Check In
+          </button>
         </div>
 
         <hr />
