@@ -181,6 +181,13 @@ const removePeriod = (index) => {
 </script>
 
 <style scoped>
+/*
+* AI-generated-content
+* tool: Copilot
+* version: latest
+* usage: CSS Modify
+* weight: part of
+*/
 .create-event {
   display: flex;
   flex-direction: row;

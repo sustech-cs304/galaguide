@@ -140,6 +140,13 @@ const isSelected = (category, option) => {
 </script>
 
 <style scoped>
+/*
+* AI-generated-content
+* tool: Copilot
+* version: latest
+* usage: CSS Modify
+* weight: part of
+*/
 .event-center {
 	/* Applying the classic and interactive style from Revised Plan 2 */
 	color: #5c5c5c;

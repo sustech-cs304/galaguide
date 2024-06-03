@@ -307,6 +307,13 @@ const deleteComment = (id) => {
 </template>
 
 <style>
+/*
+* AI-generated-content
+* tool: Copilot
+* version: latest
+* usage: CSS Modify
+* weight: part of
+*/
 #forum-discuss {
   position: absolute;
   top: 3%;

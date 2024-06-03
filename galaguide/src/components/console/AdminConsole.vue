@@ -104,6 +104,13 @@ onMounted(() => {
 
 
 <style scoped>
+/*
+* AI-generated-content
+* tool: Copilot
+* version: latest
+* usage: CSS Modify
+* weight: part of
+*/
 #admin-console {
     /* font-family: 'Arial', sans-serif; */
     background-color: #f9f9f9;

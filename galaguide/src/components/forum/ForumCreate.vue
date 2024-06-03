@@ -94,6 +94,13 @@ const createPost = () => {
 </template>
 
 <style scoped>
+/*
+* AI-generated-content
+* tool: Copilot
+* version: latest
+* usage: CSS Modify
+* weight: part of
+*/
 #forum-create {
     display: flex;
     flex-direction: column;

@@ -68,6 +68,13 @@ const submitForm = () => {
 </script>
 
 <style scoped>
+/*
+* AI-generated-content
+* tool: Copilot
+* version: latest
+* usage: CSS Modify
+* weight: part of
+*/
 #add-new-user {
     /* font-family: 'Arial', sans-serif; */
     background-color: #f9f9f9;

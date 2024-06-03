@@ -28,6 +28,13 @@ const performSearch = () => {
 </script>
 
 <style scoped>
+/*
+* AI-generated-content
+* tool: Copilot
+* version: latest
+* usage: CSS Modify
+* weight: part of
+*/
 .search-box-container {
   width: 95%;
   height: 100%;

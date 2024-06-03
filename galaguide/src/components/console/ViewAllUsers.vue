@@ -139,6 +139,13 @@ const sendNotification = (userId) => {
 
 
 <style scoped>
+/*
+* AI-generated-content
+* tool: Copilot
+* version: latest
+* usage: CSS Modify
+* weight: part of
+*/
 #view-all-users {
     /* font-family: 'Arial', sans-serif; */
     background-color: #f9f9f9;

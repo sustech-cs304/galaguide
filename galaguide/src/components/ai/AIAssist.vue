@@ -1,3 +1,10 @@
+<!--/*-->
+<!--* AI-generated-content-->
+<!--* tool: Copilot-->
+<!--* version: latest-->
+<!--* usage: structure Modify-->
+<!--* weight: part of-->
+<!--*/-->
 <template>
     <div id="ai-assist" class="draggable" :style="{ top: yPos + 'px', left: xPos + 'px' }" @mousedown="startDrag" @mousemove="dragging"
         @mouseup="endDrag">
@@ -149,6 +156,13 @@ onMounted(() => {
 </script>
   
 <style>
+/*
+* AI-generated-content
+* tool: Copilot
+* version: latest
+* usage: CSS Modify
+* weight: part of
+*/
 .draggable {
     display: none;
     position: fixed;

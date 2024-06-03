@@ -78,6 +78,13 @@ export default {
 };
 </script>
 <style scoped>
+/*
+* AI-generated-content
+* tool: Copilot
+* version: latest
+* usage: CSS Modify
+* weight: part of
+*/
 .event-poster {
     position: relative;
     height: 280px;

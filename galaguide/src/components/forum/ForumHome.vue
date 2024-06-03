@@ -71,6 +71,13 @@ const posts = ref([]);
 </template>
 
 <style>
+/*
+* AI-generated-content
+* tool: Copilot
+* version: latest
+* usage: CSS Modify
+* weight: part of
+*/
 #forum-home {
   display: flex;
   flex-direction: column;

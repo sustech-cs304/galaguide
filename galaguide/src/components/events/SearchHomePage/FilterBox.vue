@@ -50,7 +50,13 @@ export default {
     width: 100%;
     height: 100%;
 }
-
+/*
+* AI-generated-content
+* tool: Copilot
+* version: latest
+* usage: CSS Modify
+* weight: part of
+*/
 .filterBoxButton {
     cursor: pointer;
     background-color: #54bb87;

@@ -127,6 +127,13 @@ const rejectEvent = (eventId) => {
 };
 </script>
 <style scoped>
+/*
+* AI-generated-content
+* tool: Copilot
+* version: latest
+* usage: CSS Modify
+* weight: part of
+*/
 .toggle-button {
     background: none;
     border: none;

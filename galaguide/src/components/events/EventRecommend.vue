@@ -76,6 +76,13 @@ const showNews = () => {
 </script>
 
 <style scoped>
+/*
+* AI-generated-content
+* tool: Copilot
+* version: latest
+* usage: CSS Modify
+* weight: part of
+*/
 .recommend-column {
   width: 100%;
   display: flex;
