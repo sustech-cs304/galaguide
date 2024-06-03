@@ -42,7 +42,7 @@ fun Route.routeEvent() {
                     Event.all().toSet()
                 } else {
                     Event.all()
-                        .filter { event -> (it.searchQuery in event.title) and (it.searchQuery in event.description) }
+                        .filter { event -> (event.title.contains(it.searchQuery)) and (event.description.contains(it.searchQuery)) }
                         .toSet()
                 }
                 val periods = EventPeriod.find {
