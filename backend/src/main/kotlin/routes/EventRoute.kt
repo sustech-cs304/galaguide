@@ -56,7 +56,10 @@ fun Route.routeEvent() {
                 val priceItems =
                     Event.find { (EventTable.cost greaterEq it.minPrice) and (EventTable.cost lessEq it.maxPrice) }
                         .toSet()
-
+                logger.info(categoryItems.toString())
+                logger.info(dateItems.toString())
+                logger.info(priceItems.toString())
+                logger.info(searchItems.toString())
                 categoryItems.intersect(dateItems).intersect(priceItems).intersect(searchItems).toList()
             }
             call.respond(transaction { reply.asRestResponse() })
