@@ -34,30 +34,31 @@ fun Route.createOrderRoute() {
             call.respond(failRestResponseDefault(-1, "Missing request body"))
             return@post
         }
-
+        logger.info("create1")
         // 获取当前用户信息
         val currentUser = call.user
         if (currentUser == null) {
             call.respond(failRestResponseDefault(-3, "Cannot Authentic: Not logged in"))
             return@post
         }
-
+        logger.info("create2")
         val event = transaction { Event.findById(it.eventId) }
         if (event == null) {
             call.respond(failRestResponseDefault(-2, "Wrong argument: EventId"))
             return@post
         }
-
+        logger.info("create3")
         val period = transaction { EventPeriod.findById(it.periodId) }
         if (period == null) {
             call.respond(failRestResponseDefault(-2, "Wrong argument: PeriodId"))
             return@post
         }
+        logger.info("create4")
         if (period.event != event) {
             call.respond(failRestResponseDefault(-2, "Wrong argument: PeriodId(Mismatch with EventId)"))
             return@post
         }
-
+        logger.info("create5")
         val reply = transaction {
             Order.new {
                 initiator = currentUser
@@ -72,7 +73,7 @@ fun Route.createOrderRoute() {
                 email = it.email
             }
         }
-
+        logger.info("create6")
         kotlin.runCatching { call.respond(reply.asDetail().asRestResponse()) }
     }
 }
