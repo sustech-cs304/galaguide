@@ -92,34 +92,36 @@ fun Route.routeEvent() {
             }
         }
         route("/{id}") {
-            get {
-                val id = call.parameters["id"]?.toLongOrNull() ?: run {
-                    call.respond(failRestResponseDefault(-1, "Invalid ID"))
-                    return@get
-                }
-
-                val event = transaction {
-                    Event.findById(id)?.also { e ->
-                        call.userId?.let { userId ->
-                            UserHistoryEventTable.insert {
-                                it[user] = userId
-                                it[event] = e.id
-                            }
-                        }
-                    }?.asRestResponse()
-                } ?: run {
-                    call.respond(failRestResponseDefault(-2, "Event not found"))
-                    return@get
-                }
-                logger.info("Out User Logged in")
-                if (call.user != null) {
-                    logger.info("In User Logged in")
-                    UserHistoryEventTable.insert {
-                        it[user] = call.user!!.id
-                        it[UserHistoryEventTable.event] = id
+            authenticate("user") {
+                get {
+                    val id = call.parameters["id"]?.toLongOrNull() ?: run {
+                        call.respond(failRestResponseDefault(-1, "Invalid ID"))
+                        return@get
                     }
+
+                    val event = transaction {
+                        Event.findById(id)?.also { e ->
+                            call.userId?.let { userId ->
+                                UserHistoryEventTable.insert {
+                                    it[user] = userId
+                                    it[event] = e.id
+                                }
+                            }
+                        }?.asRestResponse()
+                    } ?: run {
+                        call.respond(failRestResponseDefault(-2, "Event not found"))
+                        return@get
+                    }
+                    logger.info("Out User Logged in")
+                    if (call.user != null) {
+                        logger.info("In User Logged in")
+                        UserHistoryEventTable.insert {
+                            it[user] = call.user!!.id
+                            it[UserHistoryEventTable.event] = id
+                        }
+                    }
+                    call.respond(event)
                 }
-                call.respond(event)
             }
 
             authenticate("admin") {

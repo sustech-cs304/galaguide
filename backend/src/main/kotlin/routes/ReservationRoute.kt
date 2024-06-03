@@ -20,11 +20,13 @@ import java.util.*
 
 fun Route.routeReservation() = authenticate("user") {
     route("/reserve") {
-        // 创建订单路由
-        createOrderRoute()
-        // 更改订单状态路由
-        orderNextRoute()
-        myReserveRoute()
+        authenticate("user") {
+            // 创建订单路由
+            createOrderRoute()
+            // 更改订单状态路由
+            orderNextRoute()
+            myReserveRoute()
+        }
     }
 }
 
