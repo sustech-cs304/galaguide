@@ -195,7 +195,6 @@ fun Route.createDiscuss() {
                 title = it.title
                 content = it.content
                 poster = currentUser
-                belongsToId = id
                 createTime = Instant.ofEpochSecond(Date().time)
                 likes = 0
             }
