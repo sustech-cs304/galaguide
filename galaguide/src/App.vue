@@ -18,7 +18,7 @@ let user = {
   userGuiro: 0,
   userBio: "",
   userFavoriteEvents: [],
-  userSubscribedEvents: [],
+  userReservedEvents: [],
   userBrowsedEvents: [],
 };
 
@@ -548,11 +548,11 @@ function logout() {
         </svg> 
       </router-link>
 
-      <!-- Subscribed Event -->
+      <!-- Reserved Event -->
       <router-link
-        to="/subscribedEvent" 
+        to="/reservedEvent" 
         href="#" 
-        class="subscribed-events" 
+        class="reserved-events" 
         style="
           position: absolute;
           right: 19.5%;
@@ -677,7 +677,7 @@ body {
   color: LightSeaGreen;
 }
 
-.subscribed-events:hover {
+.reserved-events:hover {
   color: LightSeaGreen;
 }
 
