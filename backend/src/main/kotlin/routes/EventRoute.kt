@@ -112,6 +112,7 @@ fun Route.routeEvent() {
                     return@get
                 }
                 if (call.user != null) {
+                    logger.info("In User Logged in")
                     UserHistoryEventTable.insert {
                         it[user] = call.user!!.id
                         it[UserHistoryEventTable.event] = id
