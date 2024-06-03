@@ -1,188 +1,129 @@
 <!--  -->
 <template>
-    <div class="container">
-      <div class="left-bar">
-        <!-- Content for left sidebar -->
-      </div>
-      <!-- <aside class="left-bar"> -->
+  <div class="container">
+    <div class="left-bar">
       <!-- Content for left sidebar -->
-      <!-- </aside> -->
-      <main class="main-content">
-        <header class="title">
-          <h2>My Reservation</h2>
-        </header>
-        <section class="event" v-for="event in favoriteEvents" :key="event.id">
-          <EventCard :eventId=event.id />
-          <!-- More details can be displayed here -->
-          <div class="event-actions">
-            <button @click="shareEvent()" class="share-button">Share</button>
-            <button @click="deleteEvent()" class="delete-button">Delete</button>
-          </div>
-        </section>
-      </main>
     </div>
-  </template>
-  
-  <script>
-  import EventCard from './EventCard.vue';
-  // import axios from 'axios';
-  export default {
-    components: {
-      EventCard,
-    },
-    data() {
-      return {
-        // Your event data here
-        favoriteEvents: [
-          {
-            eventTitle: "Sample Event Title", // This will be dynamic based on event data
-            eventIntroduction:
-              "This is a sample introduction of the event that gives users insight into what to expect.",
-            eventDetails: {
-              Time: "10:00 AM - 3:00 PM",
-              Host: "Host Name",
-              Fee: "$20 per person",
-              Category: "Arts & Music",
-              // More details can be added here as needed
-            },
-            gallery: [
-              { id: 1, src: "w1.com", alt: "w0.com" },
-              { id: 2, src: "w2.com", alt: "w0.com" },
-            ],
-            posterUrl: "https://via.placeholder.com/400x300?text=Event+Poster", // Mock-up URL
-            showButtons: false,
-            loading: true,
-            error: false,
-          },
-          {
-            eventTitle: "Sample Event Title", // This will be dynamic based on event data
-            eventIntroduction:
-              "This is a sample introduction of the event that gives users insight into what to expect.",
-            eventDetails: {
-              Time: "10:00 AM - 3:00 PM",
-              Host: "Host Name",
-              Fee: "$20 per person",
-              Category: "Arts & Music",
-              // More details can be added here as needed
-            },
-            gallery: [
-              { id: 1, src: "w1.com", alt: "w0.com" },
-              { id: 2, src: "w2.com", alt: "w0.com" },
-            ],
-            posterUrl: "https://via.placeholder.com/400x300?text=Event+Poster", // Mock-up URL
-            showButtons: false,
-            loading: true,
-            error: false,
-          },
-          {
-            eventTitle: "Sample Event Title", // This will be dynamic based on event data
-            eventIntroduction:
-              "This is a sample introduction of the event that gives users insight into what to expect.",
-            eventDetails: {
-              Time: "10:00 AM - 3:00 PM",
-              Host: "Host Name",
-              Fee: "$20 per person",
-              Category: "Arts & Music",
-              // More details can be added here as needed
-            },
-            gallery: [
-              { id: 1, src: "w1.com", alt: "w0.com" },
-              { id: 2, src: "w2.com", alt: "w0.com" },
-            ],
-            posterUrl: "https://via.placeholder.com/400x300?text=Event+Poster", // Mock-up URL
-            showButtons: false,
-            loading: true,
-            error: false,
-          },
-        ],
-        // ... rest of your data
-      };
-    },
-    methods: {
-      shareEvent() {
-        // Logic to share an event
-      },
-      deleteEvent() {
-        // Logic to remove an event from favorites
-      },
-    },
-  };
-  </script>
-  
-  <style scoped>
-  .container {
-    display: flex;
+    <div class="title">
+      <h2>My Reservation</h2>
+    </div>
+    <div class="event" v-for="event in reservedEvents" :key="event.id">
+      <EventCard :title="event.title"
+      :posterId="event.posterId"
+      :hostId="event.hostId"
+      :eventId="event.id"/>    
+        
+      <div class="event-actions">
+          <button type="submit" @click="deleteEvent(event.id)" class="delete-button">Unreserve</button>
+        </div>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import EventCard from './EventCard.vue';
+import axios from 'axios';
+import { onMounted, ref } from 'vue';
+
+
+function deleteEvent(eventId) {
+  console.log("eventId:", eventId);
+}
+
+
+const reservedEvents = ref([]);
+
+function fetchReservedEvents() {
+  console.log("document.cookie:", document.cookie);
+  const cookie = document.cookie
+    .split(";")
+    .find((cookie) => cookie.trim().startsWith("userRole="));
+  console.log("cookie:", cookie);
+  if (cookie && cookie.split("=")[1] !== "0") {
+    console.log("cookie:", cookie);
+    console.log("Authorization:", `Bearer ${localStorage.getItem('token')}`);
+    let token = localStorage.getItem('token');
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    axios
+    .get('/api/reserve/mine', {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+    })
+    .then((response) => {
+      console.log("response:", response);
+      if (response.status === 200 && response.data.code === 0) {
+        reservedEvents.value = response.data.data;
+      }
+      console.log("reserveEvents:", reservedEvents.value[0]);
+    })
+    .catch((error) => {
+      console.log("error:", error);
+    });
   }
-  
-  .left-bar {
-    width: 10%;
-    background-color: #f8f8f8;
-    opacity: 0;
-    /* Subtle background for the sidebar */
-    padding: 20px;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-  }
-  
-  .main-content {
-    width: 100%;
-    padding: 20px;
-  }
-  
-  .title {
-    font-size: 24px;
-    color: #333;
-    padding-bottom: 10px;
-    margin-bottom: 20px;
-    border-bottom: 2px solid #cbcbcb;
-  }
-  
-  .event {
-    background-color: #fff;
-    border: 1px solid #dcdcdc;
-    border-radius: 4px;
-    padding: 16px;
-    margin: 16px 0;
-    transition: all 0.3s ease;
-  }
-  
-  .event:hover {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
-  
-  .event h2 {
-    color: #5c5c5c;
-  }
-  
-  .event p {
-    color: #6c6c6c;
-    margin-bottom: 16px;
-  }
-  
-  .event-actions {
-    display: flex;
-    justify-content: flex-end;
-  }
-  
-  .event-actions button {
-    padding: 8px 16px;
-    margin: 0 8px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .event-actions button:hover {
-    background-color: #e7e7e7;
-  }
-  
-  /* Extra styles for share and delete buttons for differentiation */
-  .share-button {
-    color: #110909;
-    /* A neutral dark color for text */
-  }
-  
-  .delete-button {
+}
+
+onMounted(() => {
+  fetchReservedEvents();
+});
+</script>
+
+<style scoped>
+.container {
+  display: flex;
+  flex-direction: column;
+}
+
+.left-bar {
+  display: flex;
+  flex-direction: column;
+  width: 20%;
+}
+
+.title {
+  display: flex;
+  justify-content: center;
+}
+
+.event {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 10px;
+}
+
+.event-actions {
+  display: flex;
+  justify-content: center;
+}
+
+.share-button {
+  margin-right: 10px;
+}
+
+.delete-button {
+  margin-left: 10px;
+}
+
+.event-actions button {
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.event-actions button:hover {
+  background-color: #f0f0f0;
+}
+
+.event-actions button:active {
+  background-color: #e0e0e0;
+}
+
+.event-actions button:focus {
+  outline: none;
+}
+
+.delete-button {
     background-color: rgba(189, 18, 18, 0.849);
     /* Default background to white */
     color: #f7f7f7;
@@ -209,5 +150,4 @@
     border: 2px solid #b33a3a;
     /* Solid border to highlight the button on hover */
   }
-  </style>
-  
+</style>
