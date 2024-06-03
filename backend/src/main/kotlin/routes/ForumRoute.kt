@@ -22,7 +22,7 @@ import java.util.*
 fun Route.routeForum() = authenticate("user") {
     route("/discuss") {
         transaction {
-            SchemaUtils.createMissingTablesAndColumns(DiscussTable, TagTable, DiscussTagTable, LikeTable)
+            SchemaUtils.createMissingTablesAndColumns(DiscussTable, TagTable, LikeTable)
         }
         createDiscuss()
         deleteDiscuss()
@@ -46,20 +46,24 @@ fun Route.getSimilarDiscuss() {
             call.respond(failRestResponseDefault(-2, "Wrong argument: Discuss does not exist"))
             return@get
         }
-
-        val discussTags = transaction { discuss.tags.map { it.name }.toSet() } // 获取当前讨论的所有标签
-        if (discussTags.isEmpty()) {
+        val discussTagsSet = transaction { Tag.find { TagTable.discussId eq discussId }.map { e -> e.name }.toSet() }
+        if (discussTagsSet.isEmpty()) {
             call.respond(emptyRestResponse()) // 如果当前讨论没有标签，直接返回空response
             return@get
         }
 
         val allDiscussWithTags = transaction {
             Discuss.all()
-                .filter { it.id.value != discussId && it.id.value == it.belongsToId.value && it.tags.any { tag -> tag.name in discussTags } } // 获取所有和当前讨论具有相同标签的其他讨论
+                .filter {
+                    it.id.value != discussId && it.belongsToId == 0.toLong() && Tag.find { TagTable.discussId eq it.id }
+                        .any { tag -> tag.name in discussTagsSet }
+                } // 获取所有和当前讨论具有相同标签的其他讨论
         }
 
         val sortedDiscusses = transaction {
-            allDiscussWithTags.groupBy { it.tags.count { tag -> tag.name in discussTags } } // 按照和当前讨论共有标签的数量进行分组
+            allDiscussWithTags.groupBy {
+                Tag.find { TagTable.discussId eq it.id }.count { tag -> tag.name in discussTagsSet }
+            } // 按照和当前讨论共有标签的数量进行分组
                 .toList().sortedByDescending { (count, _) -> count }
                 .take(10) // 取共有标签数量前十的讨论
                 .flatMap { (_, discusses) -> discusses }
@@ -108,7 +112,7 @@ fun Route.uploadDiscussReply() {
                 content = it.content
                 createTime = Instant.ofEpochSecond(Date().time)
                 poster = currentUser
-                belongsToId = discuss.id
+                belongsToId = discuss.id.value
                 likes = 0
             }
             kotlin.runCatching {
@@ -134,8 +138,7 @@ fun Route.getReplyList() {
         }
         // 获取该帖子的所有回复并按时间排序
         val replies = transaction {
-            Discuss.find { (DiscussTable.belongsToId eq discussId) and (DiscussTable.id neq discussId) }.toList()
-                .sortedBy { it.createTime }
+            Discuss.find { DiscussTable.belongsToId eq discussId }.toList().sortedBy { it.createTime }
         }
 
         call.respond((listOf(discuss) + replies).asRestResponse())
@@ -146,7 +149,7 @@ fun Route.getReplyList() {
 fun Route.getDiscussList() {
     get("/discuss-list") {
         newSuspendedTransaction {
-            val allDiscusses = Discuss.all().toList()
+            val allDiscusses = Discuss.find { DiscussTable.belongsToId eq 0 }
             call.respond(allDiscusses.asRestResponse())
         }
     }
@@ -172,13 +175,11 @@ fun Route.deleteDiscuss() {
             call.respond(failRestResponseDefault(-3, "Cannot Authentic: Permission Denied"))
             return@delete
         }
-        if (discuss.id == discuss.belongsToId) {
-            transaction {
-                Discuss.find { DiscussTable.belongsToId eq discussId }.forEach { it.delete() }
-            }
-        } else {
-            transaction { Discuss.find { DiscussTable.id eq discussId }.forEach { it.delete() } }
+        transaction {
+            Discuss.find { DiscussTable.belongsToId eq discussId }.forEach { it.delete() }
         }
+        transaction { Discuss.find { DiscussTable.id eq discussId }.forEach { it.delete() } }
+
         call.respond(emptyRestResponse("Operation Success: Delete"))
     }
 }
@@ -195,6 +196,7 @@ fun Route.createDiscuss() {
                 title = it.title
                 content = it.content
                 poster = currentUser
+                belongsToId = 0
                 createTime = Instant.ofEpochSecond(Date().time)
                 likes = 0
             }

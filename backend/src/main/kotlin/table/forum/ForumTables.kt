@@ -18,7 +18,7 @@ object DiscussTable : LongIdTable() {
     val posterId = reference("poster_id", UserTable, onDelete = ReferenceOption.CASCADE)
     val createTime = timestamp("create_time")
     val likes = long("likes")
-    val belongsToId = reference("belongs_to_id", id, onDelete = ReferenceOption.CASCADE)
+    val belongsToId = long("belongsToId")
 
     init {
         createThis()
@@ -27,18 +27,8 @@ object DiscussTable : LongIdTable() {
 
 // 标签表
 object TagTable : LongIdTable() {
+    val discussId = reference("discuss_id", DiscussTable, onDelete = ReferenceOption.CASCADE)
     val name = varchar("name", 50)
-
-    init {
-        createThis()
-    }
-}
-
-// 中间表
-object DiscussTagTable : Table() {
-    val discussId = reference("discuss_id", DiscussTable)
-    val tagId = reference("tag_id", TagTable)
-    override val primaryKey = PrimaryKey(discussId)
 
     init {
         createThis()
@@ -51,20 +41,17 @@ class Discuss(id: EntityID<Long>) : LongEntity(id) {
 
     var title by DiscussTable.title
     var content by DiscussTable.content
-    var posterId by DiscussTable.posterId
     var poster by User referencedOn DiscussTable.posterId
     var belongsToId by DiscussTable.belongsToId
     var createTime by DiscussTable.createTime
     var likes by DiscussTable.likes
-    var tags by Tag via DiscussTagTable
 }
 
 // 标签实体类
 class Tag(id: EntityID<Long>) : LongEntity(id) {
     companion object : LongEntityClass<Tag>(TagTable)
-
-    var name by TagTable.name
-    val discusses by Discuss referrersOn DiscussTagTable.tagId
+    val discuss by Discuss referencedOn TagTable.discussId
+    val name by TagTable.name
 }
 
 object LikeTable : Table() {
