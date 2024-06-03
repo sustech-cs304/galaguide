@@ -111,7 +111,12 @@ fun Route.routeEvent() {
                     call.respond(failRestResponseDefault(-2, "Event not found"))
                     return@get
                 }
-
+                if (call.user != null) {
+                    UserHistoryEventTable.insert {
+                        it[user] = call.user!!.id
+                        it[UserHistoryEventTable.event] = id
+                    }
+                }
                 call.respond(event)
             }
 
