@@ -6,7 +6,7 @@
     </div>
     <div class="event-detail">
       <div class="title-container">
-        <h1>{{ title.value }}</h1>
+        <h1>{{ title }}</h1>
         <div class="title-buttons">
           <button @click="addToFavorites">❤️ Add to Favorites</button>
         </div>
@@ -30,7 +30,7 @@
         </div>
         <div class="detail">
           <h2>Host</h2>
-          <p>{{ findHost(hostId) }}</p>
+          <p>{{ host }}</p>
         </div>
       </div>
       <h2>gallery</h2>
@@ -85,6 +85,7 @@ const description = ref('Event Description');
 const cost = ref(0);
 const category = ref('Event Category');
 const hostId = ref(0);
+const host = ref('Host Name');
 // const posterUrl = ref('https://via.placeholder.com/400x300?text=Default+Image');
 
 onMounted(() => {
@@ -93,17 +94,35 @@ onMounted(() => {
   axios.get(`/api/event/${eventID}`)
     .then((response) => {
       console.log(response.data);
-      title.value = response.data.data.value.title;
-      description.value = response.data.data.value.description;
-      cost.value = response.data.data.value.cost;
-      category.value = response.data.data.value.category;
-      hostId.value = response.data.data.value.hostId;
+      title.value = response.data.data.title;
+      description.value = response.data.data.description;
+      cost.value = response.data.data.cost;
+      category.value = response.data.data.category;
+      hostId.value = response.data.data.hostId;
+      console.log('Host ID:', hostId.value);
+      axios
+        .get(`/api/user/${hostId.value}`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+        })
+        .then((response) => {
+            console.log('response:', response.data);
+            host.value = response.data.data.name;
+        })
+        .catch((error) => {
+            console.error('Error fetching host details:', error);
+        });
     })
     .catch((error) => {
       console.error('Error fetching event details:', error);
       loadError();
     });
+
+    console.log('Host ID:', hostId.value);
+    
 });
+
 const formData = ref({
   name: '',
   email: '',
@@ -111,23 +130,6 @@ const formData = ref({
   eventId: 0,
   periodId: 0,
 });
-
-function findHost(hostId) {
-    console.log('Host ID:', hostId);
-    axios
-        .get(`/api/user/${hostId}`, {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem('token')}`,
-            },
-        })
-        .then((response) => {
-            console.log('response:', response.data);
-            return response.data.data.name;
-        })
-        .catch((error) => {
-            console.error('Error fetching host details:', error);
-        });
-}
 
 const loading = ref(true);
 const error = ref(false);

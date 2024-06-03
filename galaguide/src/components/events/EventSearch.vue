@@ -89,6 +89,13 @@ const fetchEvents = () => {
 	// 	});
 
 
+	console.log(queryWord.value)
+	console.log(selectedFilters[0].selected)
+	console.log(minPrice.value)
+	console.log(maxPrice.value)
+	console.log(startDate.value)
+	console.log(endDate.value)
+
 	// add the filter values inside post body
 	axios.post('/api/event/filter', {
 		searchQuery: queryWord.value,
