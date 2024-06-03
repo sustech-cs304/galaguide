@@ -79,6 +79,7 @@ import { ref, onMounted, } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import axios from 'axios';
 const router = useRouter();
+const eventID = useRoute().params.eventId;
 const title = ref('Event Title');
 const description = ref('Event Description');
 const cost = ref(0);
@@ -130,7 +131,6 @@ function findHost(hostId) {
 
 const loading = ref(true);
 const error = ref(false);
-const eventID = useRoute().params.eventID;
 
 
 
@@ -164,10 +164,10 @@ const reserveNow = () => {
   if (!validateForm()) {
     return;
   }
-  formData.value.eventId = eventID;
-  formData.value.periodId = eventID;
+  formData.value.eventId = 1;
+  formData.value.periodId = 1;
   // use axios to post the form data into the server
-  axios.post('/api/reserve/create-order', formData)
+  axios.post('/api/reserve/create-order', formData.value)
     .then((response) => {
       console.log(response.data);
       // Show success message to the user
