@@ -33,7 +33,7 @@ data class EventDetail(
 
 @Serializable
 data class EventFilter(
-    val category: List<String>,
+    val category: List<String>? = null,
     val startDate: Long,
     val endDate: Long,
     val status: String? = null,
@@ -46,6 +46,7 @@ data class EventCount(
     val event: Event,
     val count: Int
 )
+
 val logger = KtorSimpleLogger("EventLog")
 fun Event.asDetail() = EventDetail(
     id.value,

@@ -33,7 +33,7 @@ fun Route.routeEvent() {
                 return@post
             }
             val reply = transaction {
-                val categoryItems: Set<Event> = if (it.category.isEmpty()) {
+                val categoryItems: Set<Event> = if (it.category.isNullOrEmpty()) {
                     Event.all().toSet()
                 } else {
                     Event.all().filter { event -> event.category in it.category }.toSet()
