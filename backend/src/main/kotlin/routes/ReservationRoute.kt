@@ -69,7 +69,6 @@ fun Route.createOrderRoute() {
             }
         }
         kotlin.runCatching { call.respond(transaction { reply.asRestResponse() }) }
-        return@post
     }
 }
 
@@ -81,8 +80,7 @@ fun Route.myReserveRoute() {
             return@get
         }
         val reply = transaction { Order.find { ReservationTable.initiatorId eq call.user!!.id }.toList() }
-        call.respond(reply.asRestResponse())
-        return@get
+        call.respond(transaction { reply.asRestResponse() })
     }
 }
 

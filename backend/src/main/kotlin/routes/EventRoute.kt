@@ -214,11 +214,13 @@ fun Route.routeEvent() {
             }
 
             get("/top-rated") {
-                if(transaction { Order.all().empty() }){
-                    call.respond(Event.all().take(10).asRestResponse())
+                if (Order.all().empty()) {
+                    newSuspendedTransaction {
+                        call.respond(Event.all().take(10).asRestResponse())
+                    }
                     return@get
                 }
-                val reply = transaction {
+                newSuspendedTransaction {
                     val link1 = Order.all().groupBy { it.event }
 //                    logger.info("link1:{}", link1)
                     val link2 = link1.map { (event, orders) -> EventCount(event, orders.count()) }
@@ -227,18 +229,18 @@ fun Route.routeEvent() {
 //                    logger.info("link3:{}", link3)
                     val link4 = link3.map { (event, _) -> event }
 //                    logger.info("link4:{}", link4)
-                    link4.take(10)
+                    val link5 = link4.take(10)
+
+                    logger.info("reply:$link5")
+                    call.respond(link5.asRestResponse())
                 }
-                logger.info("reply:$reply")
-                call.respond(reply.asRestResponse())
-                return@get
             }
-            get("/newest"){
-                val reply = transaction {
-                    Event.all().sortedByDescending { it.id }.take(10).toList()
+            get("/newest") {
+                newSuspendedTransaction {
+                    val reply =
+                        Event.all().sortedByDescending { it.id }.take(10).toList()
+                    call.respond(reply.asRestResponse())
                 }
-                call.respond(reply.asRestResponse())
-                return@get
             }
         }
     }
