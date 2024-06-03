@@ -1,6 +1,8 @@
 package galaGuide.data
 
 import galaGuide.table.forum.Discuss
+import galaGuide.table.forum.Tag
+import galaGuide.table.forum.TagTable
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -21,7 +23,7 @@ fun Discuss.asDetail() = DiscussDetail(
     poster.id.value,
     poster.name,
     likes,
-    tags.toList(),
+    Tag.find { TagTable.discussId eq id }.map { tag -> tag.name },
     createTime.epochSecond,
     belongsToId
 )
