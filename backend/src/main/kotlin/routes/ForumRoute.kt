@@ -1,7 +1,6 @@
 package galaGuide.routes
 
 
-import galaGuide.data.asDetail
 import galaGuide.data.asRestResponse
 import galaGuide.data.emptyRestResponse
 import galaGuide.data.failRestResponseDefault
@@ -114,7 +113,7 @@ fun Route.uploadDiscussReply() {
             }
             kotlin.runCatching {
                 call.respond(
-                    reply.asDetail().asRestResponse("Operator Success: Create reply with id: ${reply.id}$")
+                    reply.asRestResponse()
                 )
             }
         }
@@ -139,7 +138,7 @@ fun Route.getReplyList() {
                 .sortedBy { it.createTime }
         }
 
-        call.respond((listOf(discuss) + replies).asDetail().asRestResponse())
+        call.respond((listOf(discuss) + replies).asRestResponse())
     }
 }
 
@@ -148,7 +147,7 @@ fun Route.getDiscussList() {
     get("/discuss-list") {
         newSuspendedTransaction {
             val allDiscusses = Discuss.all().toList()
-            call.respond(allDiscusses.asDetail().asRestResponse())
+            call.respond(allDiscusses.asRestResponse())
         }
     }
 }
@@ -180,7 +179,7 @@ fun Route.deleteDiscuss() {
         } else {
             transaction { Discuss.find { DiscussTable.id eq discussId }.forEach { it.delete() } }
         }
-        call.respond("Operation Success: Delete")
+        call.respond(emptyRestResponse("Operation Success: Delete"))
     }
 }
 
@@ -200,7 +199,7 @@ fun Route.createDiscuss() {
                 createTime = Instant.ofEpochSecond(Date().time)
                 likes = 0
             }
-            call.respond(discuss.asDetail().asRestResponse("Operator Success: Create discuss with id: ${discuss.id}$"))
+            call.respond(discuss.asRestResponse())
         }
     }
 }
@@ -236,11 +235,11 @@ fun Route.updateDiscussLikes() {
                     record[LikeTable.discussId] = discussId
                 }
                 discuss.likes.plus(1)
-                call.respond(discuss.likes.asRestResponse("Operator Success: Like"))
+                call.respond(discuss.likes.asRestResponse("Operation Success: Like"))
             } else {
                 LikeTable.deleteWhere { (likerId eq id) and (LikeTable.discussId eq discussId) }
                 discuss.likes.plus(-1)
-                call.respond(discuss.likes.asRestResponse("Operator Success: Unlike"))
+                call.respond(discuss.likes.asRestResponse())
             }
         }
     }

@@ -26,6 +26,6 @@ fun Discuss.asDetail() = DiscussDetail(
     belongsToId.value
 )
 
-fun List<Discuss>.asDetail() = map { discuss ->
-    discuss.asDetail()
-}
+fun Discuss.asRestResponse() = asDetail().asRestResponse()
+fun List<Discuss>.asRestResponse() = map { discuss -> discuss.asDetail() }.asRestResponse()
+
