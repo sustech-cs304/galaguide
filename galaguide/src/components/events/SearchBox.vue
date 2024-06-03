@@ -3,19 +3,26 @@
   <div class="search-box-container">
     <input type="text" v-model="searchQuery" @keyup.enter="performSearch" placeholder="Search events..."
       class="search-input" />
-    <RouterLink to="/events/search/{{ searchQuery.value }}" class="search-button">🔍</RouterLink>
+    <button class="search-button" @click="performSearch">🔍</button>
     <!-- <button @click="performSearch" class="search-button">🔍</button> -->
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 //import axios from 'axios';
 const searchQuery = ref('');
 //const searchURL = computed(() => `/events/search?query=${searchQuery.value}`);
-
+const router = useRouter();
 const performSearch = () => {
-  
+  router.push({
+    path: '/events/search', query: {
+      searchQuery: searchQuery.value,
+      category: [], minPrice: 0, maxPrice:
+        1000, startDate: 1620637200, endDate: 1620640800,
+    }
+  });
 }
 
 </script>

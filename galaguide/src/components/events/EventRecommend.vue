@@ -9,13 +9,13 @@
       <div v-show="activeTab === 'rank'" class="tab-content">
         <!-- Iterate over ranked events and display them -->
         <div v-for="event in rankEvents" :key="event.id" class="event-card">
-          <EventCard :event="event" />
+          <EventCard :title="event.title" :posterId="event.posterId" :hostId="event.hostId" :eventId="event.id"/>
         </div>
       </div>
       <div v-show="activeTab === 'new'" class="tab-content">
         <!-- Iterate over new events and display them -->
         <div v-for="event in newEvents" :key="event.id" class="event-card">
-          <EventCard :gala="event" />
+          <EventCard :="event" />
         </div>
       </div>
     </div>
@@ -34,7 +34,8 @@ onMounted(() => {
   // Fetch ranked events
   axios.get('/api/event/top-rated')
     .then((response) => {
-      rankEvents.value = response.data;
+      console.log(response.data)
+      rankEvents.value = response.data.data;
     })
     .catch((error) => {
       console.error('Error fetching top-rated events:', error);
@@ -43,7 +44,8 @@ onMounted(() => {
   // Fetch new events
   axios.get('/api/event/newest')
     .then((response) => {
-      newEvents.value = response.data;
+      console.log(response.data)
+      newEvents.value = response.data.data;
     })
     .catch((error) => {
       console.error('Error fetching new events:', error);
@@ -103,8 +105,9 @@ const showNews = () => {
 
 .content {
   justify-content: center;
-  
+
 }
+
 .content .tab-content {
   align-items: center;
   justify-content: center;
@@ -127,7 +130,7 @@ const showNews = () => {
 }
 
 .content .tab-content .event-card:hover {
-  
+
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 

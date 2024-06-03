@@ -5,8 +5,11 @@
             <img :src="'/api/asset/' + posterId" alt="Event Poster" style="width: 100px; height: 100px; margin-right: 30px;"/>
         </div>
         <div class="event-card-content">
-            <h3>{{ title }}</h3>
-            <p>Host: {{ host }}</p>
+            <RouterLink to="/events/{{eventId}}">
+                <h3>{{ title }}</h3>
+                <p>Host: {{ host }}</p>
+            </RouterLink>
+            
         </div>
         
     </div>
@@ -15,11 +18,11 @@
 <script setup>
 import axios from 'axios';
 import { ref, defineProps, onMounted } from 'vue';
-
 const props = defineProps({
     title: String,
     posterId: String,
-    hostId: Number
+    hostId: Number,
+    eventId: Number,
 });
 
 const showButtons = ref(false);
