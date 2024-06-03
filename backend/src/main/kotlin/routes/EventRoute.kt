@@ -180,37 +180,30 @@ fun Route.routeEvent() {
             post<EventFilter>("/filter") {
                 if (it.equals(null)) {
                     val reply = transaction { Event.all().toList() }
-                    call.respond(reply.asRestResponse())
+                    call.respond(transaction { reply.asRestResponse() })
+                    return@post
+                }
+                if (it.category == null) {
+                    call.respond(failRestResponseDefault(-1, "Missing argument: category"))
                     return@post
                 }
                 val reply = transaction {
-                    var categoryItems = Event.all().toSet()
-                    var statusItems = Event.all().toSet()
-                    val dateItems = Event.all().toSet()
-                    var priceItems = Event.all().toSet()
-                    if (!it.status.equals(null)) {
-                        categoryItems = Event.find { EventTable.category eq it.category }.toSet()
+                    val categoryItems = Event.all().filter { event -> event.category in it.category }.toSet()
+
+                    val periods = EventPeriod.find {
+                        (EventPeriodTable.end less Instant.ofEpochSecond(it.startDate)) or (EventPeriodTable.start greater Instant.ofEpochSecond(
+                            it.endDate
+                        ))
                     }
-                    if (!it.status.equals(null)) {
-                        statusItems = Event.find { EventTable.category eq it.category }.toSet()
-                    }
-                    if (!it.startDate.equals(null) and !it.endDate.equals(null)) {
-                        val periods = EventPeriod.find {
-                            (EventPeriodTable.end less Instant.ofEpochSecond(it.startDate)) or (EventPeriodTable.start greater Instant.ofEpochSecond(
-                                it.endDate
-                            ))
-                        }
-                        dateItems.filter { dataItem -> dataItem.id in periods.map { p -> p.event.id } }
-                    }
-                    if (!it.minPrice.equals(null) and !it.endDate.equals(null)) {
-                        priceItems =
-                            Event.find { (EventTable.cost greaterEq it.minPrice) and (EventTable.cost lessEq it.maxPrice) }
-                                .toSet()
-                    }
-                    categoryItems.intersect(statusItems).intersect(dateItems).intersect(priceItems).toList()
+                    val dateItems = Event.all().filter { dataItem -> dataItem.id in periods.map { p -> p.event.id } }.toSet()
+
+                    val priceItems =
+                        Event.find { (EventTable.cost greaterEq it.minPrice) and (EventTable.cost lessEq it.maxPrice) }
+                            .toSet()
+
+                    categoryItems.intersect(dateItems).intersect(priceItems).toList()
                 }
-                call.respond(reply.asRestResponse())
-                return@post
+                call.respond(transaction { reply.asRestResponse() })
             }
 
             get("/top-rated") {

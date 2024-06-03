@@ -33,12 +33,12 @@ data class EventDetail(
 
 @Serializable
 data class EventFilter(
-    val category: String,
+    val category: List<String>? = null,
     val startDate: Long,
     val endDate: Long,
-    val status: String,
+    val status: String? = null,
     val maxPrice: Long,
-    val minPrice: Long,
+    val minPrice: Long
 )
 
 data class EventCount(
