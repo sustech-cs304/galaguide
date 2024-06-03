@@ -120,7 +120,6 @@ fun Application.init() {
             }
         }
     }
-    logger.isInfoEnabled
     logger.isDebugEnabled
     SMTP.init(this)
     logger.info("Open Logger")
