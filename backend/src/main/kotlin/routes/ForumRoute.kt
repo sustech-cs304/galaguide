@@ -148,7 +148,7 @@ fun Route.getReplyList() {
 fun Route.getDiscussList() {
     get("/discuss-list") {
         newSuspendedTransaction {
-            val allDiscusses = Discuss.find { DiscussTable.belongsToId eq 0 }
+            val allDiscusses = Discuss.find { DiscussTable.belongsToId eq 0 }.toList()
             call.respond(allDiscusses.asRestResponse())
         }
     }
