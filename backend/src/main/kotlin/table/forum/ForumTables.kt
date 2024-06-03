@@ -45,6 +45,7 @@ class Discuss(id: EntityID<Long>) : LongEntity(id) {
     var belongsToId by DiscussTable.belongsToId
     var createTime by DiscussTable.createTime
     var likes by DiscussTable.likes
+    var tags = Tag.find { TagTable.discussId eq id }.map { tag -> tag.name }.toSet()
 }
 
 // 标签实体类

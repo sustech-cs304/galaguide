@@ -18,12 +18,12 @@ data class DiscussDetail(
 fun Discuss.asDetail() = DiscussDetail(
     title,
     content,
-    posterId.value,
+    poster.id.value,
     poster.name,
     likes,
-    tags.map { it.name },
+    tags.toList(),
     createTime.epochSecond,
-    belongsToId.value
+    belongsToId
 )
 
 fun Discuss.asRestResponse() = asDetail().asRestResponse()
