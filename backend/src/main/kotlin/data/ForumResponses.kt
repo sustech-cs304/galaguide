@@ -14,7 +14,7 @@ data class DiscussDetail(
     val likes: Long = 0,
     val tags: List<String> = emptyList(),
     val time: Long? = null,
-    val belongsToId: Long? = null
+    val belongsToId: Long
 )
 
 fun Discuss.asDetail() = DiscussDetail(

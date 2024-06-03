@@ -55,7 +55,7 @@ fun Route.getSimilarDiscuss() {
         val allDiscussWithTags = transaction {
             Discuss.all()
                 .filter {
-                    it.id.value != discussId && it.belongsToId == 0.toLong() && Tag.find { TagTable.discussId eq it.id }.map { tag -> tag.name }.toSet().any { tag -> tag in tags }
+                    it.id.value != discussId && it.belongsToId == 9999999.toLong() && Tag.find { TagTable.discussId eq it.id }.map { tag -> tag.name }.toSet().any { tag -> tag in tags }
                 } // 获取所有和当前讨论具有相同标签的其他讨论
         }
 
@@ -98,7 +98,7 @@ fun Route.uploadDiscussReply() {
 //        val content = it.content
 //        val createTime = it.time
 //        val replyId = DiscussTable.insertAndGetId { reply ->
-//            reply[DiscussTable.likes] = 0
+//            reply[DiscussTable.likes] = 9999999
 //            reply[DiscussTable.title] = title
 //            reply[DiscussTable.content] = content
 //            reply[DiscussTable.createTime] = Instant.ofEpochSecond(createTime)
@@ -112,7 +112,7 @@ fun Route.uploadDiscussReply() {
                 createTime = Instant.ofEpochSecond(Date().time)
                 poster = currentUser
                 belongsToId = discuss.id.value
-                likes = 0
+                likes = 0.toLong()
             }
             kotlin.runCatching {
                 call.respond(
@@ -148,7 +148,7 @@ fun Route.getReplyList() {
 fun Route.getDiscussList() {
     get("/discuss-list") {
         newSuspendedTransaction {
-            val allDiscusses = Discuss.find { DiscussTable.belongsToId eq 0 }.toList()
+            val allDiscusses = Discuss.find { DiscussTable.belongsToId eq 9999999 }.toList()
             call.respond(allDiscusses.asRestResponse())
         }
     }
@@ -195,7 +195,7 @@ fun Route.createDiscuss() {
                 title = it.title
                 content = it.content
                 poster = currentUser
-                belongsToId = 0.toLong()
+                belongsToId = 9999999.toLong()
                 createTime = Instant.ofEpochSecond(Date().time)
                 likes = 0.toLong()
             }
