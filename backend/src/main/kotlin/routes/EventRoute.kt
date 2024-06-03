@@ -32,25 +32,32 @@ fun Route.routeEvent() {
                 call.respond(transaction { reply.asRestResponse() })
                 return@post
             }
-            if (it.category == null) {
-                call.respond(failRestResponseDefault(-1, "Missing argument: category"))
-                return@post
-            }
             val reply = transaction {
-                val categoryItems = Event.all().filter { event -> event.category in it.category }.toSet()
-
+                val categoryItems: Set<Event> = if (it.category.isEmpty()) {
+                    Event.all().toSet()
+                } else {
+                    Event.all().filter { event -> event.category in it.category }.toSet()
+                }
+                val searchItems: Set<Event> = if (it.searchQuery == "") {
+                    Event.all().toSet()
+                } else {
+                    Event.all()
+                        .filter { event -> (it.searchQuery in event.title) and (it.searchQuery in event.description) }
+                        .toSet()
+                }
                 val periods = EventPeriod.find {
                     (EventPeriodTable.end less Instant.ofEpochSecond(it.startDate)) or (EventPeriodTable.start greater Instant.ofEpochSecond(
                         it.endDate
                     ))
                 }
-                val dateItems = Event.all().filter { dataItem -> dataItem.id in periods.map { p -> p.event.id } }.toSet()
+                val dateItems =
+                    Event.all().filter { dataItem -> dataItem.id in periods.map { p -> p.event.id } }.toSet()
 
                 val priceItems =
                     Event.find { (EventTable.cost greaterEq it.minPrice) and (EventTable.cost lessEq it.maxPrice) }
                         .toSet()
 
-                categoryItems.intersect(dateItems).intersect(priceItems).toList()
+                categoryItems.intersect(dateItems).intersect(priceItems).intersect(searchItems).toList()
             }
             call.respond(transaction { reply.asRestResponse() })
         }
@@ -205,7 +212,7 @@ fun Route.routeEvent() {
                         title = it.title
                         host = call.user!!
                         this.poster = poster
-                        description = it.description
+                        description = it.description!!
                         cost = it.cost ?: 0
                         category = it.category ?: "other"
                     }

@@ -14,7 +14,7 @@ object EventTable : LongIdTable() {
     val title = varchar("title", 128)
     val host = reference("host", UserTable)
     val poster = reference("poster", StaticAssetTable)
-    val description = text("description").nullable()
+    val description = text("description")
     val cost = long("cost").default(0)
     val category = varchar("category", 32).default("other")
     val reviewed = bool("reviewed").default(false)
