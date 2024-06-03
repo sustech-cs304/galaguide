@@ -70,6 +70,7 @@ const getUserEvents = () => {
             Authorization: `Bearer ${localStorage.getItem('token')}`
         }
     }).then((response) => {
+        console.log(response.data.data);
         return response.data.data;
     }).catch((error) => {
         console.error(error);
@@ -83,6 +84,7 @@ const getAllEvents = () => {
             Authorization: `Bearer ${localStorage.getItem('token')}`
         }
     }).then((response) => {
+        console.log(response.data.data);
         return response.data.data;
     }).catch((error) => {
         console.error(error);
@@ -91,21 +93,26 @@ const getAllEvents = () => {
 };
 
 const makeInfoString = (data) => {
-    if (!data) {
+    console.log(data)
+    if (!data) { 
+        console.log('No data');
         return '';
     }
     let infoString = '';
     data.forEach((item) => {
         infoString += item.title + ' ' + item.description + ' ' + item.location + ' ' + item.date + ' ' + item.time + ' ';
     });
+    console.log(infoString);
     return infoString;
 };
 
 const sendmsg = () => {
+    const userEvents = getUserEvents();
+    const allEvents = getAllEvents();
     axios.post('/v2-api/ai', {
         question: document.getElementById('help-holder').value,
-        userEvents: makeInfoString(getUserEvents()),
-        allEvents: makeInfoString(getAllEvents()),
+        userEvents: makeInfoString(userEvents),
+        allEvents: makeInfoString(allEvents),
         history: chatHistory.value
     }).then((response) => {
         console.log(response.data);

@@ -8,7 +8,7 @@ const cur_g_id = ref(null);
 
 var socket = null;
 var lockReconnect = false;
-var wsUrl = 'ws://43.139.21.229:9260/ws';
+var wsUrl = 'ws://43.139.21.229:9262/ws';
 // var wsUrl = 'ws://10.16.165.97:9260/ws';
 var timeout = 4000;
 var timeoutnum = null;
@@ -142,7 +142,7 @@ const easyMarkdownConversion = (text) => {
 onMounted(() => {
     document.querySelector("#footer").style.display = "none";
 
-    axios.get("/api/groups",{
+    axios.get("/v2-api/groups",{
         headers: {
             'Authorization': `Bearer ${getCookie("token")}`
         }
@@ -165,7 +165,7 @@ onMounted(() => {
 
 const showGroup = (id) => {
     document.querySelector("#main-chat-room").style.display = "block";
-    axios.get(`/api/groups/${id}`)
+    axios.get(`/v2-api/groups/${id}`)
         .then(response => {
             console.log(response.data);
             document.querySelector("#group-details").innerHTML = `

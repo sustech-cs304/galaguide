@@ -70,7 +70,7 @@ fun Route.getSimilarDiscuss() {
                 .flatMap { (_, discusses) -> discusses }
         }
         val reply =
-            sortedDiscusses.map { it.asDetail(Tag.find { TagTable.discussId eq it.id }.map { tag -> tag.name }) }
+            sortedDiscusses.map { it.asDetail() }
         call.respond(reply.asRestResponse())
     }
 }
@@ -120,7 +120,7 @@ fun Route.uploadDiscussReply() {
             }
             kotlin.runCatching {
                 call.respond(
-                    reply.asDetail(Tag.find { TagTable.discussId eq reply.id }.map { tag -> tag.name }).asRestResponse()
+                    reply.asDetail().asRestResponse()
                 )
             }
         }
@@ -144,7 +144,7 @@ fun Route.getReplyList() {
             Discuss.find { DiscussTable.belongsToId eq discussId }.toList().sortedBy { it.createTime }
         }
         val reply = (listOf(discuss) + replies).map {
-            it.asDetail(Tag.find { TagTable.discussId eq it.id }.map { tag -> tag.name })
+            it.asDetail()
         }
         call.respond(reply.asRestResponse())
     }
@@ -156,7 +156,7 @@ fun Route.getDiscussList() {
         newSuspendedTransaction {
             val allDiscusses = Discuss.find { DiscussTable.belongsToId eq 0 }.toList()
             val reply = allDiscusses.map {
-                it.asDetail(Tag.find { TagTable.discussId eq it.id }.map { tag -> tag.name })
+                it.asDetail()
             }
             call.respond(reply.asRestResponse())
         }
@@ -209,7 +209,7 @@ fun Route.createDiscuss() {
                 likes = 0.toLong()
             }
             call.respond(
-                discuss.asDetail(Tag.find { TagTable.discussId eq discuss.id }.map { tag -> tag.name }).asRestResponse()
+                discuss.asDetail().asRestResponse()
             )
         }
     }
@@ -245,11 +245,11 @@ fun Route.updateDiscussLikes() {
                     record[likerId] = id
                     record[LikeTable.discussId] = discussId
                 }
-                discuss.likes.plus(1)
+                discuss.likes = discuss.likes.inc()
                 call.respond(discuss.likes.asRestResponse("Operation Success: Like"))
             } else {
                 LikeTable.deleteWhere { (likerId eq id) and (LikeTable.discussId eq discussId) }
-                discuss.likes.plus(-1)
+                discuss.likes = discuss.likes.dec()
                 call.respond(discuss.likes.asRestResponse("Operation Success: Unlike"))
             }
         }

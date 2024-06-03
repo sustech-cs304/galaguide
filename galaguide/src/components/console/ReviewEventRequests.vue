@@ -69,6 +69,7 @@
 
 <script setup>
 import { ref } from 'vue';
+import axios from 'axios';
 
 const events = ref([
     { id: 1, title: 'Music Concert', description: 'A wonderful evening of music.', poster: 'concert.jpg', host: 'John Doe', fee: '$50', category: 'Music', capacity: 200, sessions: [{ id: 1, startTime: '2024-06-01 19:00', endTime: '2024-06-01 22:00', venue: 'Concert Hall' }], showDetails: false, showRejectForm: false },
@@ -96,8 +97,23 @@ const showRejectForm = (eventId) => {
 };
 
 const acceptEvent = (eventId) => {
-    alert(`Event with ID: ${eventId} has been accepted.`);
-    // Implement further logic for accepting the event
+    // alert(`Event with ID: ${eventId} has been accepted.`);
+    // POST /events/:eventId/review
+    const token = localStorage.getItem('token');
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    axios.post(`/events/${eventId}/review`)
+        .then((response) => {
+            if (response.status === 200) {
+                const event = events.value.find((event) => event.id === eventId);
+                if (event) {
+                    event.showDetails = false; // Collapse details after accepting
+                }
+            }
+        })
+        .catch((error) => {
+            // alert(`An error occurred: ${error.message}`);
+            console.error(error);
+        });
 };
 
 const rejectEvent = (eventId) => {

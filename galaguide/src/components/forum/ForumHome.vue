@@ -8,21 +8,21 @@ onMounted(() => {
   const token = localStorage.getItem("token");
   // if token exists, set the token in the axios headers
   if (token) {
-    axios.defaults.headers.common["Bearer"] = token;
+    axios.defaults.headers.common["Authorization"] = "Bearer " + token;
   }
   // get posts from the server
   axios
-    .get("/api/posts")
+    .get("/api/discuss/discuss-list")
     .then((response) => {
       console.log(response.data);
-      posts.value = response.data;
+      posts.value = response.data.data;
     })
     .catch((error) => {
       console.error("Error fetching posts:", error);
     });
 });
 
-const posts = ref();
+const posts = ref([]);
 </script>
 
 <template>
@@ -52,19 +52,19 @@ const posts = ref();
           <p class="post-time">{{ post.time }}</p>
         </div>
         <p class="post-content">{{ post.content }}</p>
-        <p class="post-sender">Posted by {{ post.sender }}</p>
+        <p class="post-sender">Posted by {{ post.posterName }}</p>
         <!-- Likes -->
         <div class="post-likes">
           <button>Like</button>
           <p>{{ post.likes }} Likes</p>
         </div>
         <!-- Tags -->
-        <div class="post-tags">
+        <!-- <div class="post-tags">
           <p>Tags:</p>
           <div v-for="tag in post.tags" :key="tag" class="tag">
             <p>{{ tag }}</p>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
