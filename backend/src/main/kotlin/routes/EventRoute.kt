@@ -99,21 +99,12 @@ fun Route.routeEvent() {
                     }
 
                     val event = transaction {
-                        Event.findById(id)?.also { e ->
-                            call.userId?.let { userId ->
-                                UserHistoryEventTable.insert {
-                                    it[user] = userId
-                                    it[event] = e.id
-                                }
-                            }
-                        }?.asRestResponse()
+                        Event.findById(id)?.asRestResponse()
                     } ?: run {
                         call.respond(failRestResponseDefault(-2, "Event not found"))
                         return@get
                     }
-                    logger.info("Out User Logged in")
                     if (call.user != null) {
-                        logger.info("In User Logged in")
                         transaction {
                             if (UserHistoryEventTable.select((UserHistoryEventTable.event eq id) and (UserHistoryEventTable.user eq call.user!!.id))
                                     .empty()
