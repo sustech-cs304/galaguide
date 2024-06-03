@@ -82,7 +82,12 @@ fun Route.routeEvent() {
                         return@post
                     }
 
-                    transaction {
+                    newSuspendedTransaction {
+                        Event.findById(eventId) ?: run {
+                            call.respond(failRestResponseDefault(-2, "Event not found"))
+                            return@newSuspendedTransaction
+                        }
+
                         if (UserFavoriteEventTable.select { (UserFavoriteEventTable.user eq userId) and (UserFavoriteEventTable.event eq eventId) }
                                 .any()) {
                             UserFavoriteEventTable.deleteWhere { (user eq userId) and (event eq eventId) }
@@ -92,9 +97,9 @@ fun Route.routeEvent() {
                                 it[event] = eventId
                             }
                         }
-                    }
 
-                    call.respond(emptyRestResponse("Favorite toggled"))
+                        call.respond(emptyRestResponse("Favorite toggled"))
+                    }
                 }
             }
         }
