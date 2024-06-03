@@ -120,9 +120,8 @@ fun Application.init() {
             }
         }
     }
-    logger.isDebugEnabled
     SMTP.init(this)
     logger.info("Open Logger")
-    logger.debug("Open Debug")
+//    logger.debug("Open Debug")
     configureRouting()
 }
