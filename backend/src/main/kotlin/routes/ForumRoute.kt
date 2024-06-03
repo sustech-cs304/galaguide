@@ -245,11 +245,11 @@ fun Route.updateDiscussLikes() {
                     record[likerId] = id
                     record[LikeTable.discussId] = discussId
                 }
-                discuss.likes.plus(1)
+                discuss.likes = discuss.likes.inc()
                 call.respond(discuss.likes.asRestResponse("Operation Success: Like"))
             } else {
                 LikeTable.deleteWhere { (likerId eq id) and (LikeTable.discussId eq discussId) }
-                discuss.likes.plus(-1)
+                discuss.likes = discuss.likes.dec()
                 call.respond(discuss.likes.asRestResponse("Operation Success: Unlike"))
             }
         }

@@ -54,6 +54,12 @@ fun Route.createOrderRoute() {
             call.respond(failRestResponseDefault(-2, "Wrong argument: PeriodId(Mismatch with EventId)"))
             return@post
         }
+        if (currentUser.guiro >= event.cost) {
+            transaction { currentUser.guiro = currentUser.guiro.minus(event.cost) }
+        } else {
+            call.respond(failRestResponseDefault(-8, "Create Failed: No enough Guiro"))
+            return@post
+        }
         val reply = transaction {
             Order.new {
                 initiator = currentUser

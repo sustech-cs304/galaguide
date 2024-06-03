@@ -95,3 +95,13 @@ ktor {
         )
     }
 }
+tasks.withType<Test> {
+    useJUnitPlatform()
+}
+tasks.register("countDependencies") {
+    doLast {
+        val configurations = project.configurations
+        val allDependencies = configurations.flatMap { it.dependencies }
+        println("Number of dependencies: ${allDependencies.size}")
+    }
+}
