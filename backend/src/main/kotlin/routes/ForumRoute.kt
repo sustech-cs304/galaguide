@@ -46,8 +46,8 @@ fun Route.getSimilarDiscuss() {
             call.respond(failRestResponseDefault(-2, "Wrong argument: Discuss does not exist"))
             return@get
         }
-
-        if (discuss.tags.isEmpty()) {
+        val tags = Tag.find { TagTable.discussId eq discuss.id }.map { tag -> tag.name }.toSet()
+        if (tags.isEmpty()) {
             call.respond(emptyRestResponse()) // 如果当前讨论没有标签，直接返回空response
             return@get
         }
@@ -55,13 +55,13 @@ fun Route.getSimilarDiscuss() {
         val allDiscussWithTags = transaction {
             Discuss.all()
                 .filter {
-                    it.id.value != discussId && it.belongsToId == 0.toLong() && it.tags.any { tag -> tag in discuss.tags }
+                    it.id.value != discussId && it.belongsToId == 0.toLong() && Tag.find { TagTable.discussId eq it.id }.map { tag -> tag.name }.toSet().any { tag -> tag in tags }
                 } // 获取所有和当前讨论具有相同标签的其他讨论
         }
 
         val sortedDiscusses = transaction {
             allDiscussWithTags.groupBy {
-                it.tags.count { tag -> tag in discuss.tags }
+                Tag.find { TagTable.discussId eq it.id }.map { tag -> tag.name }.toSet().count { tag -> tag in tags }
             } // 按照和当前讨论共有标签的数量进行分组
                 .toList().sortedByDescending { (count, _) -> count }
                 .take(10) // 取共有标签数量前十的讨论
