@@ -2,8 +2,8 @@ package galaGuide.table.reservation
 
 import galaGuide.table.Event
 import galaGuide.table.EventPeriod
+import galaGuide.table.EventPeriodTable
 import galaGuide.table.EventTable
-import galaGuide.table.EventTable.default
 import galaGuide.table.user.User
 import galaGuide.table.user.UserTable
 import galaGuide.util.createThis
@@ -12,10 +12,7 @@ import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.LongIdTable
 import org.jetbrains.exposed.sql.ReferenceOption
-import org.jetbrains.exposed.sql.javatime.datetime
-import org.jetbrains.exposed.sql.javatime.time
 import org.jetbrains.exposed.sql.javatime.timestamp
-import java.time.Period
 
 object ReservationTable : LongIdTable() {
     val initiatorId = reference("initiator_id", UserTable, onDelete = ReferenceOption.CASCADE)
@@ -24,7 +21,7 @@ object ReservationTable : LongIdTable() {
     val price = long("cost").default(0)
     val createTime = timestamp("create_time")
     val eventId = reference("event_id", EventTable, onDelete = ReferenceOption.CASCADE)
-    val periodId = reference("period_id", EventTable, onDelete = ReferenceOption.CASCADE)
+    val periodId = reference("period_id", EventPeriodTable, onDelete = ReferenceOption.CASCADE)
     val name = varchar("name", 128)
     val phoneNumber = varchar("phone_number", 16)
     val email = varchar("email", 128)
