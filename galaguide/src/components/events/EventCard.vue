@@ -23,7 +23,6 @@ import { ref, defineProps } from 'vue';
 const gala = defineProps(['gala']);
 
 
-
 const showButtons = ref(false);
 
 // const reserveGala = () => {
@@ -84,7 +83,7 @@ const showButtons = ref(false);
 .event-card {
     display: flex;
     flex-direction: row;
-    margin: 10px;
+    margin: 2px;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;

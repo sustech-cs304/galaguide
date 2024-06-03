@@ -14,6 +14,7 @@
         <button type="submit" @click="shareEvent" class="share-button">Share</button>
         <button type="submit" @click="deleteEvent" class="delete-button">Delete</button>
       </div>
+      
     </div>
   </div>
 </template>
@@ -44,7 +45,7 @@ function fetchFavoriteEvents() {
   if (cookie && cookie.split("=")[1] !== "0") {
     console.log("cookie:", cookie);
     axios
-    .get('/api/event', {
+    .get('/api/user/favorite', {
         headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`
         }

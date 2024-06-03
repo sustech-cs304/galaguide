@@ -56,7 +56,7 @@ const uploadImage = () => {
 
     console.log("Image uploaded");
     fileInput.value = "";
-    window.location.reload();
+    //window.location.reload();
 }
 </script>
 

@@ -10,40 +10,13 @@
           <input type="text" id="event-title" v-model="formData.title" />
         </div>
         <div class="form-group">
-          <label for="event-introduction">Event Introduction</label>
-          <textarea id="event-introduction" v-model="formData.introduction"></textarea>
-        </div>
-        <div class="form-group-horizontal">
-          <div class="form-group">
-            <label for="event-time">Event Start Time</label>
-            <input type="datetime-local" id="event-time" v-model="formData.time" />
-          </div>
-          <div class="form-group">
-            <label for="event-time">Event End Time</label>
-            <input type="datetime-local" id="event-time" v-model="formData.time" />
-          </div>
-          <div class="form-group">
-            <label for="event-fee">Fee</label>
-            <input type="text" id="event-fee" v-model="formData.fee" />
-          </div>
-          <div class="form-group">
-            <label for="event-category">Category</label>
-            <!-- a drop down selection -->
-            <select id="event-category" v-model="formData.category">
-              <option v-for="option in category_options" :key="option.value" :value="option.value">
-                {{ option.label }}
-              </option>
-            </select>
-          </div>
-        </div>
-        <div class="form-group">
           <label for="event-poster">Event Poster</label>
           <div class="uploaderHolder">
-            <ImageUploader :posterId="formData.posterUrl" />
+            <ImageUploader :posterId="formData.posterId" />
           </div>
           <div class="my-images">
             <h2>My Images</h2>
-            
+
             <div class="myImageHolder">
               <h4>Click on images to copy to clipboard</h4>
               <div id="imgs-holder">
@@ -64,6 +37,48 @@
 
 
         </div>
+
+        <div class="form-group">
+          <label for="event-introduction">Event Introduction</label>
+          <textarea id="event-introduction" v-model="formData.description"></textarea>
+        </div>
+        <div class="form-group-horizontal">
+
+          <div class="form-group">
+            <label for="event-fee">Fee</label>
+            <input type="number" id="event-fee" v-model="formData.cost" />
+          </div>
+          <div class="form-group">
+            <label for="event-category">Category</label>
+            <!-- a drop down selection -->
+            <select id="event-category" v-model="formData.category">
+              <option v-for="option in category_options" :key="option.value" :value="option.value">
+                {{ option.label }}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <!-- periods is a list containing {start:, end: } -->
+          <div v-for="(period, index) in formData.periods" :key="index" style="display: flex; align-self: center;">
+            <div class="form-group-horizontal">
+              <div class="form-group">
+                <label :for="'event-start-time-' + index">Event Start Time</label>
+                <input type="datetime-local" :id="'event-start-time-' + index" v-model="period.start" />
+              </div>
+              <div class="form-group">
+                <label :for="'event-end-time-' + index">Event End Time</label>
+                <input type="datetime-local" :id="'event-end-time-' + index" v-model="period.end" />
+              </div>
+              <button @click.prevent="removePeriod(index)">Remove Period</button>
+            </div>
+
+
+          </div>
+
+          <button @click.prevent="addPeriod" :disabled="formData.periods.length >= 5">Add Period</button>
+        </div>
+
         <button @click.prevent="createEvent">Create Event</button>
         <CustomAlert :visible="showAlert" title="Congrats!" message="Link copied to clipboard!"
           @close="showAlert = false" />
@@ -90,7 +105,7 @@ const category_options = [
 const formData = ref({
   title: '',
   posterId: '',
-  description:'',
+  description: '',
   category: '',
   cost: 0,
   periods: [],
@@ -98,6 +113,7 @@ const formData = ref({
 
 const createEvent = async () => {
   try {
+    console.log(formData.value);
     const response = await axios.post('/api/event/create', formData.value);
     console.log(response.data);
   } catch (error) {
@@ -108,40 +124,52 @@ const myImgs = ref([]);
 const showAlert = ref(false);
 
 onMounted(() => {
-    console.log('ImageHost component is mounted');
-    const token = localStorage.getItem("token");
-    if (!token) {
-        router.push("/login");
-    }
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    axios.get("/api/asset").then((res) => {
-        console.log(res.data);
-        myImgs.value = res.data.data;
-        
-    }).catch((err) => {
-        console.log(err);
-    });
+  console.log('ImageHost component is mounted');
+  const token = localStorage.getItem("token");
+  if (!token) {
+    router.push("/login");
+  }
+  axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  axios.get("/api/asset").then((res) => {
+    console.log(res.data);
+    myImgs.value = res.data.data;
+
+  }).catch((err) => {
+    console.log(err);
+  });
 });
 
 const copyToClickBoard = (src) => {
-    navigator.clipboard.writeText(
-        window.location.origin + '/api/asset/' +
-        src);
-    showAlert.value = true;
+  navigator.clipboard.writeText(
+    window.location.origin + '/api/asset/' +
+    src);
+  showAlert.value = true;
 }
 
 const deleteImage = (uuid) => {
-    axios.delete(`/api/asset/${uuid}`, {
-        headers: {
-            'Authorization': 'Bearer ' + localStorage.getItem('token')
-        },
-    }).then((res) => {
-        console.log(res.data);
-        window.location.reload();
-    }).catch((err) => {
-        console.log(err);
-    });
+  axios.delete(`/api/asset/${uuid}`, {
+    headers: {
+      'Authorization': 'Bearer ' + localStorage.getItem('token')
+    },
+  }).then((res) => {
+    console.log(res.data);
+    window.location.reload();
+  }).catch((err) => {
+    console.log(err);
+  });
 }
+
+const addPeriod = () => {
+  if (formData.value.periods.length < 5) {
+    formData.value.periods.push({ start: '', end: '' });
+  } else {
+    alert('You can add a maximum of 5 periods.');
+  }
+};
+
+const removePeriod = (index) => {
+  formData.value.periods.splice(index, 1);
+};
 </script>
 
 <style scoped>
@@ -236,6 +264,7 @@ button:hover {
   border-radius: 10px;
   cursor: pointer;
 }
+
 .myImageHolder {
   display: flex;
   align-self: center;
@@ -247,6 +276,7 @@ button:hover {
   border-radius: 10px;
   cursor: pointer;
 }
+
 .my-images {
   display: flex;
   flex-direction: column;
@@ -256,57 +286,57 @@ button:hover {
 }
 
 #imgs-holder {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    flex-wrap: wrap;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  flex-wrap: wrap;
 }
 
 .single-img {
-    margin-top: 4px;
-    background: rgb(234, 234, 234);
-    border-radius: 5px;
-    transition-duration: 0.4s;
+  margin-top: 4px;
+  background: rgb(234, 234, 234);
+  border-radius: 5px;
+  transition-duration: 0.4s;
 }
 
 .single-img:hover {
-    box-shadow: 0 0 30px rgba(82, 81, 81, 0.7);
+  box-shadow: 0 0 30px rgba(82, 81, 81, 0.7);
 }
 
 #imgs-holder>div>img {
-    height: 150px;
-    margin: 5px;
+  height: 150px;
+  margin: 5px;
 }
 
 .delete-button {
-    position: relative;
-    width: 80%;
-    left: 10%;
-    background-color: red;
-    color: white;
-    text-align: center;
-    border-radius: 5px;
-    cursor: pointer;
-    transition-duration: 0.4s;
+  position: relative;
+  width: 80%;
+  left: 10%;
+  background-color: red;
+  color: white;
+  text-align: center;
+  border-radius: 5px;
+  cursor: pointer;
+  transition-duration: 0.4s;
 }
 
 .delete-button:hover {
-    background-color: rgb(224, 2, 2);
+  background-color: rgb(224, 2, 2);
 }
 
 .copy-button {
-    position: relative;
-    width: 80%;
-    left: 10%;
-    background-color: blue;
-    color: white;
-    text-align: center;
-    border-radius: 5px;
-    cursor: pointer;
-    transition-duration: 0.4s;
+  position: relative;
+  width: 80%;
+  left: 10%;
+  background-color: blue;
+  color: white;
+  text-align: center;
+  border-radius: 5px;
+  cursor: pointer;
+  transition-duration: 0.4s;
 }
 
 .copy-button:hover {
-    background-color: rgb(2, 2, 224);
+  background-color: rgb(2, 2, 224);
 }
 </style>
