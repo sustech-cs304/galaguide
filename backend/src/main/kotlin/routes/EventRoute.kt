@@ -115,9 +115,11 @@ fun Route.routeEvent() {
                     logger.info("Out User Logged in")
                     if (call.user != null) {
                         logger.info("In User Logged in")
-                        UserHistoryEventTable.insert {
-                            it[user] = call.user!!.id
-                            it[UserHistoryEventTable.event] = id
+                        transaction {
+                            UserHistoryEventTable.insert {
+                                it[user] = call.user!!.id
+                                it[UserHistoryEventTable.event] = id
+                            }
                         }
                     }
                     call.respond(event)
