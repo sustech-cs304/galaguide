@@ -6,6 +6,8 @@ plugins {
 
     //ktor
     id("io.ktor.plugin") version "2.3.8"
+
+    id("io.gitlab.arturbosch.detekt") version "1.23.6"
 }
 
 group = "galaGuide"
