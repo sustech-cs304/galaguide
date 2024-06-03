@@ -50,7 +50,7 @@ fun Route.createOrderRoute() {
             call.respond(failRestResponseDefault(-2, "Wrong argument: PeriodId"))
             return@post
         }
-        if (transaction { period.event.id  != event.id}) {
+        if (transaction { period.event.id != event.id }) {
             call.respond(failRestResponseDefault(-2, "Wrong argument: PeriodId(Mismatch with EventId)"))
             return@post
         }
@@ -68,7 +68,7 @@ fun Route.createOrderRoute() {
                 email = it.email
             }
         }
-        kotlin.runCatching { call.respond(emptyRestResponse("Operation Success: Create Order")) }
+        kotlin.runCatching { call.respond(transaction { reply.asRestResponse() }) }
         return@post
     }
 }
