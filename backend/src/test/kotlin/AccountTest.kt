@@ -1,3 +1,4 @@
+
 import galaGuide.DatabaseConfig
 import galaGuide.data.RestResponse
 import galaGuide.data.user.LoginData
@@ -12,34 +13,12 @@ import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.testing.*
 import org.jetbrains.exposed.sql.transactions.transaction
-import kotlin.test.BeforeTest
+import org.junit.BeforeClass
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
 class AccountTest {
-    val userName = "testing"
-    val password = "12345678"
-    val email = "testing@galaguide.com"
-
-    var token = ""
-
-    @BeforeTest
-    fun load() {
-        DatabaseConfig.init()
-
-        transaction {
-            UserTable
-            User.find { UserTable.name eq userName }.firstOrNull() ?: User.new {
-                name = userName
-                changePassword(password)
-                email = this@AccountTest.email
-                emailVerified = true
-                role = UserRole.ADMIN
-            }
-        }
-    }
-
     @Test
     fun testLogin() = testApplication {
         val client = createClient {
@@ -64,5 +43,30 @@ class AccountTest {
         assertEquals(data.userRole, UserRole.ADMIN)
 
         token = data.token
+    }
+
+    companion object {
+        val userName = "testing"
+        val password = "12345678"
+        val email = "testing@galaguide.com"
+
+        var token = ""
+
+        @JvmStatic
+        @BeforeClass
+        fun load() {
+            DatabaseConfig.init()
+
+            transaction {
+                UserTable
+                User.find { UserTable.name eq userName }.firstOrNull() ?: User.new {
+                    name = userName
+                    changePassword(password)
+                    email = this@Companion.email
+                    emailVerified = true
+                    role = UserRole.ADMIN
+                }
+            }
+        }
     }
 }
