@@ -26,7 +26,64 @@ fun Route.routeEvent() {
                 Event.all().map { it.asDetail() }
             }.asRestResponse())
         }
+        post<EventFilter>("/filter") {
+            if (it.equals(null)) {
+                val reply = transaction { Event.all().toList() }
+                call.respond(transaction { reply.asRestResponse() })
+                return@post
+            }
+            if (it.category == null) {
+                call.respond(failRestResponseDefault(-1, "Missing argument: category"))
+                return@post
+            }
+            val reply = transaction {
+                val categoryItems = Event.all().filter { event -> event.category in it.category }.toSet()
 
+                val periods = EventPeriod.find {
+                    (EventPeriodTable.end less Instant.ofEpochSecond(it.startDate)) or (EventPeriodTable.start greater Instant.ofEpochSecond(
+                        it.endDate
+                    ))
+                }
+                val dateItems = Event.all().filter { dataItem -> dataItem.id in periods.map { p -> p.event.id } }.toSet()
+
+                val priceItems =
+                    Event.find { (EventTable.cost greaterEq it.minPrice) and (EventTable.cost lessEq it.maxPrice) }
+                        .toSet()
+
+                categoryItems.intersect(dateItems).intersect(priceItems).toList()
+            }
+            call.respond(transaction { reply.asRestResponse() })
+        }
+
+        get("/top-rated") {
+            if (transaction { Order.all().empty() }) {
+                newSuspendedTransaction {
+                    call.respond(Event.all().take(10).asRestResponse())
+                }
+                return@get
+            }
+            newSuspendedTransaction {
+                val link1 = Order.all().groupBy { it.event }
+//                    logger.info("link1:{}", link1)
+                val link2 = link1.map { (event, orders) -> EventCount(event, orders.count()) }
+//                    logger.info("link2:{}", link2)
+                val link3 = link2.sortedByDescending { it.count }
+//                    logger.info("link3:{}", link3)
+                val link4 = link3.map { (event, _) -> event }
+//                    logger.info("link4:{}", link4)
+                val link5 = link4.take(10)
+
+                logger.info("reply:$link5")
+                call.respond(link5.asRestResponse())
+            }
+        }
+        get("/newest") {
+            newSuspendedTransaction {
+                val reply =
+                    Event.all().sortedByDescending { it.id }.take(10).toList()
+                call.respond(reply.asRestResponse())
+            }
+        }
         route("/{id}") {
             get {
                 val id = call.parameters["id"]?.toLongOrNull() ?: run {
@@ -176,64 +233,6 @@ fun Route.routeEvent() {
                 }
 
                 call.respond(emptyRestResponse("Event created"))
-            }
-            post<EventFilter>("/filter") {
-                if (it.equals(null)) {
-                    val reply = transaction { Event.all().toList() }
-                    call.respond(transaction { reply.asRestResponse() })
-                    return@post
-                }
-                if (it.category == null) {
-                    call.respond(failRestResponseDefault(-1, "Missing argument: category"))
-                    return@post
-                }
-                val reply = transaction {
-                    val categoryItems = Event.all().filter { event -> event.category in it.category }.toSet()
-
-                    val periods = EventPeriod.find {
-                        (EventPeriodTable.end less Instant.ofEpochSecond(it.startDate)) or (EventPeriodTable.start greater Instant.ofEpochSecond(
-                            it.endDate
-                        ))
-                    }
-                    val dateItems = Event.all().filter { dataItem -> dataItem.id in periods.map { p -> p.event.id } }.toSet()
-
-                    val priceItems =
-                        Event.find { (EventTable.cost greaterEq it.minPrice) and (EventTable.cost lessEq it.maxPrice) }
-                            .toSet()
-
-                    categoryItems.intersect(dateItems).intersect(priceItems).toList()
-                }
-                call.respond(transaction { reply.asRestResponse() })
-            }
-
-            get("/top-rated") {
-                if (transaction { Order.all().empty() }) {
-                    newSuspendedTransaction {
-                        call.respond(Event.all().take(10).asRestResponse())
-                    }
-                    return@get
-                }
-                newSuspendedTransaction {
-                    val link1 = Order.all().groupBy { it.event }
-//                    logger.info("link1:{}", link1)
-                    val link2 = link1.map { (event, orders) -> EventCount(event, orders.count()) }
-//                    logger.info("link2:{}", link2)
-                    val link3 = link2.sortedByDescending { it.count }
-//                    logger.info("link3:{}", link3)
-                    val link4 = link3.map { (event, _) -> event }
-//                    logger.info("link4:{}", link4)
-                    val link5 = link4.take(10)
-
-                    logger.info("reply:$link5")
-                    call.respond(link5.asRestResponse())
-                }
-            }
-            get("/newest") {
-                newSuspendedTransaction {
-                    val reply =
-                        Event.all().sortedByDescending { it.id }.take(10).toList()
-                    call.respond(reply.asRestResponse())
-                }
             }
         }
     }

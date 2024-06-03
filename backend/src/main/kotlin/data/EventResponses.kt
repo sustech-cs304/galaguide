@@ -59,4 +59,4 @@ fun Event.asDetail() = EventDetail(
 )
 
 fun Event.asRestResponse() = asDetail().asRestResponse()
-fun List<Event>.asRestResponse() = map { it.asRestResponse() }
+fun List<Event>.asRestResponse() = map { it.asDetail() }.asRestResponse()

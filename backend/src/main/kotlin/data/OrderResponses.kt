@@ -43,4 +43,4 @@ data class OrderData(
 )
 
 fun Order.asRestResponse() = asDetail().asRestResponse()
-fun List<Order>.asRestResponse() = map { it.asRestResponse() }
+fun List<Order>.asRestResponse() = map { it.asDetail() }.asRestResponse()
