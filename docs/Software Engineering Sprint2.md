@@ -336,6 +336,6 @@ Docker, Ktor Build Image
 
 ### Run Docker Task
 
-![Screenshot from 2024-06-04 09-38-56](https://github.com/sustech-cs304/team-project-24spring-10/blob/main/docs/images/Software_Engineering_Sprint2.assets/Screenshot from 2024-06-04 09-38-56.png)
+![Screenshot from 2024-06-04 09-38-56](https://github.com/sustech-cs304/team-project-24spring-10/blob/main/docs/images/Software_Engineering_Sprint2.assets/Screenshot1.png)
 
-![Screenshot from 2024-06-04 09-41-01](https://github.com/sustech-cs304/team-project-24spring-10/blob/main/docs/images/Software_Engineering_Sprint2.assets/Screenshot from 2024-06-04 09-41-01.png)
+![Screenshot from 2024-06-04 09-41-01](https://github.com/sustech-cs304/team-project-24spring-10/blob/main/docs/images/Software_Engineering_Sprint2.assets/Screenshot2.png)
