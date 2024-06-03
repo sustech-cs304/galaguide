@@ -214,7 +214,7 @@ fun Route.routeEvent() {
             }
 
             get("/top-rated") {
-                if (Order.all().empty()) {
+                if (transaction { Order.all().empty() }) {
                     newSuspendedTransaction {
                         call.respond(Event.all().take(10).asRestResponse())
                     }
