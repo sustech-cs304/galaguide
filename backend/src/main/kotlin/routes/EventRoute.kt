@@ -111,6 +111,7 @@ fun Route.routeEvent() {
                     call.respond(failRestResponseDefault(-2, "Event not found"))
                     return@get
                 }
+                logger.info("Out User Logged in")
                 if (call.user != null) {
                     logger.info("In User Logged in")
                     UserHistoryEventTable.insert {
