@@ -17,10 +17,22 @@
 						</button>
 					</div>
 				</div>
+				<!-- let user input min and max price -->
+				<div class="filter-category">
+					<label>Price</label>
+					<input type="number" v-model="minPrice" placeholder="Min" />
+					<input type="number" v-model="maxPrice" placeholder="Max" />
+				</div>
+				<!-- let user input min and max date -->
+				<div class="filter-category">
+					<label>Date</label>
+					<input type="date" v-model="startDate" />
+					<input type="date" v-model="endDate" />
+				</div>
 				<button @click="applyFilters" style="width: 10%; align-self: center;">Filter</button>
 			</div>
 			<div class="events-list">
-				<EventCard v-for="event in searchResults" :key="event.id" :event="event" />
+				<EventCard v-for="event in searchResults" :key="event.id" :gala="event" />
 			</div>
 
 		</div>
@@ -37,12 +49,12 @@ import { useRoute } from 'vue-router';
 // const searchQuery = ref('');
 const searchQuery = useRoute().query;
 const selectedFilters = reactive([
-	{ name: 'Category', options: ['Sport', 'Music', 'Lecture'], selected: [] },
-	{ name: 'Time', options: ['Morning', 'Afternoon', 'Evening'], selected: [] },
-	{ name: 'Price', options: ['Free', 'Paid'], selected: [] },
-	{ name: 'Status', options: ['Upcoming', 'Ongoing', 'Past'], selected: [] }
+	{ name: 'Category', options: ['Sport', 'Music', 'Lecture','Education'], selected: [] },
 ]);
-
+const minPrice = ref(0);
+const maxPrice = ref(1000);
+const startDate = ref(0);
+const endDate = ref(0);
 const searchResults = ref([]);
 // const filteredResults = ref([]);
 onMounted(() => {
@@ -66,13 +78,17 @@ const fetchEvents = () => {
 		// add the filter values inside post body
 		axios.post('/api/event/filter', { searchQuery, selectedFilters })
 			.then((response) => {
-				searchResults.value = response.data;
+				for (let i = 0; i < response.data.length; i++) {
+					searchResults.value.push(response.data[i]);
+				}
 			})
 	}
 	else {
-		axios.get('/api/event')
+		axios.get('/api/event/filter')
 			.then((response) => {
-				searchResults.value = response.data;
+				for (let i = 0; i < response.data.length; i++) {
+					searchResults.value.push(response.data[i]);
+				}
 			})
 	}
 }
@@ -178,6 +194,7 @@ const isSelected = (category, option) => {
 	display: flex;
 	gap: 10px;
 }
+
 
 .filter-options button {
 	/* Add styles for your buttons here */

@@ -73,7 +73,9 @@ import axios from 'axios';
 const formData = ref({
   name: '',
   email: '',
-  phone: '',
+  phoneNumber: '',
+  eventID: 0,
+  periodID: 0,
 });
 
 const event_data = ref(
@@ -100,7 +102,7 @@ onMounted(async () => {
   // Fetch event details based on eventID
   loading.value = true;
   try {
-    const response = await axios.get(`/api/events/${eventID}`);
+    const response = await axios.get(`/api/event/${eventID}`);
     event_data.value = response.data;
   } catch (e) {
     error.value = true;

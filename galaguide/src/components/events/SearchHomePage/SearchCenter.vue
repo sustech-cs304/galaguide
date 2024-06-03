@@ -86,7 +86,6 @@ const category = ref("")
 //initialize start date and end date with the current date
 const start_date = ref(new Date().toISOString().substr(0, 10))
 const end_date = ref(new Date().toISOString().substr(0, 10))
-const event_status = ref("")
 const min_price = ref(0)
 const max_price = ref(0)
 const searchQuery = ref("")
@@ -139,7 +138,6 @@ const searchGala = () => {
 			category: category.value,
 			start_date: start_date.value,
 			end_date: end_date.value,
-			event_status: event_status.value,
 			min_price: min_price.value,
 			max_price: max_price.value,
 		},

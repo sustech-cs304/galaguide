@@ -2,8 +2,8 @@
 <template>
   <div class="recommend-column">
     <div class="tabs">
-      <button :class="{ active: activeTab === 'rank' }" @click="activeTab = 'rank'">Rank</button>
-      <button :class="{ active: activeTab === 'new' }" @click="activeTab = 'new'">New</button>
+      <button :class="{ active: activeTab === 'rank' }" @click="showRank">Rank</button>
+      <button :class="{ active: activeTab === 'new' }" @click="showNews">New</button>
     </div>
     <div class="content">
       <div v-show="activeTab === 'rank'" class="tab-content">
@@ -25,43 +25,65 @@
 <script setup>
 import { onMounted, ref } from 'vue';
 import EventCard from './EventCard.vue';
+import axios from 'axios';
 const rankEvents = ref([]);
 
 const newEvents = ref([]);
 const activeTab = ref('rank');
 onMounted(() => {
   // Fetch ranked events
-  fetch('/api/events/top-rated')
-    .then((response) => response.json())
-    .then((data) => {
-      rankEvents.value = data;
+  axios.get('/api/event/top-rated')
+    .then((response) => {
+      rankEvents.value = response.data;
     })
     .catch((error) => {
-      console.error('Error fetching ranked events:', error);
+      console.error('Error fetching top-rated events:', error);
     });
 
   // Fetch new events
-  fetch('/api/events/newest')
-    .then((response) => response.json())
-    .then((data) => {
-      newEvents.value = data;
+  axios.get('/api/event/newest')
+    .then((response) => {
+      newEvents.value = response.data;
     })
     .catch((error) => {
       console.error('Error fetching new events:', error);
     });
 });
 
+const showRank = () => {
+  activeTab.value = 'rank';
+  axios.get('/api/event/top-rated')
+    .then((response) => {
+      rankEvents.value = response.data;
+    })
+    .catch((error) => {
+      console.error('Error fetching top-rated events:', error);
+    });
+};
+
+const showNews = () => {
+  activeTab.value = 'new';
+  axios.get('/api/event/newest')
+    .then((response) => {
+      newEvents.value = response.data;
+    })
+    .catch((error) => {
+      console.error('Error fetching new events:', error);
+    });
+};
 </script>
 
 <style scoped>
 .recommend-column {
   width: 100%;
   display: flex;
+  flex-direction: column;
   background-color: rgb(186, 194, 201);
 }
 
 .tabs {
   width: 100%;
+  display: inline-flex;
 }
 
 .tabs button {
@@ -87,12 +109,15 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   background-color: white;
-  display: block;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 }
 
 .content .tab-content .event-card {
-  padding: 20px;
-  margin-bottom: 2px;
+  width: 98%;
+  padding: 0px;
+  margin-bottom: 0px;
   border: 1px solid #ccc;
   border-radius: 4px;
   border-color: antiquewhite;
@@ -102,6 +127,7 @@ onMounted(() => {
 }
 
 .content .tab-content .event-card:hover {
+  
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 

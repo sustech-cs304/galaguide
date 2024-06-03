@@ -19,7 +19,7 @@ import EventRecommend from "./EventRecommend.vue";
       </div>
 
       <!-- TODO: following sections need links to jump to relating search result pages -->
-      <RouterLink :to="{ path: '/events/search', query: { category: 'sport' } }">
+      <RouterLink :to="{ path: '/events/search', query: { category: ['sport'] } }">
         <div class="top-by-sections">
           <div style="display: flex; flex-direction: row; align-items: center; ">
             <h2>This is sport sections</h2>
@@ -37,7 +37,7 @@ import EventRecommend from "./EventRecommend.vue";
         </div>
       </RouterLink>
 
-      <RouterLink :to="{ path: '/events/search', query: { category: 'literature and art' } }">
+      <RouterLink :to="{ path: '/events/search', query: { category: ['literature and art'] } }">
         <div class="top-by-sections">
           <div style="display: flex; flex-direction: row; align-items: center; ">
             <h2>This is literature and art sections</h2>
@@ -53,7 +53,7 @@ import EventRecommend from "./EventRecommend.vue";
           </div>
         </div>
       </RouterLink>
-      <RouterLink :to="{ path: '/events/search', query: { category: 'education' } }">
+      <RouterLink :to="{ path: '/events/search', query: { category: ['education'] } }">
 
         <div class="top-by-sections">
           <div style="display: flex; flex-direction: row; align-items: center; ">
@@ -68,7 +68,7 @@ import EventRecommend from "./EventRecommend.vue";
           </div>
         </div>
       </RouterLink>
-      <RouterLink :to="{ name: 'SearchResult', query: { category: 'ceremony' } }">
+      <RouterLink :to="{ name: 'SearchResult', query: { category: ['ceremony'] } }">
         <div class="top-by-sections">
           <h2>This is ceremony sections</h2>
         </div>
