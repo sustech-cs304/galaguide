@@ -3,6 +3,7 @@ package galaGuide
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import galaGuide.data.failRestResponseDefault
+import galaGuide.data.logger
 import galaGuide.table.user.User
 import galaGuide.table.user.UserRole
 import galaGuide.util.SMTP
@@ -119,8 +120,9 @@ fun Application.init() {
             }
         }
     }
-
+    logger.isDebugEnabled
+    logger.isInfoEnabled
     SMTP.init(this)
-
+    logger.info("Open Logger")
     configureRouting()
 }
