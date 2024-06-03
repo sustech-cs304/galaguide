@@ -58,17 +58,19 @@ fun Route.createOrderRoute() {
             return@post
         }
 
-        val reply = Order.new {
-            initiator = currentUser
-            recipient = event.host
-            status = OrderStatus.NONPAYMENT
-            price = event.cost
-            createTime = Instant.ofEpochSecond(Date().time)
-            this.event = event
-            this.period = period
-            name = it.name
-            phoneNumber = it.phoneNumber
-            email = it.email
+        val reply = transaction {
+            Order.new {
+                initiator = currentUser
+                recipient = event.host
+                status = OrderStatus.NONPAYMENT
+                price = event.cost
+                createTime = Instant.ofEpochSecond(Date().time)
+                this.event = event
+                this.period = period
+                name = it.name
+                phoneNumber = it.phoneNumber
+                email = it.email
+            }
         }
 
         kotlin.runCatching { call.respond(reply.asDetail().asRestResponse()) }
@@ -76,9 +78,9 @@ fun Route.createOrderRoute() {
 }
 
 
-fun Route.myReserveRoute(){
-    get("/reserve/mine"){
-        if(call.user == null){
+fun Route.myReserveRoute() {
+    get("/mine") {
+        if (call.user == null) {
             call.respond(failRestResponseDefault(-3, "Cannot Authentic: Not logged in"))
             return@get
         }
@@ -87,6 +89,7 @@ fun Route.myReserveRoute(){
         return@get
     }
 }
+
 fun Route.orderNextRoute() {
     post("/order-next") {
         val (orderId, action) = call.receive<OrderNext>()

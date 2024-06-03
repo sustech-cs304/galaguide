@@ -2,6 +2,7 @@ package galaGuide.data
 
 import galaGuide.table.Event
 import galaGuide.table.EventPeriod
+import io.ktor.util.logging.*
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -44,7 +45,7 @@ data class EventCount(
     val event: Event,
     val count: Int
 )
-
+val logger = KtorSimpleLogger("EventLog")
 fun Event.asDetail() = EventDetail(
     id.value,
     title,

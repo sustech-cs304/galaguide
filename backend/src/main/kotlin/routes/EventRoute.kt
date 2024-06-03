@@ -214,11 +214,20 @@ fun Route.routeEvent() {
             }
 
             get("/top-rated") {
+                logger.isDebugEnabled
+                logger.isInfoEnabled
                 val reply = transaction {
-                    Order.all().groupBy { it.event }
-                        .map { (event, orders) -> EventCount(event, orders.count()) }
-                        .sortedByDescending { it.count }.take(10).map { (event, _) -> event }
+                    val link1 = Order.all().groupBy { it.event }
+                    logger.debug("link1:{}", link1)
+                    val link2 = link1.map { (event, orders) -> EventCount(event, orders.count()) }
+                    logger.debug("link2:{}", link2)
+                    val link3 = link2.sortedByDescending { it.count }
+                    logger.debug("link3:{}", link3)
+                    val link4 = link3.map { (event, _) -> event }
+                    logger.debug("link4:{}", link4)
+                    link4.take(10)
                 }
+                logger.info("reply:$reply")
                 call.respond(reply.asRestResponse())
                 return@get
             }
