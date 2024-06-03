@@ -86,8 +86,7 @@ fun Route.routeEvent() {
         }
         get("/newest") {
             newSuspendedTransaction {
-                val reply =
-                    Event.all().sortedByDescending { it.id }.take(10).toList()
+                val reply = Event.all().sortedByDescending { it.id }.take(10).toList()
                 call.respond(reply.asRestResponse())
             }
         }
@@ -116,9 +115,13 @@ fun Route.routeEvent() {
                     if (call.user != null) {
                         logger.info("In User Logged in")
                         transaction {
-                            UserHistoryEventTable.insert {
-                                it[user] = call.user!!.id
-                                it[UserHistoryEventTable.event] = id
+                            if (UserHistoryEventTable.select((UserHistoryEventTable.event eq id) and (UserHistoryEventTable.user eq call.user!!.id))
+                                    .empty()
+                            ) {
+                                UserHistoryEventTable.insert {
+                                    it[user] = call.user!!.id
+                                    it[UserHistoryEventTable.event] = id
+                                }
                             }
                         }
                     }
