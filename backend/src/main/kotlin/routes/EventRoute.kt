@@ -46,7 +46,7 @@ fun Route.routeEvent() {
                         .toSet()
                 }
                 val periods = EventPeriod.find {
-                    (EventPeriodTable.end less Instant.ofEpochSecond(it.startDate)) or (EventPeriodTable.start greater Instant.ofEpochSecond(
+                    (EventPeriodTable.end greaterEq  Instant.ofEpochSecond(it.startDate)) and (EventPeriodTable.start lessEq Instant.ofEpochSecond(
                         it.endDate
                     ))
                 }
