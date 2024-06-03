@@ -76,17 +76,18 @@ onMounted(() => {
 });
 
 const fetchEvents = () => {
-	// axios.get('/api/events')
-	// 	.then((response) => {
-	// 		searchResults.value = response.data;
-	// 	})
-	// 	.catch((error) => {
-	// 		console.error('Error fetching events:', error);
-	// 	});
 	const token = localStorage.getItem("token");
 	if (token) {
 		axios.defaults.headers.common["Bearer"] = token;
 	}
+	// axios.get('/api/event')
+	// 	.then((response) => {
+	// 		searchResults.value = response.data.data;
+	// 	})
+	// 	.catch((error) => {
+	// 		console.error('Error fetching events:', error);
+	// 	});
+
 
 	// add the filter values inside post body
 	axios.post('/api/event/filter', {
@@ -101,6 +102,8 @@ const fetchEvents = () => {
 			console.log(response.data)
 			searchResults.value = response.data.data;
 		})
+
+
 }
 const toggleFilter = (category, option) => {
 	const selectedCategory = selectedFilters.find((filter) => filter.name === category);

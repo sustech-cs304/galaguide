@@ -65,6 +65,8 @@
               <div class="form-group">
                 <label :for="'event-start-time-' + index">Event Start Time</label>
                 <input type="datetime-local" :id="'event-start-time-' + index" v-model="period.start" />
+                <!-- new Date(period.start).getTime()/1000 -->
+                
               </div>
               <div class="form-group">
                 <label :for="'event-end-time-' + index">Event End Time</label>
@@ -104,7 +106,7 @@ const category_options = [
 ];
 const formData = ref({
   title: '',
-  posterId: '',
+  posterId: 'db9094e3-19b6-48ca-8fbe-598d34a2a5ff',
   description: '',
   category: '',
   cost: 0,
@@ -114,7 +116,13 @@ const formData = ref({
 const createEvent = async () => {
   try {
     console.log(formData.value);
+    for (let i = 0; i < formData.value.periods.length; i++) {
+      formData.value.periods[i].start = new Date(formData.value.periods[i].start).getTime() / 1000;
+      formData.value.periods[i].end = new Date(formData.value.periods[i].end).getTime() / 1000;
+    }
     const response = await axios.post('/api/event/create', formData.value);
+    // push back to the event center
+    // router.push('EventCenter');
     console.log(response.data);
   } catch (error) {
     console.error(error);

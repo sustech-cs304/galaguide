@@ -6,30 +6,38 @@
     </div>
     <div class="event-detail">
       <div class="title-container">
-        <h1>{{ event_data.event_title }}</h1>
+        <h1>{{ title.value }}</h1>
         <div class="title-buttons">
           <button @click="addToFavorites">❤️ Add to Favorites</button>
         </div>
       </div>
       <div class="poster-container">
-        <img :src="event_data.posterUrl" @load="loading = false" @error="loadError" v-if="!loading" />
-        <div v-else>Loading...</div>
-        <div v-if="error">Error loading image, please try again later.</div>
+        <!-- <img :src="event_data.value.posterUrl" @load="loading = false" @error="loadError" v-if="!loading" /> -->
+        <!-- <div v-else>Loading...</div>
+        <div v-if="error">Error loading image, please try again later.</div> -->
       </div>
       <div class="introduction-container">
-        <p>{{ event_data.event_introduction }}</p>
+        <p>{{ description }}</p>
       </div>
       <div class="details-container">
-        <div class="detail" v-for="(detail, key) in event_data.event_details" :key="key">
-          <h2>{{ key }}</h2>
-          <p>{{ detail }}</p>
+        <div class="detail">
+          <h2>Fee(Guiro)</h2>
+          <p>{{cost}}</p>
+        </div>
+        <div class="detail">
+          <h2>Category</h2>
+          <p>{{category}}</p>
+        </div>
+        <div class="detail">
+          <h2>Host</h2>
+          <p>{{ findHost(hostId) }}</p>
         </div>
       </div>
       <h2>gallery</h2>
       <div class="gallery-container">
-        <div v-for="image in event_data.gallery" :key="image.id" class="image-container">
+        <!-- <div v-for="image in event_data.gallery" :key="image.id" class="image-container">
           <img :src="image.url" :alt="image.alt" class="event-image" />
-        </div>
+        </div> -->
       </div>
 
       <div>
@@ -68,49 +76,63 @@
 
 // we need to store the value of formData
 import { ref, onMounted, } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import axios from 'axios';
+const router = useRouter();
+const title = ref('Event Title');
+const description = ref('Event Description');
+const cost = ref(0);
+const category = ref('Event Category');
+const hostId = ref(0);
+// const posterUrl = ref('https://via.placeholder.com/400x300?text=Default+Image');
+
+onMounted(() => {
+  // Fetch event details based on eventID
+  loading.value = true;
+  axios.get(`/api/event/${eventID}`)
+    .then((response) => {
+      console.log(response.data);
+      title.value = response.data.data.value.title;
+      description.value = response.data.data.value.description;
+      cost.value = response.data.data.value.cost;
+      category.value = response.data.data.value.category;
+      hostId.value = response.data.data.value.hostId;
+    })
+    .catch((error) => {
+      console.error('Error fetching event details:', error);
+      loadError();
+    });
+});
 const formData = ref({
   name: '',
   email: '',
   phoneNumber: '',
-  eventID: 0,
-  periodID: 0,
+  eventId: 0,
+  periodId: 0,
 });
 
-const event_data = ref(
-  {
-    event_title: 'Sample Event Title', // This will be dynamic based on event data
-    event_introduction: 'This is a sample introduction of the event that gives users insight into what to expect.',
-    event_details: {
-      Time: '10:00 AM - 3:00 PM',
-      Host: 'Host Name',
-      Fee: '$20 per person',
-      Category: 'Arts & Music'
-      // More details can be added here as needed
-    },
-    gallery: [{ id: 1, src: "w1.com", alt: "w0.com" }, { id: 2, src: "w2.com", alt: "w0.com" }],
-    posterUrl: 'https://via.placeholder.com/400x300?text=Event+Poster', // Mock-up URL
+function findHost(hostId) {
+    console.log('Host ID:', hostId);
+    axios
+        .get(`/api/user/${hostId}`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+        })
+        .then((response) => {
+            console.log('response:', response.data);
+            return response.data.data.name;
+        })
+        .catch((error) => {
+            console.error('Error fetching host details:', error);
+        });
+}
 
-  }
-)
 const loading = ref(true);
 const error = ref(false);
 const eventID = useRoute().params.eventID;
 
-onMounted(async () => {
-  // Fetch event details based on eventID
-  loading.value = true;
-  try {
-    const response = await axios.get(`/api/event/${eventID}`);
-    event_data.value = response.data;
-  } catch (e) {
-    error.value = true;
-    console.error(e);
-  } finally {
-    loading.value = false;
-  }
-});
+
 
 const addToFavorites = () => {
   // Logic to add the event to the user's favorites
@@ -142,8 +164,10 @@ const reserveNow = () => {
   if (!validateForm()) {
     return;
   }
+  formData.value.eventId = eventID;
+  formData.value.periodId = eventID;
   // use axios to post the form data into the server
-  axios.post('/api/reserve/create-order', formData.value)
+  axios.post('/api/reserve/create-order', formData)
     .then((response) => {
       console.log(response.data);
       // Show success message to the user
@@ -152,11 +176,13 @@ const reserveNow = () => {
       console.error('Error reserving event:', error);
       // Show error message to the user
     });
+  // after hand in the form, return back to event center page
+  router.push({ name: 'EventCenter' });
 };
 
 const loadError = () => {
   error.value = true;
-  event_data.value.posterUrl = 'https://via.placeholder.com/400x300?text=Default+Image';
+  //event_data.value.posterUrl = 'https://via.placeholder.com/400x300?text=Default+Image';
 };
 
 const getHelp = () => {

@@ -41,14 +41,6 @@
 									<input type="date" v-model="end_date" style="display: block;">
 								</div>
 
-								<div class="dropdown">
-									<label class="label">Event Status</label>
-									<select v-model="event_status" style="display: block;">
-										<option v-for="option in event_status_options" :key="option" :value="option">
-											{{ option }}
-										</option>
-									</select>
-								</div>
 
 								<div class="dropdown">
 									<label class="label">Min Price</label>
@@ -112,12 +104,6 @@ const category_options = [
 		label: "Others",
 	},
 ];
-
-const event_status_options = ref([
-	"Upcoming",
-	"Ongoing",
-	"Past",
-]);
 
 
 
