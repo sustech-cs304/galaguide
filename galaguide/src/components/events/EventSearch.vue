@@ -32,7 +32,9 @@
 				<button @click="applyFilters" style="width: 10%; align-self: center;">Filter</button>
 			</div>
 			<div class="events-list">
-				<EventCard v-for="event in searchResults" :key="event.id" :gala="event" />
+				<div v-for="event in searchResults" :key="event.id" class="event-item">
+					<EventCard :title="event.title" :posterId="event.posterId" :hostId="event.hostId" />
+				</div>
 			</div>
 
 		</div>
@@ -47,17 +49,29 @@ import EventCard from './EventCard.vue';
 import { useRoute } from 'vue-router';
 // TODO: implement the search query and filter logic
 // const searchQuery = ref('');
-const searchQuery = useRoute().query;
+
+const route = useRoute();
+const query = route.query;
+
 const selectedFilters = reactive([
-	{ name: 'Category', options: ['Sport', 'Music', 'Lecture','Education'], selected: [] },
+	{ name: 'Category', options: ['Sport', 'Music', 'Lecture', 'Education'], selected: [] },
 ]);
+const queryWord = ref("")
 const minPrice = ref(0);
 const maxPrice = ref(1000);
 const startDate = ref(0);
 const endDate = ref(0);
 const searchResults = ref([]);
+
 // const filteredResults = ref([]);
 onMounted(() => {
+	console.log(query)
+	selectedFilters[0].selected = query.category ? query.category : [];
+	queryWord.value = query.searchQuery;
+	minPrice.value = query.minPrice;
+	maxPrice.value = query.maxPrice;
+	startDate.value = query.startDate;
+	endDate.value = query.endDate;
 	fetchEvents();
 });
 
@@ -70,27 +84,23 @@ const fetchEvents = () => {
 	// 		console.error('Error fetching events:', error);
 	// 	});
 	const token = localStorage.getItem("token");
-  if (token) {
-    axios.defaults.headers.common["Bearer"] = token;
-  }
+	if (token) {
+		axios.defaults.headers.common["Bearer"] = token;
+	}
 
-	if (searchQuery.queryWord) {
-		// add the filter values inside post body
-		axios.post('/api/event/filter', { searchQuery, selectedFilters })
-			.then((response) => {
-				for (let i = 0; i < response.data.length; i++) {
-					searchResults.value.push(response.data[i]);
-				}
-			})
-	}
-	else {
-		axios.get('/api/event/filter')
-			.then((response) => {
-				for (let i = 0; i < response.data.length; i++) {
-					searchResults.value.push(response.data[i]);
-				}
-			})
-	}
+	// add the filter values inside post body
+	axios.post('/api/event/filter', {
+		searchQuery: queryWord.value,
+		category: selectedFilters[0].selected,
+		minPrice: minPrice.value,
+		maxPrice: maxPrice.value,
+		startDate: startDate.value,
+		endDate: endDate.value
+	})
+		.then((response) => {
+			console.log(response.data)
+			searchResults.value = response.data.data;
+		})
 }
 const toggleFilter = (category, option) => {
 	const selectedCategory = selectedFilters.find((filter) => filter.name === category);

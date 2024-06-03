@@ -10,7 +10,8 @@
     <div class="event" v-for="event in favoriteEvents" :key="event.id">
       <EventCard :title="event.title"
       :posterId="event.posterId"
-      :hostId="event.hostId"/>
+      :hostId="event.hostId"
+      :eventId="event.id"/>
       <!-- More details can be displayed here -->
       <div class="event-actions">
         <button type="submit" @click="deleteEvent(event.id)" class="delete-button">Unfavorite</button>
