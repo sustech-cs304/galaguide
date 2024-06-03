@@ -1,8 +1,6 @@
 package galaGuide.data
 
 import galaGuide.table.forum.Discuss
-import galaGuide.table.forum.Tag
-import galaGuide.table.forum.TagTable
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -17,17 +15,16 @@ data class DiscussDetail(
     val belongsToId: Long
 )
 
-fun Discuss.asDetail() = DiscussDetail(
+fun Discuss.asDetail(tags: List<String>) = DiscussDetail(
     title,
     content,
     poster.id.value,
     poster.name,
     likes,
-    Tag.find { TagTable.discussId eq id }.map { tag -> tag.name },
+    tags,
     createTime.epochSecond,
     belongsToId
 )
 
-fun Discuss.asRestResponse() = asDetail().asRestResponse()
-fun List<Discuss>.asRestResponse() = map { discuss -> discuss.asDetail() }.asRestResponse()
+fun Discuss.asRestResponse(tags: List<String>) = asDetail(tags).asRestResponse()
 
