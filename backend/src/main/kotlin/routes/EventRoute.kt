@@ -4,6 +4,7 @@ import galaGuide.data.*
 import galaGuide.resources.user
 import galaGuide.resources.userId
 import galaGuide.table.*
+import galaGuide.table.reservation.Order
 import galaGuide.table.user.UserFavoriteEventTable
 import galaGuide.table.user.UserHistoryEventTable
 import galaGuide.util.GroupManager
@@ -11,11 +12,8 @@ import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.and
-import org.jetbrains.exposed.sql.deleteWhere
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.Instant
@@ -28,7 +26,71 @@ fun Route.routeEvent() {
                 Event.all().map { it.asDetail() }
             }.asRestResponse())
         }
+        post<EventFilter>("/filter") {
+            if (it.equals(null)) {
+                val reply = transaction { Event.all().toList() }
+                call.respond(transaction { reply.asRestResponse() })
+                return@post
+            }
+            val reply = transaction {
+                val categoryItems: Set<Event> = if (it.category.isEmpty()) {
+                    Event.all().toSet()
+                } else {
+                    Event.all().filter { event -> event.category in it.category }.toSet()
+                }
+                val searchItems: Set<Event> = if (it.searchQuery == "") {
+                    Event.all().toSet()
+                } else {
+                    Event.all()
+                        .filter { event -> (it.searchQuery in event.title) or (it.searchQuery in event.description) }
+                        .toSet()
+                }
+                val periods = EventPeriod.find {
+                    (EventPeriodTable.end less Instant.ofEpochSecond(it.startDate)) or (EventPeriodTable.start greater Instant.ofEpochSecond(
+                        it.endDate
+                    ))
+                }
+                val dateItems =
+                    Event.all().filter { dataItem -> dataItem.id in periods.map { p -> p.event.id } }.toSet()
 
+                val priceItems =
+                    Event.find { (EventTable.cost greaterEq it.minPrice) and (EventTable.cost lessEq it.maxPrice) }
+                        .toSet()
+
+                categoryItems.intersect(dateItems).intersect(priceItems).intersect(searchItems).toList()
+            }
+            call.respond(transaction { reply.asRestResponse() })
+        }
+
+        get("/top-rated") {
+            if (transaction { Order.all().empty() }) {
+                newSuspendedTransaction {
+                    call.respond(Event.all().take(10).asRestResponse())
+                }
+                return@get
+            }
+            newSuspendedTransaction {
+                val link1 = Order.all().groupBy { it.event }
+//                    logger.info("link1:{}", link1)
+                val link2 = link1.map { (event, orders) -> EventCount(event, orders.count()) }
+//                    logger.info("link2:{}", link2)
+                val link3 = link2.sortedByDescending { it.count }
+//                    logger.info("link3:{}", link3)
+                val link4 = link3.map { (event, _) -> event }
+//                    logger.info("link4:{}", link4)
+                val link5 = link4.take(10)
+
+                logger.info("reply:$link5")
+                call.respond(link5.asRestResponse())
+            }
+        }
+        get("/newest") {
+            newSuspendedTransaction {
+                val reply =
+                    Event.all().sortedByDescending { it.id }.take(10).toList()
+                call.respond(reply.asRestResponse())
+            }
+        }
         route("/{id}") {
             get {
                 val id = call.parameters["id"]?.toLongOrNull() ?: run {
@@ -113,7 +175,7 @@ fun Route.routeEvent() {
         }
 
         authenticate("user") {
-            post<EventDetail>("/create") {
+            post<EventDetail>("/create") { it ->
                 if (it.title == null) {
                     call.respond(failRestResponseDefault(-1, "Title not provided"))
                     return@post
@@ -150,7 +212,7 @@ fun Route.routeEvent() {
                         title = it.title
                         host = call.user!!
                         this.poster = poster
-                        description = it.description
+                        description = it.description!!
                         cost = it.cost ?: 0
                         category = it.category ?: "other"
                     }

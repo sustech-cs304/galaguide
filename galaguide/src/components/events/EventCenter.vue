@@ -12,14 +12,19 @@ import EventRecommend from "./EventRecommend.vue";
     </div>
 
     <div class="main-content">
-      
+
       <div class="hot-events">
         <Eventposter></Eventposter>
         <h2>This is hot-events</h2>
       </div>
 
       <!-- TODO: following sections need links to jump to relating search result pages -->
-      <RouterLink :to="{ path: '/events/search', query: { category: 'sport' } }">
+      <RouterLink :to="{
+        path: '/events/search', query: {searchQuery: '',
+          category: ['Sport'], minPrice: 0, maxPrice:
+            1000, startDate: 1620637200, endDate: 1620640800,
+        }
+      }">
         <div class="top-by-sections">
           <div style="display: flex; flex-direction: row; align-items: center; ">
             <h2>This is sport sections</h2>
@@ -37,7 +42,9 @@ import EventRecommend from "./EventRecommend.vue";
         </div>
       </RouterLink>
 
-      <RouterLink :to="{ path: '/events/search', query: { category: 'literature and art' } }">
+      <RouterLink :to="{ path: '/events/search', query: {searchQuery: '',
+          category: ['Art'], minPrice: 0, maxPrice: 1000, startDate: 1620637200, endDate: 1620640800,
+        } }">
         <div class="top-by-sections">
           <div style="display: flex; flex-direction: row; align-items: center; ">
             <h2>This is literature and art sections</h2>
@@ -53,7 +60,10 @@ import EventRecommend from "./EventRecommend.vue";
           </div>
         </div>
       </RouterLink>
-      <RouterLink :to="{ path: '/events/search', query: { category: 'education' } }">
+      <RouterLink :to="{ path: '/events/search', query: {searchQuery: '',
+          category: ['Education'], minPrice: 0, maxPrice:
+            1000, startDate: 1620637200, endDate: 1620640800,
+        } }">
 
         <div class="top-by-sections">
           <div style="display: flex; flex-direction: row; align-items: center; ">
@@ -68,7 +78,10 @@ import EventRecommend from "./EventRecommend.vue";
           </div>
         </div>
       </RouterLink>
-      <RouterLink :to="{ name: 'SearchResult', query: { category: 'ceremony' } }">
+      <RouterLink :to="{ path: '/events/search', query: {searchQuery: '',
+          category: ['ceremony'], minPrice: 0, maxPrice:
+            1000, startDate: 1620637200, endDate: 1620640800,
+        } }">
         <div class="top-by-sections">
           <h2>This is ceremony sections</h2>
         </div>
@@ -77,7 +90,7 @@ import EventRecommend from "./EventRecommend.vue";
     </div>
 
     <div class="aid-functions">
-      
+
       <div class="search-box">
         <SearchBox></SearchBox>
       </div>
@@ -89,9 +102,9 @@ import EventRecommend from "./EventRecommend.vue";
       <div class="recommend-column">
         <h2>Recommend-column</h2>
         <EventRecommend></EventRecommend>
-        
+
       </div>
-      
+
     </div>
   </div>
 </template>
@@ -179,6 +192,7 @@ import EventRecommend from "./EventRecommend.vue";
   border: #f2f2f2;
   border-radius: 16px;
 }
+
 /* Add these styles */
 .create-event {
   display: flex;
@@ -206,33 +220,36 @@ import EventRecommend from "./EventRecommend.vue";
 }
 
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slideDown {
-    from {
-        transform: translateY(-20px);
-        opacity: 0;
-    }
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 @keyframes popIn {
-    from {
-        transform: scale(0.9);
-        opacity: 0;
-    }
-    to {
-        transform: scale(1);
-        opacity: 1;
-    }
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 </style>

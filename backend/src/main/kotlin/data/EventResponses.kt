@@ -2,6 +2,7 @@ package galaGuide.data
 
 import galaGuide.table.Event
 import galaGuide.table.EventPeriod
+import io.ktor.util.logging.*
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -30,6 +31,22 @@ data class EventDetail(
     val category: String? = null,
 )
 
+@Serializable
+data class EventFilter(
+    val category: List<String>,
+    val startDate: Long,
+    val endDate: Long,
+    val status: String? = null,
+    val maxPrice: Long,
+    val minPrice: Long,
+    val searchQuery: String
+)
+
+data class EventCount(
+    val event: Event,
+    val count: Int
+)
+val logger = KtorSimpleLogger("EventLog")
 fun Event.asDetail() = EventDetail(
     id.value,
     title,
@@ -41,5 +58,6 @@ fun Event.asDetail() = EventDetail(
     periods.map { it.asDetail() },
     category,
 )
+
 fun Event.asRestResponse() = asDetail().asRestResponse()
-fun List<Event>.asRestResponse() = map { it.asRestResponse() }
+fun List<Event>.asRestResponse() = map { it.asDetail() }.asRestResponse()

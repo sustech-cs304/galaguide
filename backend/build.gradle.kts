@@ -5,7 +5,9 @@ plugins {
     kotlin("plugin.serialization") version "1.9.22"
 
     //ktor
-    id("io.ktor.plugin") version "2.3.8"
+    id("io.ktor.plugin") version "2.3.11"
+
+    id("io.gitlab.arturbosch.detekt") version "1.23.6"
 }
 
 group = "galaGuide"
@@ -19,6 +21,7 @@ dependencies {
     //testing
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("io.ktor:ktor-server-test-host")
+    testImplementation("io.ktor:ktor-client-content-negotiation")
 
     //time
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0-RC.2")
@@ -74,5 +77,21 @@ application {
 ktor {
     fatJar {
         archiveFileName.set("backend.jar")
+    }
+
+    docker {
+        jreVersion.set(JavaVersion.VERSION_11)
+        localImageName.set("galaguide-backend")
+        imageTag.set("1.0.0")
+
+        portMappings.set(
+            listOf(
+                io.ktor.plugin.features.DockerPortMapping(
+                    9260,
+                    9260,
+                    io.ktor.plugin.features.DockerPortMappingProtocol.TCP
+                )
+            )
+        )
     }
 }

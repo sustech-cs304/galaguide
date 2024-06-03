@@ -39,6 +39,7 @@ const copyToClickBoard = (src) => {
     showAlert.value = true;
 }
 
+
 const deleteImage = (uuid) => {
     axios.delete(`/api/asset/${uuid}`, {
         headers: {

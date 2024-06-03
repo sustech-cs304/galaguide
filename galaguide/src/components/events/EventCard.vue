@@ -2,81 +2,53 @@
 <template>
     <div class="event-card" @mouseover="showButtons = true" @mouseleave="showButtons = false">
         <div class="event-card-poster">
-            <img :src="gala.posterUrl" alt="Event Poster" />
+            <img :src="'/api/asset/' + posterId" alt="Event Poster" style="width: 100px; height: 100px; margin-right: 30px;"/>
         </div>
         <div class="event-card-content">
-            <h3>{{ gala.title }}</h3>
-            <p>{{ gala.host }}</p>
-            <div class="event-card-details">
-                <p>Registration Time: {{ gala.registration_time }}</p>
-                <p>Event Time: {{ gala.event_time }}</p>
-            </div>
+            <RouterLink to="/events/{{eventId}}">
+                <h3>{{ title }}</h3>
+                <p>Host: {{ host }}</p>
+            </RouterLink>
+            
         </div>
         
     </div>
 </template>
 
 <script setup>
-import { ref, defineProps } from 'vue';
-// import axios from 'axios';
-// gala and its detail is pushed from another component
-const gala = defineProps(['gala']);
-
-
+import axios from 'axios';
+import { ref, defineProps, onMounted } from 'vue';
+const props = defineProps({
+    title: String,
+    posterId: String,
+    hostId: Number,
+    eventId: Number,
+});
 
 const showButtons = ref(false);
 
-// const reserveGala = () => {
-//     console.log('Reserve event:', gala.value.title);
-// };
+const host = ref('Host Name');
 
-// onMounted(async () => {
-//     try {
-//         const response = await axios.get(`/api/event/${props.value.eventId}`);
-//         gala.value = response.data;
-//     } catch (error) {
-//         console.error('Error fetching gala details:', error);
-//     }
-// });
-// export default {
-//     name: 'EventCard',2
-//     props: {
-//         eventId: Number,
-//     },
-//     setup(props) {
-//         const gala = ref({
-//             id: -1,
-//             title: 'Sample Event Title',
-//             host: 'Host Name',
-//             fee: '$20 per person',
-//             category: 'Arts & Music',
-//             event_time: '10:00 AM - 3:00 PM',
-//             registration_time: '10:00 AM - 2:00 PM',
-//             description: 'This is a sample introduction of the event that gives users insight into what to expect.',
-//             posterUrl: 'https://via.placeholder.com/400x300?text=Event+Poster',
-//         });
-//         const showButtons = ref(false);
+function findHost() {
+    console.log('Host ID:', props.hostId);
+    axios
+        .get(`/api/user/${props.hostId}`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+        })
+        .then((response) => {
+            console.log('response:', response.data);
+            host.value = response.data.data.name;
+        })
+        .catch((error) => {
+            console.error('Error fetching host details:', error);
+        });
+}
 
-//         onMounted(async () => {
-//             try {
-//                 const response = await axios.get(`/api/event/${props.eventId}`);
-//                 gala.value = response.data;
-//             } catch (error) {
-//                 console.error('Error fetching gala details:', error);
-//             }
-//         });
-
-//         const favoriteGala = () => {
-//             console.log('Favorite event:', gala.value.title);
-//         };
-
-//         const reserveGala = () => {
-//             console.log('Reserve event:', gala.value.title);
-//         };
-
-//         return { gala, showButtons, favoriteGala, reserveGala };
-//     },
-// };
+onMounted(() => {
+    findHost();
+});
 </script>
 
 
@@ -84,7 +56,7 @@ const showButtons = ref(false);
 .event-card {
     display: flex;
     flex-direction: row;
-    margin: 10px;
+    margin: 2px;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;

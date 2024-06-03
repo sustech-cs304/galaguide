@@ -15,6 +15,7 @@ import io.ktor.server.routing.*
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.Instant
 import java.util.*
@@ -22,7 +23,7 @@ import java.util.*
 fun Route.routeForum() = authenticate("user") {
     route("/discuss") {
         transaction {
-            SchemaUtils.createMissingTablesAndColumns(DiscussTable, TagTable, DiscussTagTable, LikeTable)
+            SchemaUtils.createMissingTablesAndColumns(DiscussTable, TagTable, LikeTable)
         }
         createDiscuss()
         deleteDiscuss()
@@ -46,25 +47,31 @@ fun Route.getSimilarDiscuss() {
             call.respond(failRestResponseDefault(-2, "Wrong argument: Discuss does not exist"))
             return@get
         }
-
-        val discussTags = transaction { discuss.tags.map { it.name }.toSet() } // 获取当前讨论的所有标签
-        if (discussTags.isEmpty()) {
+        val tags = Tag.find { TagTable.discussId eq discuss.id }.map { tag -> tag.name }.toSet()
+        if (tags.isEmpty()) {
             call.respond(emptyRestResponse()) // 如果当前讨论没有标签，直接返回空response
             return@get
         }
 
         val allDiscussWithTags = transaction {
             Discuss.all()
-                .filter { it.id.value != discussId && it.id.value == it.belongsToId.value && it.tags.any { tag -> tag.name in discussTags } } // 获取所有和当前讨论具有相同标签的其他讨论
+                .filter {
+                    it.id.value != discussId && it.belongsToId == 0.toLong() && Tag.find { TagTable.discussId eq it.id }
+                        .map { tag -> tag.name }.toSet().any { tag -> tag in tags }
+                } // 获取所有和当前讨论具有相同标签的其他讨论
         }
 
-        val sortedDiscusses =
-            allDiscussWithTags.groupBy { it.tags.count { tag -> tag.name in discussTags } } // 按照和当前讨论共有标签的数量进行分组
+        val sortedDiscusses = transaction {
+            allDiscussWithTags.groupBy {
+                Tag.find { TagTable.discussId eq it.id }.map { tag -> tag.name }.toSet().count { tag -> tag in tags }
+            } // 按照和当前讨论共有标签的数量进行分组
                 .toList().sortedByDescending { (count, _) -> count }
                 .take(10) // 取共有标签数量前十的讨论
                 .flatMap { (_, discusses) -> discusses }
-
-        call.respond(sortedDiscusses.asRestResponse())
+        }
+        val reply =
+            sortedDiscusses.map { it.asDetail() }
+        call.respond(reply.asRestResponse())
     }
 }
 
@@ -85,7 +92,7 @@ fun Route.uploadDiscussReply() {
             call.respond(failRestResponseDefault(-2, "Wrong argument: Discuss does not exist"))
             return@post
         }
-        val currentUser = call.authentication.principal<User>()
+        val currentUser = call.user
         if (currentUser == null) {
             call.respond(failRestResponseDefault(-3, "Cannot Authentic: Not logged in"))
             return@post
@@ -102,18 +109,20 @@ fun Route.uploadDiscussReply() {
 //            reply[DiscussTable.posterId] = posterId
 //            reply[DiscussTable.belongsToId] = discuss.id
 //        }
-        val reply = Discuss.new {
-            title = it.title
-            content = it.content
-            createTime = Instant.ofEpochSecond(Date().time)
-            poster = currentUser
-            belongsToId = discuss.id
-            likes = 0
-        }
-        kotlin.runCatching {
-            call.respond(
-                reply.asDetail().asRestResponse("Operator Success: Create reply with id: ${reply.id}$")
-            )
+        newSuspendedTransaction {
+            val reply = Discuss.new {
+                title = it.title
+                content = it.content
+                createTime = Instant.ofEpochSecond(Date().time)
+                poster = currentUser
+                belongsToId = discuss.id.value
+                likes = 0.toLong()
+            }
+            kotlin.runCatching {
+                call.respond(
+                    reply.asDetail().asRestResponse()
+                )
+            }
         }
     }
 }
@@ -132,22 +141,25 @@ fun Route.getReplyList() {
         }
         // 获取该帖子的所有回复并按时间排序
         val replies = transaction {
-            Discuss.find { (DiscussTable.belongsToId eq discussId) and (DiscussTable.id neq discussId) }.toList()
-                .sortedBy { it.createTime }
+            Discuss.find { DiscussTable.belongsToId eq discussId }.toList().sortedBy { it.createTime }
         }
-
-        call.respond((listOf(discuss) + replies).asDetail().asRestResponse())
+        val reply = (listOf(discuss) + replies).map {
+            it.asDetail()
+        }
+        call.respond(reply.asRestResponse())
     }
 }
 
 
 fun Route.getDiscussList() {
     get("/discuss-list") {
-        val allDiscusses = transaction {
-            Discuss.all().toList()
+        newSuspendedTransaction {
+            val allDiscusses = Discuss.find { DiscussTable.belongsToId eq 0 }.toList()
+            val reply = allDiscusses.map {
+                it.asDetail()
+            }
+            call.respond(reply.asRestResponse())
         }
-
-        call.respond(allDiscusses.asDetail().asRestResponse())
     }
 }
 
@@ -171,34 +183,35 @@ fun Route.deleteDiscuss() {
             call.respond(failRestResponseDefault(-3, "Cannot Authentic: Permission Denied"))
             return@delete
         }
-        if (discuss.id == discuss.belongsToId) {
-            transaction {
-                Discuss.find { DiscussTable.belongsToId eq discussId }.forEach { it.delete() }
-            }
-        } else {
-            transaction { Discuss.find { DiscussTable.id eq discussId }.forEach { it.delete() } }
+        transaction {
+            Discuss.find { DiscussTable.belongsToId eq discussId }.forEach { it.delete() }
         }
-        call.respond("Operation Success: Delete")
-        return@delete
+        transaction { Discuss.find { DiscussTable.id eq discussId }.forEach { it.delete() } }
+
+        call.respond(emptyRestResponse("Operation Success: Delete"))
     }
 }
 
 fun Route.createDiscuss() {
     post<ForumRoute.Reply.Object>("/create-discuss") {
-        val currentUser = call.authentication.principal<User>()
-        if (currentUser == null) {
-            call.respond(failRestResponseDefault(-3, "Cannot Authentic: Not logged in"))
-            return@post
+        newSuspendedTransaction {
+            val currentUser = call.user
+            if (currentUser == null) {
+                call.respond(failRestResponseDefault(-3, "Cannot Authentic: Not logged in"))
+                return@newSuspendedTransaction
+            }
+            val discuss = Discuss.new {
+                title = it.title
+                content = it.content
+                poster = currentUser
+                belongsToId = 0.toLong()
+                createTime = Instant.ofEpochSecond(Date().time)
+                likes = 0.toLong()
+            }
+            call.respond(
+                discuss.asDetail().asRestResponse()
+            )
         }
-        val discuss = Discuss.new {
-            title = it.title
-            content = it.content
-            poster = currentUser
-            belongsToId = id
-            createTime = Instant.ofEpochSecond(Date().time)
-            likes = 0
-        }
-        call.respond(discuss.asDetail().asRestResponse("Operator Success: Create discuss with id: ${discuss.id}$"))
     }
 }
 
@@ -226,23 +239,25 @@ fun Route.updateDiscussLikes() {
         }
         val likeRecord =
             transaction { LikeTable.select { (LikeTable.likerId eq id) and (LikeTable.discussId eq discussId) } }
-        if (likeRecord.empty()) {
-            LikeTable.insert { record ->
-                record[LikeTable.likerId] = id
-                record[LikeTable.discussId] = discussId
+        newSuspendedTransaction {
+            if (likeRecord.empty()) {
+                LikeTable.insert { record ->
+                    record[likerId] = id
+                    record[LikeTable.discussId] = discussId
+                }
+                discuss.likes.plus(1)
+                call.respond(discuss.likes.asRestResponse("Operation Success: Like"))
+            } else {
+                LikeTable.deleteWhere { (likerId eq id) and (LikeTable.discussId eq discussId) }
+                discuss.likes.plus(-1)
+                call.respond(discuss.likes.asRestResponse("Operation Success: Unlike"))
             }
-            discuss.likes.plus(1)
-            call.respond(discuss.likes.asRestResponse("Operator Success: Like"))
-        } else {
-            LikeTable.deleteWhere { (LikeTable.likerId eq id) and (LikeTable.discussId eq discussId) }
-            discuss.likes.plus(-1)
-            call.respond(discuss.likes.asRestResponse("Operator Success: Unlike"))
         }
     }
 }
 
 class ForumRoute {
-    class Reply(val parent: ForumRoute = ForumRoute()) {
+    class Reply {
         @Serializable
         data class Object(
             val title: String,

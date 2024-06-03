@@ -18,7 +18,7 @@ let user = {
   userGuiro: 0,
   userBio: "",
   userFavoriteEvents: [],
-  userSubscribedEvents: [],
+  userReservedEvents: [],
   userBrowsedEvents: [],
 };
 
@@ -83,7 +83,10 @@ function checkIn() {
     }).then((response) => {
     console.log("response:", response);
     if (response.status === 200 && response.data.code === 0) {
-      user.userGuiro = response.data.data.guiro;
+      if (user.userGuiro !== response.data.data.guiro) {
+        user.userGuiro = response.data.data.guiro;
+        window.location.reload();
+      }
     }
   })
   .catch((error) => {
@@ -151,6 +154,7 @@ function getUserInfo() {
   console.log("cookie:", cookie);
   if (cookie && cookie.split("=")[1] !== "0") {
     console.log("cookie:", cookie);
+    console.log("Authorization:", `Bearer ${localStorage.getItem('token')}`);
     axios
     .get('/api/user', {
         headers: {
@@ -544,11 +548,11 @@ function logout() {
         </svg> 
       </router-link>
 
-      <!-- Subscribed Event -->
+      <!-- Reserved Event -->
       <router-link
-        to="/subscribedEvent" 
+        to="/reservedEvent" 
         href="#" 
-        class="subscribed-events" 
+        class="reserved-events" 
         style="
           position: absolute;
           right: 19.5%;
@@ -673,7 +677,7 @@ body {
   color: LightSeaGreen;
 }
 
-.subscribed-events:hover {
+.reserved-events:hover {
   color: LightSeaGreen;
 }
 
