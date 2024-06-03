@@ -54,7 +54,7 @@ fun Route.createOrderRoute() {
             return@post
         }
         logger.info("create4")
-        if (period.event != event) {
+        if (transaction { period.event } != event) {
             call.respond(failRestResponseDefault(-2, "Wrong argument: PeriodId(Mismatch with EventId)"))
             return@post
         }

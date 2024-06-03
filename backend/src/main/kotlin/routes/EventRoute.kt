@@ -214,18 +214,29 @@ fun Route.routeEvent() {
             }
 
             get("/top-rated") {
+                if(transaction { Order.all().empty() }){
+                    call.respond(Event.all().take(10).asRestResponse())
+                    return@get
+                }
                 val reply = transaction {
                     val link1 = Order.all().groupBy { it.event }
-                    logger.info("link1:{}", link1)
+//                    logger.info("link1:{}", link1)
                     val link2 = link1.map { (event, orders) -> EventCount(event, orders.count()) }
-                    logger.info("link2:{}", link2)
+//                    logger.info("link2:{}", link2)
                     val link3 = link2.sortedByDescending { it.count }
-                    logger.info("link3:{}", link3)
+//                    logger.info("link3:{}", link3)
                     val link4 = link3.map { (event, _) -> event }
-                    logger.info("link4:{}", link4)
+//                    logger.info("link4:{}", link4)
                     link4.take(10)
                 }
                 logger.info("reply:$reply")
+                call.respond(reply.asRestResponse())
+                return@get
+            }
+            get("/newest"){
+                val reply = transaction {
+                    Event.all().sortedByDescending { it.id }.take(10).toList()
+                }
                 call.respond(reply.asRestResponse())
                 return@get
             }
