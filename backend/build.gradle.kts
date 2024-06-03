@@ -6,6 +6,8 @@ plugins {
 
     //ktor
     id("io.ktor.plugin") version "2.3.8"
+
+    id("io.gitlab.arturbosch.detekt") version "1.23.6"
 }
 
 group = "galaGuide"
@@ -74,5 +76,21 @@ application {
 ktor {
     fatJar {
         archiveFileName.set("backend.jar")
+    }
+
+    docker {
+        jreVersion.set(JavaVersion.VERSION_11)
+        localImageName.set("galaguide-backend")
+        imageTag.set("1.0.0")
+
+        portMappings.set(
+            listOf(
+                io.ktor.plugin.features.DockerPortMapping(
+                    9260,
+                    9260,
+                    io.ktor.plugin.features.DockerPortMappingProtocol.TCP
+                )
+            )
+        )
     }
 }
