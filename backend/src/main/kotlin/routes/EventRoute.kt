@@ -4,6 +4,7 @@ import galaGuide.data.*
 import galaGuide.resources.user
 import galaGuide.resources.userId
 import galaGuide.table.*
+import galaGuide.table.reservation.Order
 import galaGuide.table.user.UserFavoriteEventTable
 import galaGuide.table.user.UserHistoryEventTable
 import galaGuide.util.GroupManager
@@ -11,11 +12,8 @@ import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.and
-import org.jetbrains.exposed.sql.deleteWhere
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.Instant
@@ -113,7 +111,7 @@ fun Route.routeEvent() {
         }
 
         authenticate("user") {
-            post<EventDetail>("/create") {
+            post<EventDetail>("/create") { it ->
                 if (it.title == null) {
                     call.respond(failRestResponseDefault(-1, "Title not provided"))
                     return@post
@@ -178,6 +176,51 @@ fun Route.routeEvent() {
                 }
 
                 call.respond(emptyRestResponse("Event created"))
+            }
+            post<EventFilter>("/filter") {
+                if (it.equals(null)) {
+                    val reply = transaction { Event.all().toList() }
+                    call.respond(reply.asRestResponse())
+                    return@post
+                }
+                val reply = transaction {
+                    var categoryItems = Event.all().toSet()
+                    var statusItems = Event.all().toSet()
+                    val dateItems = Event.all().toSet()
+                    var priceItems = Event.all().toSet()
+                    if (!it.status.equals(null)) {
+                        categoryItems = Event.find { EventTable.category eq it.category }.toSet()
+                    }
+                    if (!it.status.equals(null)) {
+                        statusItems = Event.find { EventTable.category eq it.category }.toSet()
+                    }
+                    if (!it.startDate.equals(null) and !it.endDate.equals(null)) {
+                        val periods = EventPeriod.find {
+                            (EventPeriodTable.end less Instant.ofEpochSecond(it.startDate)) or (EventPeriodTable.start greater Instant.ofEpochSecond(
+                                it.endDate
+                            ))
+                        }
+                        dateItems.filter { dataItem -> dataItem.id in periods.map { p -> p.event.id } }
+                    }
+                    if (!it.minPrice.equals(null) and !it.endDate.equals(null)) {
+                        priceItems =
+                            Event.find { (EventTable.cost greaterEq it.minPrice) and (EventTable.cost lessEq it.maxPrice) }
+                                .toSet()
+                    }
+                    categoryItems.intersect(statusItems).intersect(dateItems).intersect(priceItems).toList()
+                }
+                call.respond(reply.asRestResponse())
+                return@post
+            }
+
+            get("/top-rated") {
+                val reply = transaction {
+                    Order.all().groupBy { it.event }
+                        .map { (event, orders) -> EventCount(event, orders.count()) }
+                        .sortedByDescending { it.count }.take(10).map { (event, _) -> event }
+                }
+                call.respond(reply.asRestResponse())
+                return@get
             }
         }
     }

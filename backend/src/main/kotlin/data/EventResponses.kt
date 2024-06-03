@@ -30,6 +30,21 @@ data class EventDetail(
     val category: String? = null,
 )
 
+@Serializable
+data class EventFilter(
+    val category: String,
+    val startDate: Long,
+    val endDate: Long,
+    val status: String,
+    val maxPrice: Long,
+    val minPrice: Long,
+)
+
+data class EventCount(
+    val event: Event,
+    val count: Int
+)
+
 fun Event.asDetail() = EventDetail(
     id.value,
     title,
@@ -41,5 +56,6 @@ fun Event.asDetail() = EventDetail(
     periods.map { it.asDetail() },
     category,
 )
+
 fun Event.asRestResponse() = asDetail().asRestResponse()
 fun List<Event>.asRestResponse() = map { it.asRestResponse() }
