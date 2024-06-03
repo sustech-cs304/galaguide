@@ -75,4 +75,20 @@ ktor {
     fatJar {
         archiveFileName.set("backend.jar")
     }
+
+    docker {
+        jreVersion.set(JavaVersion.VERSION_11)
+        localImageName.set("galaguide-backend")
+        imageTag.set("1.0.0")
+
+        portMappings.set(
+            listOf(
+                io.ktor.plugin.features.DockerPortMapping(
+                    9260,
+                    9260,
+                    io.ktor.plugin.features.DockerPortMappingProtocol.TCP
+                )
+            )
+        )
+    }
 }
