@@ -5,7 +5,7 @@ plugins {
     kotlin("plugin.serialization") version "1.9.22"
 
     //ktor
-    id("io.ktor.plugin") version "2.3.8"
+    id("io.ktor.plugin") version "2.3.11"
 
     id("io.gitlab.arturbosch.detekt") version "1.23.6"
 }
@@ -21,6 +21,7 @@ dependencies {
     //testing
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("io.ktor:ktor-server-test-host")
+    testImplementation("io.ktor:ktor-client-content-negotiation")
 
     //time
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0-RC.2")

@@ -3,9 +3,7 @@ package galaGuide.resources
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import galaGuide.data.*
-import galaGuide.data.user.asPrivateDetail
-import galaGuide.data.user.asPrivateResponse
-import galaGuide.data.user.asPublicResponse
+import galaGuide.data.user.*
 import galaGuide.table.staticAsset
 import galaGuide.table.user.User
 import galaGuide.table.user.UserRole
@@ -47,15 +45,6 @@ fun Route.routeUser() {
         .sign(Algorithm.HMAC256(secret))
 
     route("/user") {
-        @Serializable
-        data class LoginData(
-            val token: String,
-            val userName: String,
-            val userRole: UserRole,
-        )
-
-        @Serializable
-        data class RegisterRequest(val name: String = "", val password: String = "", val email: String = "")
         post<RegisterRequest>("/register") {
             newSuspendedTransaction {
                 User.checkNameAvailable(it.name)
@@ -91,8 +80,6 @@ fun Route.routeUser() {
             )
         }
 
-        @Serializable
-        data class LoginRequest(val nameOrEmail: String = "", val password: String = "")
         post<LoginRequest>("/login") {
             val user = transaction {
                 User.find {

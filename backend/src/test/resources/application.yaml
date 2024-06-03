@@ -1,0 +1,25 @@
+ktor:
+  deployment:
+    port: 9260
+  application:
+    modules:
+      - galaGuide.MainKt.init
+user-jwt:
+  secret: 1145141919810
+  issuer: localhost
+  audience: localhost/user
+  unverified-realm: 'unverified user'
+  user-realm: 'Access to user'
+  admin-realm: 'Access to admin'
+user:
+  email-verify:
+    host: smtp.qq.com
+    port: 587
+    username: 1218133157@qq.com
+    password: sugvreayvwhrjafc
+    title: 'Galaguide Email Verification'
+    sender: 'GalaGuide'
+    sender-email: '1218133157@qq.com'
+    template: 'Welcome to Galaguide! Your email verification code is: %s'
+    request-interval: 60
+    expire-time: 3600
