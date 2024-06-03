@@ -38,7 +38,7 @@ fun Route.routeReservation() = authenticate("user") {
 }
 
 fun Route.createOrderRoute() {
-    post<ReservationRoute.Order.Object>("/create-order") {
+    post<ReservationRoute.Order.Object>("/reserve/create-order") {
         if (it.equals(null)) {
             call.respond(failRestResponseDefault(-1, "Missing request body"))
             return@post
@@ -85,7 +85,7 @@ fun Route.createOrderRoute() {
 }
 
 fun Route.filterOrderRoute() {
-    post<ReservationRoute.Filter.Object>("/filter-order") {
+    post<ReservationRoute.Filter.Object>("/event/filter") {
         if (it.equals(null)) {
             val reply = transaction { Event.all().toList() }
             call.respond(reply.asRestResponse())
