@@ -18,7 +18,7 @@ object DiscussTable : LongIdTable() {
     val posterId = reference("poster_id", UserTable, onDelete = ReferenceOption.CASCADE)
     val createTime = timestamp("create_time")
     val likes = long("likes")
-    val belongsToId = long("belongsToId")
+    val belongsToId = long("belongs_to_id")
 
     init {
         createThis()
