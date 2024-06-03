@@ -12,9 +12,9 @@ data class DiscussDetail(
     val posterId: Long? = null,
     val posterName: String? = null,
     val likes: Long = 0,
-    val tags: List<String> = emptyList(),
+//    val tags: List<String> = emptyList(),
     val time: Long? = null,
-    val belongsToId: Long? = null
+    val belongsToId: Long
 )
 
 fun Discuss.asDetail() = DiscussDetail(
@@ -23,7 +23,7 @@ fun Discuss.asDetail() = DiscussDetail(
     poster.id.value,
     poster.name,
     likes,
-    Tag.find { TagTable.discussId eq id }.map { tag -> tag.name },
+//    Tag.find { TagTable.discussId eq id }.map { tag -> tag.name },
     createTime.epochSecond,
     belongsToId
 )

@@ -112,7 +112,7 @@ fun Route.uploadDiscussReply() {
                 createTime = Instant.ofEpochSecond(Date().time)
                 poster = currentUser
                 belongsToId = discuss.id.value
-                likes = 9999999
+                likes = 0.toLong()
             }
             kotlin.runCatching {
                 call.respond(
@@ -197,7 +197,7 @@ fun Route.createDiscuss() {
                 poster = currentUser
                 belongsToId = 9999999.toLong()
                 createTime = Instant.ofEpochSecond(Date().time)
-                likes = 9999999.toLong()
+                likes = 0.toLong()
             }
             call.respond(discuss.asRestResponse())
         }
