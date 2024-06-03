@@ -68,7 +68,7 @@ fun Route.createOrderRoute() {
                 email = it.email
             }
         }
-        kotlin.runCatching { call.respond(reply.asRestResponse()) }
+        kotlin.runCatching { call.respond(emptyRestResponse("Operation Success: Create Order")) }
         return@post
     }
 }
