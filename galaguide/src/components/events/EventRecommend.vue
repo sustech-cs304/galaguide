@@ -15,7 +15,7 @@
       <div v-show="activeTab === 'new'" class="tab-content">
         <!-- Iterate over new events and display them -->
         <div v-for="event in newEvents" :key="event.id" class="event-card">
-          <EventCard :="event" />
+          <EventCard :title="event.title" :posterId="event.posterId" :hostId="event.hostId" :eventId="event.id"/>
         </div>
       </div>
     </div>

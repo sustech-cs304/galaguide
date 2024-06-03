@@ -22,7 +22,7 @@ const afterRead = (e) => {
         src.value = reader.result;
     };
 }
-const posterId = ref("");
+const posterId = ref("db9094e3-19b6-48ca-8fbe-598d34a2a5ff");
 const uploadImage = () => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -56,7 +56,7 @@ const uploadImage = () => {
 
     console.log("Image uploaded");
     fileInput.value = "";
-    //window.location.reload();
+    window.location.reload();
 }
 </script>
 

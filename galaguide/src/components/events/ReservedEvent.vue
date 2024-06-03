@@ -42,8 +42,7 @@ function fetchReservedEvents() {
   if (cookie && cookie.split("=")[1] !== "0") {
     console.log("cookie:", cookie);
     console.log("Authorization:", `Bearer ${localStorage.getItem('token')}`);
-    let token = localStorage.getItem('token');
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    // let token = localStorage.getItem('token');
     axios
     .get('/api/reserve/mine', {
         headers: {
