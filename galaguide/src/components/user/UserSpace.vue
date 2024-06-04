@@ -126,21 +126,56 @@ onMounted(async () => {
     console.log("error:", error);
   });
 
-  axios
-  .get('/api/user/favorite', {
-      headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`
-      }
-  })
-  .then((response) => {
-    console.log("response", response);
-    if (response.status === 200 && response.data.code === 0) {
-      console.log(response.data.data);
-    }
-  })
-  .catch((error) => {
-    console.log("error:", error);
-  });
+  // axios
+  //   .get('/api/user/favorite', {
+  //       headers: {
+  //           Authorization: `Bearer ${localStorage.getItem('token')}`
+  //       }
+  //   })
+  //   .then((response) => {
+  //     console.log("response:", response);
+  //     if (response.status === 200 && response.data.code === 0) {
+  //       user.value.userFavoriteEvents = response.data.data;
+  //     }
+  //     console.log("userFavoriteEvents:", user.value.userFavoriteEvents);
+  //   })
+  //   .catch((error) => {
+  //     console.log("error:", error);
+  //   });
+
+  // axios
+  // .get('/api/user/history', {
+  //     headers: {
+  //         Authorization: `Bearer ${localStorage.getItem('token')}`
+  //     }
+  // })
+  // .then((response) => {
+  //   console.log("response:", response);
+  //   if (response.status === 200 && response.data.code === 0) {
+  //     user.value.userBrowsedEvents = response.data.data;
+  //   }
+  //   console.log("userBrowsedEvents:", user.value.userBrowsedEvents);
+  // })
+  // .catch((error) => {
+  //   console.log("error:", error);
+  // });
+
+  // axios
+  //   .get('/api/reserve/mine', {
+  //       headers: {
+  //           Authorization: `Bearer ${localStorage.getItem('token')}`
+  //       }
+  //   })
+  //   .then((response) => {
+  //     console.log("response:", response);
+  //     if (response.status === 200 && response.data.code === 0) {
+  //       user.value.userSubscribedEvents = response.data.data;
+  //     }
+  //     console.log("reserveEvents:", user.value.userSubscribedEvents);
+  //   })
+  //   .catch((error) => {
+  //     console.log("error:", error);
+  //   });
 });
 
 const revise = () => {
