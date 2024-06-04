@@ -21,13 +21,13 @@ import EventRecommend from "./EventRecommend.vue";
       <!-- TODO: following sections need links to jump to relating search result pages -->
       <RouterLink :to="{
         path: '/events/search', query: {searchQuery: '',
-          category: ['Sport'], minPrice: 0, maxPrice:
+          category: 'Sports', minPrice: 0, maxPrice:
             1000, startDate: 1620637200, endDate: 1620640800,
         }
       }">
         <div class="top-by-sections">
           <div style="display: flex; flex-direction: row; align-items: center; ">
-            <h2>This is sport sections</h2>
+            <h2>This is sports sections</h2>
           </div>
           <div style="display:flex; flex-direction: row; align-content: center; ">
             <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor"
@@ -43,7 +43,7 @@ import EventRecommend from "./EventRecommend.vue";
       </RouterLink>
 
       <RouterLink :to="{ path: '/events/search', query: {searchQuery: '',
-          category: ['Art'], minPrice: 0, maxPrice: 1000, startDate: 1620637200, endDate: 1620640800,
+          category: 'Art', minPrice: 0, maxPrice: 1000, startDate: 1620637200, endDate: 1620640800,
         } }">
         <div class="top-by-sections">
           <div style="display: flex; flex-direction: row; align-items: center; ">
@@ -61,7 +61,7 @@ import EventRecommend from "./EventRecommend.vue";
         </div>
       </RouterLink>
       <RouterLink :to="{ path: '/events/search', query: {searchQuery: '',
-          category: ['Education'], minPrice: 0, maxPrice:
+          category: 'Education', minPrice: 0, maxPrice:
             1000, startDate: 1620637200, endDate: 1620640800,
         } }">
 
@@ -79,7 +79,7 @@ import EventRecommend from "./EventRecommend.vue";
         </div>
       </RouterLink>
       <RouterLink :to="{ path: '/events/search', query: {searchQuery: '',
-          category: ['ceremony'], minPrice: 0, maxPrice:
+          category: 'ceremony', minPrice: 0, maxPrice:
             1000, startDate: 1620637200, endDate: 1620640800,
         } }">
         <div class="top-by-sections">

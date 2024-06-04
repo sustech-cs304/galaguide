@@ -7,21 +7,23 @@
     <div class="title">
       <h2>My Reservation</h2>
     </div>
-    <div class="event" v-for="event in reservedEvents" :key="event.id">
-      <EventCard :title="event.title"
-      :posterId="event.posterId"
-      :hostId="event.hostId"
-      :eventId="event.id"/>    
+    <div class="event" v-for="event in reservedEvents" :key="event.eventId">
+      <div class="reservation">
+        <p>Event Name: {{ event_name }}</p>
+        <p>Period: {{ event_period[parseInt(event.eventId)] }}</p>
+        <p>Host: {{ host_name }}</p>
+        <p>Phone: {{ event.phoneNumber }}</p>
+        <p>Email: {{ event.email }}</p>
+      </div>
         
       <div class="event-actions">
           <button type="submit" @click="deleteEvent(event.id)" class="delete-button">Unreserve</button>
-        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import EventCard from './EventCard.vue';
 import axios from 'axios';
 import { onMounted, ref } from 'vue';
 
@@ -30,6 +32,12 @@ function deleteEvent(eventId) {
   console.log("eventId:", eventId);
 }
 
+const event_name = ref('Event Name');
+const host_name = ref('Host Name');
+const event_period = ref(['2024.03.05 - 2024.03.12', '2024.02.03 - 2024.02.04', '2024.01.19 - 2024.01.26'
+  , '2024.02.06 - 2024.02.09', '2024.05.13 - 2024.06.10', '2024.04.26 - 2024.05.13', '2024.01.15 - 2024.04.16',
+  '2024.03.08 - 2024.03.09', '2024.05.19 - 2024.05.26', '2024.04.06 - 2024.04.12', '2023.12.25 - 2024.01.10',
+]);
 
 const reservedEvents = ref([]);
 
@@ -54,7 +62,41 @@ function fetchReservedEvents() {
       if (response.status === 200 && response.data.code === 0) {
         reservedEvents.value = response.data.data;
       }
-      console.log("reserveEvents:", reservedEvents.value[0]);
+      console.log("reserveEvents:", reservedEvents);
+
+      for (let i = 0; i < reservedEvents.value.length; i++) {
+        axios
+        .get(`/api/event/${reservedEvents.value[i].eventId}`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`
+            }
+        })
+        .then((response) => {
+          console.log("response:", response);
+          if (response.status === 200 && response.data.code === 0) {
+            event_name.value = response.data.data.title;
+          }
+        })
+        .catch((error) => {
+          console.log("error:", error);
+        });
+        axios
+        .get(`/api/user/${reservedEvents.value[i].recipientId}`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`
+            }
+        })
+        .then((response) => {
+          console.log("response:", response);
+          if (response.status === 200 && response.data.code === 0) {
+            console.log("response.data.data:", response.data.data);
+            host_name.value = response.data.data.name;
+          }
+        })
+        .catch((error) => {
+          console.log("error:", error);
+        });
+      }
     })
     .catch((error) => {
       console.log("error:", error);
@@ -71,6 +113,21 @@ onMounted(() => {
 .container {
   display: flex;
   flex-direction: column;
+}
+
+.reservation {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 10px;
+  width: 450px;
+  height: 150px;
+  border: 1px solid #bbaeae;
+  border-radius: 15px;
+}
+
+.reservation p {
+  margin: 5px;
 }
 
 .left-bar {

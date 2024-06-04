@@ -14,7 +14,7 @@
       :eventId="event.id"/>    
 
       <div class="event-actions">
-          <button type="submit" @click="deleteEvent(event.id)" class="delete-button">Unfavorite</button>
+          <button type="submit" @click="deleteEvent(event.id)" class="delete-button">Delete</button>
         </div>
     </div>
   </div>
@@ -55,7 +55,7 @@ function fetchBrowsedEvents() {
       if (response.status === 200 && response.data.code === 0) {
         browsedEvents.value = response.data.data;
       }
-      console.log("favoriteEvents:", browsedEvents.value[0]);
+      console.log("browsedEvents:", browsedEvents.value);
     })
     .catch((error) => {
       console.log("error:", error);
@@ -89,7 +89,10 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 10px;
+  width: 450px;
+  height: 150px;
+  margin-bottom: 30px;
+  margin-left: 550px;
 }
 
 .event-actions {

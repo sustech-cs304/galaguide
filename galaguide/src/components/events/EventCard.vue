@@ -47,6 +47,7 @@ function findHost() {
 }
 
 onMounted(() => {
+    console.log(props.hostId);
     findHost();
 });
 </script>
@@ -56,10 +57,12 @@ onMounted(() => {
 .event-card {
     display: flex;
     flex-direction: row;
+    width: 100%;
+    height: 100%;
     margin: 2px;
     padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    border: 1px solid #bbaeae;
+    border-radius: 15px;
 }
 
 .event-card:hover .event-card-buttons {

@@ -54,24 +54,31 @@ const route = useRoute();
 const query = route.query;
 
 const selectedFilters = reactive([
-	{ name: 'Category', options: ['Sport', 'Music', 'Lecture', 'Education'], selected: [] },
+	{ name: 'Category', options: ['Sports', 'Music', 'Lecture', 'Education'], selected: [] },
 ]);
-const queryWord = ref("")
+const searchQuery = ref("")
 const minPrice = ref(0);
 const maxPrice = ref(1000);
-const startDate = ref(0);
-const endDate = ref(0);
+const startDate = ref(1);
+const endDate = ref(2000000000000000);
+const category = ref("")
 const searchResults = ref([]);
 
 // const filteredResults = ref([]);
 onMounted(() => {
 	console.log(query)
-	selectedFilters[0].selected = query.category ? query.category : [];
-	queryWord.value = query.searchQuery;
+	//selectedFilters[0].selected = query.category ? query.category : [];
+	searchQuery.value = query.searchQuery;
 	minPrice.value = query.minPrice;
 	maxPrice.value = query.maxPrice;
+	category.value = query.category;
 	startDate.value = query.startDate;
 	endDate.value = query.endDate;
+	// convert minPrice and maxPrice to number
+	minPrice.value = parseInt(minPrice.value);
+	maxPrice.value = parseInt(maxPrice.value);
+	startDate.value = Math.min(parseInt(startDate.value), new Date(startDate.value).getTime() / 1000);
+	endDate.value = Math.max(parseInt(endDate.value), new Date(endDate.value).getTime() / 1000);
 	fetchEvents();
 });
 
@@ -87,28 +94,30 @@ const fetchEvents = () => {
 	// 	.catch((error) => {
 	// 		console.error('Error fetching events:', error);
 	// 	});
-
-
-	console.log(queryWord.value)
-	console.log(selectedFilters[0].selected)
+	// convert category to []
+	
+	console.log(searchQuery.value)
+	console.log(category.value)
 	console.log(minPrice.value)
 	console.log(maxPrice.value)
 	console.log(startDate.value)
 	console.log(endDate.value)
+	console.log(category.value)
+
 
 	// add the filter values inside post body
 	axios.post('/api/event/filter', {
-		searchQuery: queryWord.value,
-		category: selectedFilters[0].selected,
+		searchQuery: searchQuery.value,
+		category: category.value,
 		minPrice: minPrice.value,
 		maxPrice: maxPrice.value,
 		startDate: startDate.value,
 		endDate: endDate.value
 	})
-		.then((response) => {
-			console.log(response.data)
-			searchResults.value = response.data.data;
-		})
+	.then((response) => {
+		console.log(response.data)
+		searchResults.value = response.data.data;
+	})
 
 
 }

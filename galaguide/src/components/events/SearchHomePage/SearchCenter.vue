@@ -24,7 +24,7 @@
 								<div class="dropdown">
 									<label class="label">Category</label>
 									<select v-model="category" style="display: block;">
-										<option v-for="option in category_options" :key="option.value" :value="option.value">
+										<option v-for="option in categoryOptions" :key="option.value" :value="option.value">
 											{{ option.label }}
 										</option>
 									</select>
@@ -32,32 +32,32 @@
 
 								<div class="dropdown">
 									<label class="label">Start Date</label>
-									<input type="date" v-model="start_date" style="display: block;">
+									<input type="date" v-model="startDate" style="display: block;">
 
 								</div>
 
 								<div class="dropdown">
 									<label class="label">End Date</label>
-									<input type="date" v-model="end_date" style="display: block;">
+									<input type="date" v-model="endDate" style="display: block;">
 								</div>
 
 
 								<div class="dropdown">
 									<label class="label">Min Price</label>
-									<input type="number" v-model="min_price" style="display: block;">
+									<input type="number" v-model="minPrice" style="display: block;">
 								</div>
 
 								<div class="dropdown">
 									<label class="label">Max Price</label>
-									<input type="number" v-model="max_price" style="display: block;">
+									<input type="number" v-model="maxPrice" style="display: block;">
 								</div>
 							</div>
 							<div>
-								<span v-if="(min_price > max_price) && showFilters" class="error">The max price must be greater than the
+								<span v-if="(minPrice > maxPrice) && showFilters" class="error">The max price must be greater than the
 									min
 									price.</span>
 								<br>
-								<span v-if="(start_date > end_date) && showFilters" class="error">The end date must be later than the
+								<span v-if="(startDate > endDate) && showFilters" class="error">The end date must be later than the
 									start
 									date.</span>
 							</div>
@@ -76,13 +76,13 @@ import router from "@/router";
 import { ref, } from "vue";
 const category = ref("")
 //initialize start date and end date with the current date
-const start_date = ref(new Date().toISOString().substr(0, 10))
-const end_date = ref(new Date().toISOString().substr(0, 10))
-const min_price = ref(0)
-const max_price = ref(0)
+const startDate = ref(new Date().toISOString().split('T')[0])
+const endDate = ref(new Date().toISOString().split('T')[0])
+const minPrice = ref(0)
+const maxPrice = ref(0)
 const searchQuery = ref("")
 
-const category_options = [
+const categoryOptions = [
 	{
 		value: "Sports",
 		label: "Sports",
@@ -117,15 +117,16 @@ const toggleFilters = () => {
 const searchGala = () => {
 	// the user will be pushed to search result page with the search query
 	// the search query will be the values of the filters
+	console.log('query', searchQuery.value, category.value, startDate.value, endDate.value, minPrice.value, maxPrice.value)
 	router.push({
 		name: "SearchResult",
 		query: {
-			queryWord: searchQuery.value,
+			searchQuery: searchQuery.value,
 			category: category.value,
-			start_date: start_date.value,
-			end_date: end_date.value,
-			min_price: min_price.value,
-			max_price: max_price.value,
+			startDate: startDate.value,
+			endDate: endDate.value,
+			minPrice: minPrice.value,
+			maxPrice: maxPrice.value,
 		},
 	});
 	

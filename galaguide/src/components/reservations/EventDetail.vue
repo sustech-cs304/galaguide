@@ -79,7 +79,7 @@ import { ref, onMounted, } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import axios from 'axios';
 const router = useRouter();
-const eventID = useRoute().params.eventId;
+const eventId = useRoute().params.eventId;
 const title = ref('Event Title');
 const description = ref('Event Description');
 const cost = ref(0);
@@ -89,9 +89,11 @@ const host = ref('Host Name');
 // const posterUrl = ref('https://via.placeholder.com/400x300?text=Default+Image');
 
 onMounted(() => {
-  // Fetch event details based on eventID
+  // Fetch event details based on eventId
   loading.value = true;
-  axios.get(`/api/event/${eventID}`)
+  axios.get(`/api/event/${eventId}`, 
+    { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
+  )
     .then((response) => {
       console.log(response.data);
       title.value = response.data.data.title;
@@ -127,7 +129,7 @@ const formData = ref({
   name: '',
   email: '',
   phoneNumber: '',
-  eventId: 0,
+  eventId: 1,
   periodId: 0,
 });
 
@@ -137,20 +139,38 @@ const error = ref(false);
 
 
 const addToFavorites = () => {
-  // Logic to add the event to the user's favorites
+  console.log('eventId:', formData.value.eventId)
+  const options = {
+    method: 'POST',
+    url: `/api/event/${formData.value.eventId}/favorite`,
+    headers: {
+      authorization: `Bearer ${localStorage.getItem('token')}`,
+      'content-type': 'application/json'
+    },
+    data: {}
+  };
+
+  axios.request(options).then(function (response) {
+    console.log(response.data);
+  }).catch(function (error) {
+    console.error(error);
+  });
 };
 const validateForm = () => {
   // Validation logic
   if (!formData.value.name.trim()) {
     alert('Please enter your name.');
+    router.push(`/event/${formData.value.eventId}`)
     return false;
   }
   if (!formData.value.email.trim() || !/\S+@\S+\.\S+/.test(formData.value.email)) {
     alert('Please enter a valid email address.');
+    router.push(`/event/${formData.value.eventId}`)
     return false;
   }
   if (!formData.value.phone.trim()) {
     alert('Please enter your phone number.');
+    router.push(`/event/${formData.value.eventId}`)
     return false;
   }
   

@@ -5,18 +5,17 @@
       <!-- Content for left sidebar -->
     </div>
     <div class="title">
-      <h2>My Favorite Events</h2>
+      <h2>My History Events</h2>
     </div>
-    <div class="event" v-for="event in favoriteEvents" :key="event.id">
+    <div class="event" v-for="event in browsedEvents" :key="event.id">
       <EventCard :title="event.title"
       :posterId="event.posterId"
       :hostId="event.hostId"
-      :eventId="event.id"/>
-      <!-- More details can be displayed here -->
+      :eventId="event.id"/>    
+
       <div class="event-actions">
-        <button type="submit" @click="deleteEvent(event.id)" class="delete-button">Unfavorite</button>
-      </div>
-      
+          <button type="submit" @click="deleteEvent(event.id)" class="delete-button">Delete</button>
+        </div>
     </div>
   </div>
 </template>
@@ -26,30 +25,15 @@ import EventCard from './EventCard.vue';
 import axios from 'axios';
 import { onMounted, ref } from 'vue';
 
+
 function deleteEvent(eventId) {
-  axios
-    .post('/api/event/favorite', {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`
-      }
-    },
-    {
-      eventId: eventId
-    })
-    .then((response) => {
-      console.log("response:", response);
-      if (response.status === 200 && response.data.code === 0) {
-        fetchFavoriteEvents();
-      }
-    })
-    .catch((error) => {
-      console.log("error:", error);
-    });
+  console.log("eventId:", eventId);
 }
 
-const favoriteEvents = ref([]);
 
-function fetchFavoriteEvents() {
+const browsedEvents = ref([]);
+
+function fetchBrowsedEvents() {
   console.log("document.cookie:", document.cookie);
   const cookie = document.cookie
     .split(";")
@@ -69,9 +53,9 @@ function fetchFavoriteEvents() {
     .then((response) => {
       console.log("response:", response);
       if (response.status === 200 && response.data.code === 0) {
-        favoriteEvents.value = response.data.data;
+        browsedEvents.value = response.data.data;
       }
-      console.log("favoriteEvents:", favoriteEvents.value[0]);
+      console.log("browsedEvents:", browsedEvents.value);
     })
     .catch((error) => {
       console.log("error:", error);
@@ -80,7 +64,7 @@ function fetchFavoriteEvents() {
 }
 
 onMounted(() => {
-  fetchFavoriteEvents();
+  fetchBrowsedEvents();
 });
 </script>
 
@@ -105,7 +89,10 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 10px;
+  width: 450px;
+  height: 150px;
+  margin-bottom: 30px;
+  margin-left: 550px;
 }
 
 .event-actions {
