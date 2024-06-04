@@ -325,11 +325,11 @@ class GroupsHandler(tornado.web.RequestHandler):
         if self.request.path.endswith("/groups"):
             response = group_info
             self.set_header("Content-Type", "application/json")
-            self.write(make_rest_response(response))
+            self.write(json.dumps(response))
         else:
             response = group_info[int(self.request.path.split("/")[-1])]
             self.set_header("Content-Type", "application/json")
-            self.write(make_rest_response(response))
+            self.write(json.dumps(response))
 
 class RegisterHandler(tornado.web.RequestHandler):
     def post(self):

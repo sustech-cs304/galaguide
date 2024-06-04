@@ -8,7 +8,19 @@ const discussId = route.params.id;
 const textareaInput = ref("");
 const router = useRouter();
 
-const comments = ref([]);
+const comments = ref([
+  {
+    id: 0,
+    title: "Animal Science Major advice?",
+    content:
+      "I'm a freshman and I'm thinking about majoring in Animal Science. I'm not sure if it's the right choice for me. Can anyone give me some advice?",
+    posterName: "LolMyNameIsFunny",
+    posterId: 1,
+    time: "12:00",
+    likes: 1,
+    tags: ["Animal Science", "Major Advice"],
+  }
+]);
 
 const filteredComments = ref([]);
 
@@ -32,6 +44,7 @@ const relatedDiscussions = ref([
 // };
 
 onMounted(() => {
+  try {
   console.log(discussId);
   const token = localStorage.getItem("token");
   // if token exists, set the token in the axios headers
@@ -55,6 +68,9 @@ onMounted(() => {
     .catch((error) => {
       console.error("Error fetching discussion:", error);
     });
+  } catch (error) {
+    console.error("Error fetching discussion:", error);
+  }
 });
 
 const updateViewingHistory = (id) => {
@@ -104,7 +120,8 @@ const likeComment = (id) => {
       // window.location.reload();
       if (response.status === 200 && response.data.code === 0) {
         comments.value[id].likes = response.data.data.likes;
-        filteredComments.value = comments.value.slice(1);
+        // filteredComments.value = comments.value.slice(1);
+        filteredComments.value = comments.value;
       }
     })
     .catch((error) => {
@@ -206,24 +223,24 @@ const deleteComment = (id) => {
     <div id="discuss-header">
       <router-link to="/forum" id="back-button"></router-link>
       <div id="op-info">
-        <img :src="`/api/user/${comments[0].sender_id}/avatar`" />
-        <p id="op-name">{{ comments[0].sender_name }}</p>
+        <img :src="`/api/user/${comments[0].posterId}/avatar`" />
+        <p id="op-name">{{ comments[0].posterName }}</p>
         <p id="op-time">&nbsp;at&nbsp;{{ comments[0].time }}</p>
       </div>
       <div class="actions"> 
         <button style="background-color: rgb(253, 135, 155);" @click="likeComment(0)">
           Liked by {{ comments[0].likes }}
         </button>
-        <button style="background-color: rgb(254, 121, 73);" @click="replyComment(comments[0].sender_name)">
+        <button style="background-color: rgb(254, 121, 73);" @click="replyComment(comments[0].posterName)">
           Comment
         </button>
         <button style="background-color: darkmagenta;" @click="sharePost">
           Share
         </button>
-        <button v-if="comments[0].sender_id == localStorage.getItem('id')" style="background-color: rgb(0, 179, 255);" @click="editPost">
+        <button style="background-color: rgb(0, 179, 255);" @click="editPost">
           Edit
         </button>
-        <button v-if="comments[0].sender_id == localStorage.getItem('id')" style="background-color: rgb(0, 179, 255);" @click="deletePost">
+        <button style="background-color: rgb(0, 179, 255);" @click="deletePost">
           Delete
         </button>
       </div>
@@ -247,8 +264,8 @@ const deleteComment = (id) => {
       </div>
       <div v-for="comment in filteredComments" :key="comment.id" class="comment">
         <div class="comment-info">
-          <img :src="`/api/user/${comment.sender_id}/avatar`" />
-          <p class="comment-sender">{{ comment.sender_name }}</p>
+          <img :src="`/api/user/${comment.posterId}/avatar`" />
+          <p class="comment-sender">{{ comment.posterName }}</p>
           <p class="comment-time">{{ comment.time }}</p>
         </div>
         <p class="comment-content">{{ comment.content }}</p>
@@ -256,10 +273,10 @@ const deleteComment = (id) => {
           <button @click="likeComment(comment.id)">
             Liked by {{ comment.likes }}
           </button>
-          <button style="background-color: rgb(254, 121, 73);" @click="replyComment(comment.sender_name)">
+          <button style="background-color: rgb(254, 121, 73);" @click="replyComment(comment.posterName)">
             Reply
           </button>
-          <button v-if="comment.sender_id == localStorage.getItem('id')" style="background-color: darkmagenta;" @click="deleteComment(comment.id)">
+          <button style="background-color: darkmagenta;" @click="deleteComment(comment.id)">
             Delete
           </button>
         </div>

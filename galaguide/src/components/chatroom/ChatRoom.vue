@@ -9,8 +9,7 @@ const cur_g_id = ref(null);
 var socket = null;
 var lockReconnect = false;
 var wsUrl = 'ws://43.139.21.229:9262/ws';
-// var wsUrl = 'ws://10.16.165.97:9260/ws';
-var timeout = 4000;
+var timeout = 2000;
 var timeoutnum = null;
 
 const getCookie = (name) => {
@@ -32,17 +31,12 @@ const initWebsocket = async () => {
     if ('WebSocket' in window) {
         // socket = new WebSocket(wsUrl, getCookie("token"));
         socket = new WebSocket(wsUrl);
-        console.log('WebSocket created');
         socket.onerror = function () {
             reconnect();
         }
         socket.onopen = function () {
             console.log('WebSocket open');
             clearTimeout(timeoutnum);
-            // The first message sent to the server must be:
-            // { "event": "auth", "token": "your_token" }
-            socket.send(JSON.stringify({ "event": "auth", "token": localStorage.getItem("token") }));
-            console.log('WebSocket auth sent');
         }
         socket.onmessage = function (event) {
             console.log('WebSocket message:', event.data);
@@ -110,7 +104,6 @@ const sendMessage = (g_id) => {
 
 const easyMarkdownConversion = (text) => {
     let newText = text;
-    if (!newText) return newText;
     // text inside ``` ``` is protected from markdown conversion
     let codeBlocks = newText.match(/```(.*?)```/g);
     if (codeBlocks) {
@@ -118,14 +111,14 @@ const easyMarkdownConversion = (text) => {
             newText = newText.replace(block, `<code>${block}</code>`);
         });
     }
-    // // bold text
-    // newText = newText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-    // // italic text
-    // newText = newText.replace(/\*(.*?)\*/g, '<em>$1</em>');
-    // // strikethrough text
-    // newText = newText.replace(/~~(.*?)~~/g, '<del>$1</del>');
-    // // inline code
-    // newText = newText.replace(/`(.*?)`/g, '<code>$1</code>');
+    // bold text
+    newText = newText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    // italic text
+    newText = newText.replace(/\*(.*?)\*/g, '<em>$1</em>');
+    // strikethrough text
+    newText = newText.replace(/~~(.*?)~~/g, '<del>$1</del>');
+    // inline code
+    newText = newText.replace(/`(.*?)`/g, '<code>$1</code>');
     // images
     newText = newText.replace(/!\[(.*?)\]\((.*?)\)/g, '<img src="$2" alt="$1">');
     // links
