@@ -33,7 +33,7 @@ data class EventDetail(
 
 @Serializable
 data class EventFilter(
-    val category: List<String>? = null,
+    val category: String? = null,
     val startDate: Long,
     val endDate: Long,
     val status: String? = null,
