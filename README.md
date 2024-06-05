@@ -59,22 +59,16 @@ The GitHub repository provides both backend and frontend code. The backend is ba
 
 ## Using pre-built executable files
 
-TODO
+See the [releases](https://github.com/sustech-cs304/galaguide/releases).
 
 ## Building from source code
-
-### Prerequisites
-
-- Node.js
-
-TODO: Add more prerequisites
 
 ### Installation
 
 1. Clone the repository
 
 ```bash
-git clone https://github.com/sustech-cs304/team-project-24spring-10.git
+git clone https://github.com/sustech-cs304/galaguide.git
 ```
 
 2. Enter the directory `galaguide/` and install the dependencies for the frontend
@@ -98,9 +92,15 @@ pip install -r requirements.txt
 
 1. Run the backend
 
+In `backend/`:
+
 ```bash
-TODO
-cd ../ai
+./gradlew runFatJar
+```
+
+In `ai/`:
+
+```bash
 python app.py
 ```
 
